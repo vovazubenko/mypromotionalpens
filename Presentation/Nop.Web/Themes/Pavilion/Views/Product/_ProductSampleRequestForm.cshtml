@@ -1,0 +1,218 @@
+﻿@model ProductDetailsModel
+@using Nop.Core.Domain.Seo;
+@using Nop.Core.Domain.Orders;
+@using Nop.Core.Infrastructure;
+@using Nop.Web.Models.Catalog;
+@using Nop.Web.Framework.Themes
+@using Nop.Core;
+@using Nop.Services.Security;
+@using Nop.Core.Domain.Customers;
+
+@{
+    Layout = null;
+
+    var _workContext = EngineContext.Current.Resolve<IWorkContext>();
+    var CurrentCustomer = _workContext.CurrentCustomer;
+}
+<style>
+    .ui-dialog {
+        width: auto !important;
+    }
+</style>
+<script type="text/javascript">
+    $(function () {
+        $("#@Html.FieldIdFor(model => model.FillShippingInfo.CountryId)").change(function () {
+            $("#@Html.FieldIdFor(model => model.FillShippingInfo.CountryName)").val($("#@Html.FieldIdFor(model => model.FillShippingInfo.CountryId) option:selected").html());
+            var selectedItem = $(this).val();
+            var ddlStates = $("#@Html.FieldIdFor(model => model.FillShippingInfo.StateProvinceId)");
+            var statesProgress = $("#states-loading-progress");
+            statesProgress.show();
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "@(Url.RouteUrl("GetStatesByCountryId"))",
+                data: { "countryId": selectedItem, "addSelectStateItem": "false", "addEmptyStateIfRequired": "true" },
+                success: function (data) {
+                    ddlStates.html('');
+                    if (data.length > 0) {
+                        $("#@Html.FieldIdFor(model => model.FillShippingInfo.StateProvinceName)").val(data[0].name);
+                    }
+                    $.each(data, function (id, option) {
+                        ddlStates.append($('<option></option>').val(option.id).html(option.name));
+                    });
+                    statesProgress.hide();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Failed to retrieve states.');
+                    statesProgress.hide();
+                }
+            });
+        });
+
+        $("#@Html.FieldIdFor(model => model.FillShippingInfo.StateProvinceId)").change(function () {
+            $("#@Html.FieldIdFor(model => model.FillShippingInfo.StateProvinceName)").val($("#@Html.FieldIdFor(model => model.FillShippingInfo.StateProvinceId) option:selected").html());
+        });
+    });
+</script>
+<div id="dialog" title="Sample Cart" style="display:none;">
+    @{
+        <form style="padding: 10px 20px;" method="post" action="@Url.Action("ProductDetails","Product")" id="product-details-form-1">
+            <input type="hidden" value="@Model.Sku" name="samplecart-sku" id="samplecart-sku" />
+            <input type="hidden" value="@Model.Name" name="samplecart-product-name" id="samplecart-product-name" />
+            <input type="hidden" value="@Model.Id" name="id" />
+            <div class="attributes-form">
+                <dl>
+                    <dt>
+                        <label class="text-prompt">
+                            Item Color
+                        </label>
+                    </dt>
+                    <dd>
+                        <select name="SampleCart-ItemColor" id="SampleCart-ItemColor" class="form-control">
+                            @{var ItemColors = Model.ProductAttributes.Where(x => x.Name.ToLower().Contains("item color")).FirstOrDefault();
+                            }
+                            @if (ItemColors != null)
+                            {
+                                foreach (var attributeValue in ItemColors.Values)
+                                {
+                                    <option selected="@attributeValue.IsPreSelected" value="@attributeValue.Name">
+                                        @attributeValue.Name
+                                    </option>
+                                }
+                            }
+                        </select>
+                    </dd>
+                </dl>
+            </div>
+            <br />
+            <div class="edit-address Samplerequstform-shipping-info" style="float:left;padding-bottom:30px;">
+                <div class="inputs">
+                    @Html.LabelFor(model => model.FillShippingInfo.Company, new { }, ":")
+                    @Html.EditorFor(model => model.FillShippingInfo.Company)
+                    @if (Model.FillShippingInfo.CompanyRequired)
+                    {
+                        @Html.RequiredHint()
+                    }
+                    @Html.ValidationMessageFor(model => model.FillShippingInfo.Company)
+                </div>
+                <div class="inputs">
+                    @Html.LabelFor(model => model.FillShippingInfo.FirstName, new { }, ":")
+                    @Html.EditorFor(model => model.FillShippingInfo.FirstName)
+                    @Html.RequiredHint()
+                    @Html.ValidationMessageFor(model => model.FillShippingInfo.FirstName)
+                </div>
+                <div class="inputs">
+                    @Html.LabelFor(model => model.FillShippingInfo.LastName, new { }, ":")
+                    @Html.EditorFor(model => model.FillShippingInfo.LastName)
+                    @Html.RequiredHint()
+                    @Html.ValidationMessageFor(model => model.FillShippingInfo.LastName)
+
+                </div>
+                <div class="inputs">
+                    @Html.LabelFor(model => model.FillShippingInfo.Email, new { }, ":")
+                    @Html.EditorFor(model => model.FillShippingInfo.Email)
+                    @Html.RequiredHint()
+                    @Html.ValidationMessageFor(model => model.FillShippingInfo.Email)
+                </div>
+                <div class="inputs">
+                    @Html.LabelFor(model => model.FillShippingInfo.Address1, new { }, ":")
+                    @Html.EditorFor(model => model.FillShippingInfo.Address1)
+                    @if (Model.FillShippingInfo.StreetAddressRequired)
+                    {
+                        @Html.RequiredHint()
+                    }
+                    @Html.ValidationMessageFor(model => model.FillShippingInfo.Address1)
+                </div>
+                <div class="inputs">
+                    @Html.LabelFor(model => model.FillShippingInfo.Address2, new { }, ":")
+                    @Html.EditorFor(model => model.FillShippingInfo.Address2)
+                    @if (Model.FillShippingInfo.StreetAddress2Required)
+                    {
+                        @Html.RequiredHint()
+                    }
+                    @Html.ValidationMessageFor(model => model.FillShippingInfo.Address2)
+                </div>
+                <div class="inputs">
+                    @Html.LabelFor(model => model.FillShippingInfo.City, new { }, ":")
+                    @Html.EditorFor(model => model.FillShippingInfo.City)
+
+                    @if (Model.FillShippingInfo.CityRequired)
+                    {
+                        @Html.RequiredHint()
+                    }
+                    @Html.ValidationMessageFor(model => model.FillShippingInfo.City)
+                </div>
+                <div class="inputs">
+                    @Html.LabelFor(model => model.FillShippingInfo.CountryId, new { }, ":")
+                    @Html.DropDownListFor(model => model.FillShippingInfo.CountryId, Model.FillShippingInfo.AvailableCountries)
+                    @Html.RequiredHint()
+                    @Html.ValidationMessageFor(model => model.FillShippingInfo.CountryId)
+                </div>
+                <div class="inputs">
+                    @Html.LabelFor(model => model.FillShippingInfo.StateProvinceId, new { }, ":")
+                    @Html.DropDownListFor(model => model.FillShippingInfo.StateProvinceId, Model.FillShippingInfo.AvailableStates)
+                    <span id="states-loading-progress" style="display: none;" class="please-wait">@T("Common.Wait...")</span>
+                    @Html.ValidationMessageFor(model => model.FillShippingInfo.StateProvinceId)
+                </div>
+                <div class="inputs">
+                    @Html.LabelFor(model => model.FillShippingInfo.ZipPostalCode, new { }, ":")
+                    @Html.EditorFor(model => model.FillShippingInfo.ZipPostalCode)
+                    @if (Model.FillShippingInfo.ZipPostalCodeRequired)
+                    {
+                        @Html.RequiredHint()
+                    }
+                    @Html.ValidationMessageFor(model => model.FillShippingInfo.ZipPostalCode)
+                </div>
+                <div class="inputs">
+                    @Html.LabelFor(model => model.FillShippingInfo.PhoneNumber, new { }, ":")
+                    @Html.EditorFor(model => model.FillShippingInfo.PhoneNumber)
+                    @if (Model.FillShippingInfo.PhoneRequired)
+                    {
+                        @Html.RequiredHint()
+                    }
+                    @Html.ValidationMessageFor(model => model.FillShippingInfo.PhoneNumber)
+                </div>
+                @Html.HiddenFor(x => x.FillShippingInfo.StateProvinceName)
+                @Html.HiddenFor(x => x.FillShippingInfo.CountryName)
+
+            </div>
+
+            <div class="overview Sample-request-form-submit-div">
+                <button type="submit" id="Sample-request-form-submit" name="add-sample-cart" class="button-1">Submit</button>
+            </div>
+        </form>
+
+    }
+</div>
+<script>
+    $("#btn-sample-request").click(function () {
+        var currentCustomer = '@CurrentCustomer';
+        if (currentCustomer == '') {
+            window.location.href = '@Url.Action("login","customer",new { returnUrl = Url.RouteUrl("Product", new { SeName = Model.SeName }) })';
+        }
+        else{
+            if ('@CurrentCustomer.IsGuest()'.toLowerCase() == 'true') {
+                window.location.href = '@Url.Action("login","customer",new { returnUrl = Url.RouteUrl("Product", new { SeName = Model.SeName }) })';
+            }
+            else {
+                $("#dialog").dialog({
+                    width: 500,
+                    autoOpen: true,
+                    modal: true,
+                    draggable: true,
+                    top: '10px',
+                    open: function () {
+                        $("#Sample-request-form-submit").click(function () {
+                            $("#product-details-form-1").submit();
+
+                        });
+                        $('body').find('.popup-bg').removeClass('hide');
+                    },
+                    close: function (event, ui) {
+                        $('body').find('.popup-bg').addClass('hide');
+                    }
+                });
+            }
+        }
+    });
+</script>

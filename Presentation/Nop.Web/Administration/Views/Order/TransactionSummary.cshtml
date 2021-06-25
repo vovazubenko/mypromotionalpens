@@ -1,0 +1,317 @@
+﻿@model OrderModel
+
+@using Nop.Core.Domain.Tax;
+@using Nop.Core.Domain.Orders;
+@using Nop.Services
+
+<div class="panel-group">
+    @if (!Model.IsLoggedInAsVendor)
+    {
+        if (Model.PaymentStatusId != (int)Nop.Core.Domain.Payments.PaymentStatus.Pending && Model.PaymentStatusId != (int)Nop.Core.Domain.Payments.PaymentStatus.Authorized && Model.PaymentStatusId != (int)Nop.Core.Domain.Payments.PaymentStatus.SampleRequest)
+        {
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.NopLabelFor(model => model.PaymentMethod)
+                        </div>
+                        <div class="col-md-9">
+                            @Html.NopDisplayFor(model => model.PaymentMethod)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.NopLabelFor(model => model.OrderDifference)
+                        </div>
+                        <div class="col-md-9">
+                            <div class="form-text-row">
+                                @Math.Abs(Model.OrderDifference)
+                                @if (Model.OrderDifference > 0)
+                            {<span>@T("Admin.Order.OrderTransaction.Credit")</span>}
+                                @if (Model.OrderDifference < 0)
+                            {<span>@T("Admin.Order.OrderTransaction.Debit")</span>}
+                            </div>
+
+                        </div>
+                    </div>
+
+                    @if (Model.OrderDifference != 0)
+                {
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.TransactionType)
+                    </div>
+                    <div class="col-md-9" style="padding-top: 6px;">
+                        <div class="TransactionType">
+                            <span class="type-automatic">
+                                @Html.RadioButton("TransactionType", "auto", true, new { id = "type-automatic", @class = "transaction-type" })
+                                <span class="forcheckbox" for="type-automatic">@T("Admin.Order.OrderTransactions.AutomaticProcess")</span>
+                            </span>
+                            <span class="type-manual">
+                                @Html.RadioButton("TransactionType", "manual", false, new { id = "type-manual", @class = "transaction-type" })
+                                <span class="forcheckbox" for="type-manual">@T("Admin.Order.OrderTransactions.ManualProcess")</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="div-transaction-automatic">
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.NopLabelFor(model => model.CreditCardId)
+                        </div>
+                        <div class="col-md-5">
+                            @Html.NopDropDownListFor(model => model.CreditCardId, Model.AvailAbleCreditCards)
+                        </div>
+                    </div>
+                </div>
+                <div id="div-transaction-manual" style="display:none;">
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.NopLabelFor(model => model.PaymentTypeId)
+                        </div>
+                        <div class="col-md-5">
+                            @Html.NopDropDownListFor(model => model.PaymentTypeId, Model.AvailablePaymentType)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.TransactionNote)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopTextAreaFor(model => model.TransactionNote)
+                        @Html.ValidationMessageFor(model => model.TransactionNote)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @if (Model.OrderDifference > 0)
+                            {
+                            <div class="label-wrapper"><label class="control-label" title="">@T("Admin.Orders.Fields.OrderDifference.GetMoney")</label></div>
+
+                            }
+                            else {
+                            <div class="label-wrapper"><label class="control-label" title="">@T("Admin.Orders.Fields.OrderDifference.Refund")</label></div>
+
+                            }
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.DifferenceAmount)
+                    </div>
+                </div>
+                }
+                @*@if (Model.OrderDifference > 0)
+                    {
+                        <div class="form-group">
+                            <div class="col-md-3">
+                            </div>
+                            <div class="col-md-9">
+                                <button type="submit" name="creditOfflineOrder" id="creditOfflineOrder" class="btn btn-primary">
+                                    @T("Admin.Orders.Fields.creditOffline")
+                                </button>
+                                <text>&nbsp;</text>
+                                @Html.ActionConfirmation("creditOfflineOrder")
+
+                                @if (!string.IsNullOrEmpty(Model.CustomerPaymentProfileId))
+                                {
+                                    //@if (Model.PaymentMethodSystemName.ToLower() == "Payments.PayPalExpressCheckout".ToLower() || Model.PaymentMethodSystemName.ToLower() == "Payments.AuthorizeNet".ToLower())
+                                if (Model.PaymentMethodSystemName.ToLower() == "Payments.AuthorizeNet".ToLower())
+                                {
+                                    <button type="submit" name="creditonlineorder" id="creditonlineorder" class="btn btn-primary">
+                                        @T("Admin.Orders.Fields.creditonline")
+                                    </button>
+                                    <text>&nbsp;</text>
+                                    @Html.ActionConfirmation("creditonlineorder")
+                                    }
+                                }
+
+                            </div>
+                        </div>
+                    }
+                    @if (Model.OrderDifference < 0)
+                    {
+                        <div class="form-group">
+                            <div class="col-md-3">
+                            </div>
+                            <div class="col-md-9">
+                                <button type="submit" name="debitOfflineOrder" id="debitOfflineOrder" class="btn btn-primary">
+                                    @T("Admin.Orders.Fields.debitOffline")
+                                </button>
+                                <text>&nbsp;</text>
+                                @Html.ActionConfirmation("debitOfflineOrder")
+                                @if (!string.IsNullOrEmpty(Model.CustomerPaymentProfileId))
+                                {
+                                    //if (Model.PaymentMethodSystemName.ToLower() == "Payments.PayPalExpressCheckout".ToLower() || Model.PaymentMethodSystemName.ToLower() == "Payments.AuthorizeNet".ToLower())
+                                    if (Model.PaymentMethodSystemName.ToLower() == "Payments.AuthorizeNet".ToLower())
+                                    {
+                                        <button type="submit" name="debitonlineorder" id="debitonlineorder" class="btn btn-primary">
+                                            @T("Admin.Orders.Fields.debitonline")
+                                        </button>
+                                        <text>&nbsp;</text>
+                                        @Html.ActionConfirmation("debitonlineorder")
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }*@
+                @if (Model.OrderDifference != 0)
+                {
+                <div class="form-group">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-9">
+                        <button type="submit" name="saveordertransaction" id="saveordertransaction" class="btn btn-primary">
+                            @(Model.OrderDifference < 0 ? @T("Admin.Orders.Fields.debit") : @T("Admin.Orders.Fields.credit"))
+                        </button>
+                        <text>&nbsp;</text>
+                        @Html.ActionConfirmation("saveordertransaction")
+                    </div>
+                </div>
+
+                }
+
+            </div>
+        </div>
+            <script>
+            $(document).ready(function () {
+                $(".transaction-type").change(function () {
+                    if (this.value == "auto") {
+                        $("#div-transaction-automatic").show();
+                        $("#div-transaction-manual").hide();
+
+                    }
+                    else {
+                        $("#div-transaction-automatic").hide();
+                        $("#div-transaction-manual").show();
+                    }
+                });
+            });
+        </script>
+        }
+        else {
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <div class="col-md-9">
+                            @T("Admin.order.paymentpending")
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div id="OrderTransactions-grid"></div>
+
+                <script>
+                    $(document).ready(function () {
+                        $("#OrderTransactions-grid").kendoGrid({
+                            dataSource: {
+                                type: "json",
+                                transport: {
+                                    read: {
+                                        url: "@Html.Raw(Url.Action("OrderTransactionsList", "Order", new {orderId = Model.Id}))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        contentType: "application/json"
+                                    },
+
+                                    parameterMap: function (data, operation) {
+                                        if (operation != "read") {
+                                            return data;
+                                        } else {
+                                            //for some reasons only such "Filter" data be parsed
+                                            return JSON.stringify(data);
+                                        }
+                                    }
+                                },
+                                schema: {
+                                    data: "Data",
+                                    total: "Total",
+                                    errors: "Errors",
+                                    model: {
+                                        id: "Id",
+                                        fields: {
+                                            //do not implicitly specify all fields
+                                            //we do it only for fields which implicitly require it
+                                            //otherwise, they'll be formatted wrong way
+                                            CreatedOnUtc: { type: "date" }
+                                        }
+                                    }
+                                },
+                                error: function (e) {
+                                    this.cancelChanges();
+                                },
+                                serverPaging: true,
+                                serverFiltering: true,
+                                serverSorting: true
+                            }, dataBound: function () { },
+                            pageable: {
+                                refresh: true,
+                                numeric: false,
+                                previousNext: false,
+                                info: false,
+                                @Html.Partial("_GridPagerMessages")
+                            },
+                            editable: {
+                                confirmation: "@T("Admin.Common.DeleteConfirmation")",
+                                mode: "inline"
+                            },
+                            scrollable: false,
+                            columns: [
+                            {
+                                field: "CreatedOnUtc",
+                                title: "@T("Admin.Orders.OrderTransactions.Fields.CreatedOnUtc")",
+                                width: 200,
+                                type: "date",
+                                format: "{0:G}"
+                            }, {
+                                field: "TransferAmountValue",
+                                title: "@T("Admin.Orders.OrderTransactions.Fields.TransferAmount")"
+                            },
+                            {
+                                field: "IsCredit",
+                                title: "@T("Admin.Orders.OrderTransactions.Fields.IsCredit")",
+                                template: '#if (IsCredit==false) { #@T("Admin.Order.OrderTransaction.Debit")# }else{#@T("Admin.Order.OrderTransaction.Credit")#} #'
+                            }
+                            , {
+                                field: "TransferStatus",
+                                title: "@T("Admin.Orders.OrderTransactions.Fields.TransferStatus")"
+                            },
+                            {
+                                field: "TransferNote",
+                                title: "@T("Admin.Orders.OrderNotes.Fields.TransferNote")",
+                                encoded: false
+                            }, {
+                                field: "TransferType",
+                                title: "@T("Admin.Orders.OrderNotes.Fields.TransferType")",
+                                template: '#= htmlDecode(TransferType) #'
+                            },
+                            {
+                                field: "TransactionId",
+                                title: "@T("Admin.Orders.OrderNotes.Fields.Transaction")",
+                                template: '# if(TransactionId !=""){# @T("Admin.Orders.OrderTransactions.Fields.TransactionId") : #=TransactionId# #} if(TransactionCode !=""){# <br/>@T("Admin.Orders.OrderTransactions.Fields.TransactionCode") : #=TransactionCode# #} if(TransactionResult !=""){# <br/>@T("Admin.Orders.OrderTransactions.Fields.TransactionResult") : #=TransactionResult# #}#'
+
+                            }
+                            ]
+                        });
+                    });
+                    function htmlDecode(value) {
+                        debugger;
+                        return value.replace(/</g, '<').replace(/>/g, '>');
+                    }
+                    function additionalData() {
+                        var data = {};
+                        addAntiForgeryToken(data);
+                        return data;
+                    }
+                </script>
+            </div>
+        </div>
+    }
+
+
+
+</div>

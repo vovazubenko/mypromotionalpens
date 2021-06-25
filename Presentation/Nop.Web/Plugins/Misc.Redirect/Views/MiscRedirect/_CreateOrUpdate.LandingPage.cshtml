@@ -1,0 +1,100 @@
+﻿@using Nop.Plugin.Misc.Redirect.Models;
+@using Nop.Plugin.Misc.Redirect.Services;
+@using Nop.Core.Infrastructure;
+@using Nop.Plugin.Misc.Redirect
+
+<div id="redirect-grid"></div>
+    
+<script type="text/javascript">
+@{ Model.SeName = "CustomerLoginLandingPage" }
+    $(document).ready(function () {
+        $("#redirect-grid").kendoGrid({
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: {
+                        url: "@Html.Raw(Url.Action("RedirectList", "MiscRedirect", new { id = ViewBag.EntityId }))",
+                        type: "POST",
+                        dataType: "json",
+                        data: addAntiForgeryToken
+                    },
+                    create: {
+                        url: "@Html.Raw(Url.Action("RedirectAdd", "MiscRedirect", new { entityid = ViewBag.EntityId }))",
+                        type: "POST",
+                        dataType: "json",
+                        data: addAntiForgeryToken
+                    },
+                    update: {
+                        url: "@Html.Raw(Url.Action("RedirectUpdate", "MiscRedirect"))",
+                        type: "POST",
+                        dataType: "json",
+                        data: addAntiForgeryToken
+                    },
+                    destroy: {
+                        url: "@Html.Raw(Url.Action("RedirectDelete", "MiscRedirect"))",
+                        type: "POST",
+                        dataType: "json",
+                        data: addAntiForgeryToken
+                    }
+                },
+                schema: {
+                    data: "Data",
+                    total: "Total",
+                    errors: "Errors",
+                    model: {
+                        id: "Id",
+                        fields: {
+                            Destination: { editable: true, type: "string" },
+                            Id: { editable: false, type: "number" }
+                        }
+                    }
+                },
+                requestEnd: function (e) {
+                    if (e.type == "create" || e.type == "update") {
+                        this.read();
+                    }
+                },
+
+                error: function (e) {
+                    display_kendoui_grid_error(e);
+                    this.cancelChanges();
+                },
+            },
+            pageable: {
+                refresh: true,
+                numeric: false,
+                previousNext: false,
+                info: false
+            },
+            toolbar: ["create"],
+            editable: {
+                confirmation: false,
+                mode: "inline"
+            },
+            scrollable: false,
+            columns: [{
+                field: "Destination",
+                headerTemplate: "<div class='ico-help' title='@T("Nop.Plugin.Misc.Redirect.Fields.Destination.Hint")'><i class='fa fa-question-circle'></i> @T("Nop.Plugin.Misc.Redirect.Fields.Destination")</div>", 
+            }, {
+                command: [{
+                    name: "edit",
+                    text: "@T("Admin.Common.Edit")"
+                }, {
+                    name: "destroy",
+                    text: "@T("Admin.Common.Delete")"
+                }
+                ],
+                width: 200
+            }]
+        });
+    });
+
+</script>
+@if (ViewBag.ShowHelpIcons == "false")
+{
+<script>
+    $(document).ready(function () {
+        $(".ico-help").hide();  
+    });
+</script>
+}

@@ -1,0 +1,138 @@
+﻿@using Nop.Plugin.Misc.Redirect.Models;
+@using Nop.Plugin.Misc.Redirect.Services;
+@using Nop.Core.Infrastructure;
+@using Nop.Plugin.Misc.Redirect
+
+<div id="redirect-grid"></div>
+    
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#redirect-grid").kendoGrid({
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: {
+                        url: "@Html.Raw(Url.Action("RedirectList", "MiscRedirect", new { id = ViewBag.EntityId }))",
+                        type: "POST",
+                        dataType: "json",
+                        data: addAntiForgeryToken
+                    },
+                    create: {
+                        url: "@Html.Raw(Url.Action("RedirectAdd", "MiscRedirect", new { entityid = ViewBag.EntityId }))",
+                        type: "POST",
+                        dataType: "json",
+                        data: addAntiForgeryToken
+                    },
+                    update: {
+                        url: "@Html.Raw(Url.Action("RedirectUpdate", "MiscRedirect"))",
+                        type: "POST",
+                        dataType: "json",
+                        data: addAntiForgeryToken
+                    },
+                    destroy: {
+                        url: "@Html.Raw(Url.Action("RedirectDelete", "MiscRedirect"))",
+                        type: "POST",
+                        dataType: "json",
+                        data: addAntiForgeryToken
+                    }
+                },
+                schema: {
+                    data: "Data",
+                    total: "Total",
+                    errors: "Errors",
+                    model: {
+                        id: "Id",
+                        fields: {
+                            SeName: { editable: true, type: "string" },
+                            Type: { editable: true, type: "string" },
+                            TypeId: { editable: true, type: "number" },
+                            Id: { editable: false, type: "number" }
+                        }
+                    }
+                },
+                requestEnd: function (e) {
+                    if (e.type == "create" || e.type == "update") {
+                        this.read();
+                    }
+                },
+
+                error: function (e) {
+                    display_kendoui_grid_error(e);
+                    this.cancelChanges();
+                },
+            },
+            pageable: {
+                refresh: true,
+                numeric: false,
+                previousNext: false,
+                info: false
+            },
+            toolbar: ["create"],
+            editable: {
+                confirmation: false,
+                mode: "inline"
+            },
+            scrollable: false,
+            columns: [{
+                field: "SeName",
+                headerTemplate: "<div class='ico-help' title='@T("Nop.Plugin.Misc.Redirect.Fields.SeName.Hint")'><i class='fa fa-question-circle'></i> @T("Nop.Plugin.Misc.Redirect.Fields.SeName")</div>",
+            }, {
+                field: "Type",
+                headerTemplate: "<div class='ico-help' title='@T("Nop.Plugin.Misc.Redirect.Fields.Type.Hint")'><i class='fa fa-question-circle'></i> @T("Nop.Plugin.Misc.Redirect.Fields.Type")</div>",
+                editor:typeDropDownEditor,
+                width: 300
+            }, {
+                command: [{
+                    name: "edit",
+                    text: "@T("Admin.Common.Edit")"
+                }, {
+                    name: "destroy",
+                    text: "@T("Admin.Common.Delete")"
+                }
+                ],
+                width: 200
+            }]
+        });
+    });
+
+    var allTypes = [
+        @{
+            var redirectService = new RedirectService();
+            var allTypes = redirectService.GetAllTypes();
+    }
+
+        @for (int i = 0; i < allTypes.Count; i++)
+    {
+            var Type = allTypes[i];
+            <text>
+    {
+        Id: "@(Type.Id)",
+        Name: "@(Html.Raw(HttpUtility.JavaScriptStringEncode(Type.Name)))"
+    }
+                </text>
+            if (i != allTypes.Count - 1)
+        {
+                    <text>,</text>
+        }
+        }
+    ];
+
+    function typeDropDownEditor(container, options) {
+        $('<input required data-text-field="Name" data-value-field="Id" data-bind="value:TypeId"/>')
+            .appendTo(container)
+            .kendoDropDownList({
+                autoBind: false,
+                dataSource: allTypes
+            });
+    }
+
+</script>
+@if (ViewBag.ShowHelpIcons == "false")
+{
+<script>
+    $(document).ready(function () {
+        $(".ico-help").hide();  
+    });
+</script>
+}

@@ -1,0 +1,449 @@
+﻿<Language Name="English" IsRightToLeft="false">
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableSpeedFilters">
+    <Value>Enable Speed Filters</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableSpeedFilters.Hint">
+    <Value>Enable Speed Filters.</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.IgnoreDiscountsForCatalog">
+    <Value>Check to ignore discounts (only for Catalog)</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.IgnoreDiscountsForCatalog.Hint">
+    <Value>Check to ignore discounts (only for Catalog). It can significantly improve performance.</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.WidgetZone">
+    <Value>WidgetZone</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.WidgetZone.Hint">
+    <Value>WidgetZone</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.FiltersType">
+    <Value>Filters Type</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.FiltersType.Hint">
+    <Value>Filters Type</Value>
+  </LocaleResource>  
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableFiltersForCategory">
+    <Value>Enable Filters on Category Page</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableFiltersForCategory.Hint">
+    <Value>Enable Filters on Category Page.</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableFiltersForManufacturer">
+    <Value>Enable Filters on Manufacturer Page</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableFiltersForManufacturer.Hint">
+    <Value>Enable Filters on Manufacturer Page</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableFiltersForVendor">
+    <Value>Enable Filters on Vendor Page</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableFiltersForVendor.Hint">
+    <Value>Enable Filters on Vendor Page</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableFiltersForSearchPage">
+    <Value>Enable Filters on Search Page</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableFiltersForSearchPage.Hint">
+    <Value>Enable Filters on Search Page.</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SkipFiltersforCategories">
+    <Value>Categories without filters (comma separated)</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SkipFiltersforCategories.Hint">
+    <Value>Categories ids (comma separated), in which you don't want to show filters.</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SkipFiltersforManufacturers">
+    <Value>Manufacturers without filters (comma separated)</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SkipFiltersforManufacturers.Hint">
+    <Value>Manufacturers ids (comma separated), in which you don't want to show filters.</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SkipFiltersforVendors">
+    <Value>Vendors without filters (comma separated).</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SkipFiltersforVendors.Hint">
+    <Value>Vendors ids (comma separated), in which you don't want to show filters.</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnablePriceRangeFilter">
+    <Value>Enable Price Range Filter</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnablePriceRangeFilter.Hint">
+    <Value>Enable Price Range Filter.</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultClosePriceRange">
+    <Value>Close Price Range Filter By Default</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultClosePriceRange.Hint">
+    <Value>
+      Close Price Range Filter By Default
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableSpecificationsFilter">
+    <Value>
+      Enable Specifications Filter
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableSpecificationsFilter.Hint">
+    <Value>
+      Enable Specifications Filter
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultCloseSpecifications">
+    <Value>
+      Close Specifications Filter By Default
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultCloseSpecifications.Hint">
+    <Value>
+      Close Specifications Filter By Default
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableAttributesFilter">
+    <Value>
+      Enable Attributes Filter
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableAttributesFilter.Hint">
+    <Value>
+      Enable Attributes Filter
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultCloseAttributes">
+    <Value>
+      Close Attributes Filter By Default
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultCloseAttributes.Hint">
+    <Value>
+      Close Attributes Filter By Default
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableManufacturersFilter">
+    <Value>
+      Enable Manufacturers Filter
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableManufacturersFilter.Hint">
+    <Value>
+      Enable Manufacturers Filter
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultCloseManufacturers">
+    <Value>
+      Close Manufacturers Filter By Default
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultCloseManufacturers.Hint">
+    <Value>
+      Close Manufacturers Filter By Default
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableVendorsFilter">
+    <Value>
+      Enable Vendors Filter
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableVendorsFilter.Hint">
+    <Value>
+      Enable Vendors Filter
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultCloseVendors">
+    <Value>
+      Close Vendors Filter By Default
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultCloseVendors.Hint">
+    <Value>
+      Close Vendors Filter By Default
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.FilterSettings">
+    <Value>
+      Filter Settings
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorSettings">
+    <Value>
+      Selectors
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.GeneralSettings">
+    <Value>
+      General Settings
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.AdvancedSettings">
+    <Value>
+      Advanced Settings
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForListPanel">
+    <Value>
+      Html selector for Product List Panel
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForListPanel.Hint">
+    <Value>
+      Html selector for Product List Panel
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForGridPanel">
+    <Value>
+      Html selector for Product Grid Panel
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForGridPanel.Hint">
+    <Value>
+      Html selector for Product Grid Panel
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForPager">
+    <Value>
+      Html selector for Pager Panel
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForPager.Hint">
+    <Value>
+      Html selector for Pager Panel
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForSortOptions">
+    <Value>
+      Html selector for sort options (DropDown)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForSortOptions.Hint">
+    <Value>
+      Html selector for sort options (DropDown)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForViewOptions">
+    <Value>
+      Html selector for view options (DropDown)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForViewOptions.Hint">
+    <Value>
+      Html selector for view options (DropDown)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForProductPageSize">
+    <Value>
+      Html selector for Page Size options (DropDown)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForProductPageSize.Hint">
+    <Value>
+      Html selector for Page Size options (DropDown)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.ProductSelectorsSelector">
+    <Value>
+      Html selector for Product Selectors (OrderBy, ViewMode, PageSize)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.ProductSelectorsSelector.Hint">
+    <Value>
+      Html selector for Product Selectors (OrderBy, ViewMode, PageSize)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForScrolling">
+    <Value>
+      Html selector for Scrolling
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForScrolling.Hint">
+    <Value>
+      Html selector for Scrolling
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultProductSorting">
+    <Value>
+      Default Product Sorting
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultProductSorting.Hint">
+    <Value>
+      Default Product Sorting
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.ScrollAfterFiltration">
+    <Value>
+      Enable Scroll After Filtration
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.ScrollAfterFiltration.Hint">
+    <Value>
+      Enable Scroll After Filtration
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.showDebugInfo">
+    <Value>Enable Debugging</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.showDebugInfo.Hint">
+    <Value>Write debugging information into file. In ~/App_Data/ folder</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.WidgetZone.Required">
+    <Value>
+      Please enter a Widget
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.HTMLSelector.Required">
+    <Value>
+      HTML selector is required
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.FilterTitle">
+    <Value>
+      Filter by:
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.ClearAll">
+    <Value>
+      Clear All
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.PriceRange.Title">
+    <Value>
+      Price range
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.Clear">
+    <Value>
+      Clear
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.Manufacturers.Title">
+    <Value>
+      MANUFACTURERS
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.Vendors.Title">
+    <Value>
+      VENDORS
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.All">
+    <Value>
+      All
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.ErrorMessage">
+    <Value>
+      Error. Failed to load products. Please refresh the page and try one more time.
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EmptyResult.Caption">
+    <Value>
+      NO RESULTS FOUND
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EmptyResult.Text">
+    <Value>
+      There are no products for filters. Please change your search criteria.
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.ClearLogFile">
+    <Value>
+      Clear the log-file
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.GetLogFile">
+    <Value>
+      Download the log-file
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.FiltersConditionSpecifications">
+    <Value>Filters condition for specifications (inside block)</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.FiltersConditionSpecifications.Hint">
+    <Value>Filters condition for specifications (inside block).</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.FiltersConditionAttributes">
+    <Value>Filters condition for attributes (inside block)</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.FiltersConditionAttributes.Hint">
+    <Value>Filters condition for attributes (inside block).</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.AllowSelectFiltersInOneBlock">
+    <Value>Allow select several filters in one block</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.AllowSelectFiltersInOneBlock.Hint">
+    <Value>Allow select several filters in one block.</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.FiltersConditionBetweenBlocks">
+    <Value>Filters condition between blocks (attributes and specifications)</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.FiltersConditionBetweenBlocks.Hint">
+    <Value>Filters condition between blocks (attributes and specifications).</Value>
+  </LocaleResource>
+<LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.CustomKeyword">
+    <Value>Custom keyword</Value>
+</LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.GlobalCategorySetting">
+    <Value>Global Category Setting</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SpecificCategorySetting">
+    <Value>Specific Category Setting</Value>
+  </LocaleResource>
+  
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.MetaTitle">
+    <Value>Meta Title</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.MetaDescription">
+    <Value>Meta Description</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.MetaKeyWord">
+    <Value>Meta Keyword</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.HTag">
+    <Value>H1 Tag</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.HeaderCopy">
+    <Value>Header Copy</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.Category">
+    <Value>Category</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.HeaderTitle">
+    <Value>Header Title</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.GlobalFooterTitle1">
+    <Value>Footer Title 1</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.GlobalFooterContent1">
+    <Value>Footer Content 1</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.GlobalFooterTitle2">
+    <Value>Footer Title 2</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.GlobalFooterContent2">
+    <Value>Footer Content 2</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.GlobalFooterTitle3">
+    <Value>Footer Title 3</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.GlobalFooterContent3">
+    <Value>Footer Content 3</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SpecificFooterTitle1">
+    <Value>Footer Title 1</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SpecificFooterContent1">
+    <Value>Footer Content 1</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SpecificFooterTitle2">
+    <Value>Footer Title 2</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SpecificFooterContent2">
+    <Value>Footer Content 2</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SpecificFooterTitle3">
+    <Value>Footer Title 3</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SpecificFooterContent3">
+    <Value>Footer Content 3</Value>
+  </LocaleResource>
+</Language>

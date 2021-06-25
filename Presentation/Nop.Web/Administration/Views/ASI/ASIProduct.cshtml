@@ -1,0 +1,556 @@
+﻿@using Nop.Core.Domain.ASI
+@model SearchCategorySupplier
+@{
+    //page title
+    ViewBag.Title = T("Admin.ASI.Products").Text;
+    //active menu item (system name)
+    Html.SetActiveMenuItemSystemName("ASIProducts");
+    var defaultGridPageSize = EngineContext.Current.Resolve<Nop.Core.Domain.Common.AdminAreaSettings>().DefaultGridPageSize;
+    var gridPageSizes = EngineContext.Current.Resolve<Nop.Core.Domain.Common.AdminAreaSettings>().GridPageSizes;
+}
+
+<style>
+    .selectit-new {
+        display: none;
+    }
+
+
+    .selectit-option .selectit-close {
+        color: black;
+        font-size: 25px;
+        line-height: 20px;
+        margin-top: 81px !important;
+        padding-left: 5px;
+    }
+
+
+
+    #SelectBox {
+        border: 1px solid #ddd;
+        margin-bottom: 10px;
+        padding: 5px;
+    }
+
+    .selectit-option {
+        background-color: #39f;
+        border: 1px solid #ddd;
+        color: white !important;
+        display: inline-block;
+        margin-left: 5px;
+        margin-right: 5px;
+        margin-top: 5px;
+        padding: 10px;
+    }
+</style>
+
+@using (Html.BeginForm("ASIProduct", "ASI", new { }, FormMethod.Post, new { Id = "AddProductForm" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @T("Admin.ASI.Products")
+        </h1>
+        <div class="pull-right">
+            <button type="button" name="save" onclick="GenerateSearchOptions()" class="btn bg-blue">
+                <i class="fa fa-floppy-square"></i>
+                @T("Admin.ASI.AddNewProduct")
+            </button>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default panel-search">
+                    <div class="panel-body">
+                        <div class="row">
+                            @*<div class="col-md-12">
+
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <label class="control-label" for="csvBasedOn" title="">@T("Admin.ASI.AddProductBasedOn")</label>
+
+                                        </div>
+                                        <div class="col-md-8">
+
+                                            <select id="csvBasedOn" class="form-control valid">
+                                                <option @(!Model ? "selected" : "") value="0">
+                                                    Suppliers
+                                                </option>
+                                                <option @(Model ? "selected" : "") value="1">
+                                                    Categories
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.Label("Search")
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.Editor("type")
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-8 col-md-offset-4">
+                                            <button type="button" id="search-categories" class="btn btn-primary btn-search"><i class="fa fa-search"></i>@T("Admin.Common.Search")</button>
+                                        </div>
+                                    </div>
+                                </div>*@
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.NopLabelFor(model => model.SearchName)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.NopEditorFor(model => model.SearchName)
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-4" style="text-align: right;">
+                                        <label class="control-label" for="csvBasedOn" title="">@T("Admin.ASI.AddProductBasedOn")</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.NopDropDownList("csvBasedOn", Model.AvailAbleSearchOptionType)
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-8 col-md-offset-4">
+                                        <button type="button" id="search-categories-suppliers" class="btn btn-primary btn-search"><i class="fa fa-search"></i>@T("Admin.Common.Search")</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div style="display:none" id="selected_search_options" class="selected-search-options">
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div id="SelectBox" class="uk-width-1-1"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div id="products-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}
+@{Html.AppendScriptParts("~/Administration/Scripts/jquery.selectit.js"); }
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        //search button
+        $('#search-categories-suppliers').click(function() {
+            //search
+            selectedSupliers=[];
+            $(".selectit-option").remove();
+
+            if($("#csvBasedOn").val()=="1"){
+                $("#products-grid").kendoGrid({
+                    dataSource: {
+                        type: "json",
+                        transport: {
+                            read: {
+                                url: "@Html.Raw(Url.Action("GetAllCategories", "ASI"))",
+                            type: "POST",
+                            dataType: "json",
+                            data: additionalData
+                        }
+                    },
+                    schema: {
+                        data: "Data",
+                        total: "Total",
+                        errors: "Errors"
+                    },
+                    error: function(e) {
+                        display_kendoui_grid_error(e);
+                        // Cancel the changes
+                        this.cancelChanges();
+                    },
+                    pageSize: @(defaultGridPageSize),
+                    serverPaging: true,
+                    serverFiltering: true,
+                    serverSorting: true
+                },
+                    dataBound: function () {
+                        //DisplayNoResultsFound($('#products-grid'));
+                        UpdateSelectedSuppliersStatus();
+                    },
+                pageable: {
+                    refresh: true,
+                    pageSizes: [@(gridPageSizes)],
+                    @Html.Partial("_GridPagerMessages")
+                },
+                editable: {
+                    confirmation: "@T("Admin.Common.DeleteConfirmation")",
+                    mode: "inline"
+                },
+                scrollable: false,
+                columns: [{
+
+                    field: "Id",
+                    title: "Category Id",
+                    width: 375
+                }, {
+                    field: "Name",
+                    title: "@T("Admin.Catalog.Categories.Fields.Name")"
+                },
+                {
+                    title: "Select",
+                    template: "<input id='btn' class='k-button info supplier-select-button-#= Id #' type='button' onClick='addSupplier(\"#= Id #\",\"#= Name #\",this)' name='Select' value='Select' />",
+                    filterable: false,
+                    sortable: false,
+                    width: 100
+                }]
+        });
+            }
+            else{
+                
+         $("#products-grid").kendoGrid({
+             dataSource: {
+                 type: "json",
+                 transport: {
+                     read: {
+
+                         url: "@Url.Action("GetManuFacturer", "ASI")",
+                     type: "POST",
+                     dataType: "json",
+                     contentType: "application/json",
+                     data: additionalData
+                 },
+                 parameterMap: function (data, operation) {
+                     if (operation != "read") {
+                         return data;
+                     } else {
+
+                         return JSON.stringify(data);
+                     }
+                 }
+             },
+             schema: {
+                 data: "Data",
+                 total: "Total",
+                 errors: "Errors",
+                 model: {
+                     id: "Id",
+                     fields: {
+                         Id: { editable: false, type: "number" },
+                         Name: { editable: false, type: "string" },
+
+                     }
+                 }
+             },
+             error: function (e) {
+
+                 this.cancelChanges();
+             },
+             pageSize: 15,
+             serverPaging: true,
+             serverFiltering: true,
+             serverSorting: true
+         },
+                    dataBound: function () {
+                        UpdateSelectedSuppliersStatus();
+                    },
+                editable: {
+                    confirmation: true,
+                    mode: "inline"
+                },
+                //filterable: {
+                //    extra: false,
+                //    operators: {
+                //        string: {
+                //            contains: "Contains",
+                //            doesnotcontain: "Does not contain",
+                //            eq: "Is equal to",
+                //            neq: "Is not equal to",
+                //            startswith: "Starts with",
+                //            endswith: "Ends with"
+                //        }
+                //    }
+                //},
+                //sortable: {
+                //    mode: "multiple",
+                //    allowUnsort: true
+                //},
+                pageable: {
+                    refresh: true,
+                    pageSizes: [10, 15, 20, 50, 100]
+                },
+                scrollable: false,
+                columns: [{
+
+                    field: "Id",
+                    title: "Id",
+                    width: 375
+                }, {
+                    field: "Name",
+                    title: "Name"
+                },
+                {
+                    title: "Select",
+                    template: '<input id="btn" class="k-button info supplier-select-button-#= Id #" type="button" onClick="addSupplier(\'#= Id #\',\'#= Name #\',this)" name="Select" value="Select" />',
+                    filterable: false,
+                    sortable: false,
+                    width: 100
+                }]
+            });
+
+            
+            }
+            
+            return false;
+        });
+
+        $("#@Html.FieldIdFor(model => model.SearchName)").keydown(function(event) {
+            if (event.keyCode == 13) {
+                $("#search-categories-suppliers").click();
+                return false;
+            }
+        });
+    });
+
+    function additionalData() {
+        var data = {
+            SearchName: $('#@Html.FieldIdFor(model => model.SearchName)').val(),
+            csvBasedOn: $('#csvBasedOn').val()
+        };
+            addAntiForgeryToken(data);
+        return data;
+    }
+</script>
+<script>
+    function BindCategories() {
+
+    }
+    $(document).ready(function () {
+        $("#csvBasedOn").change(function (e) {
+            @*var value = $(this).val();
+            window.location = "@Url.Action("ASIProduct", "ASI", new { id = "" })/" + value;*@
+
+        });
+
+        @if (Model.csvBasedOn==0)
+                {
+                <text>
+        $("#products-grid").kendoGrid({
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: {
+
+                        url: "@Url.Action("GetManuFacturer", "ASI")",
+                        type: "POST",
+                        dataType: "json",
+                        contentType: "application/json"
+                        //data: additionalData()
+                    },
+                    parameterMap: function (data, operation) {
+                        if (operation != "read") {
+                            return data;
+                        } else {
+
+                            return JSON.stringify(data);
+                        }
+                    }
+                },
+                schema: {
+                    data: "Data",
+                    total: "Total",
+                    errors: "Errors",
+                    model: {
+                        id: "Id",
+                        fields: {
+                            Id: { editable: false, type: "number" },
+                            Name: { editable: false, type: "string" },
+
+                        }
+                    }
+                },
+                error: function (e) {
+
+                    this.cancelChanges();
+                },
+                pageSize: 15,
+                serverPaging: true,
+                serverFiltering: true,
+                serverSorting: true
+            },
+            dataBound: function () {
+                UpdateSelectedSuppliersStatus();
+            },
+            editable: {
+                confirmation: true,
+                mode: "inline"
+            },
+            //filterable: {
+            //    extra: false,
+            //    operators: {
+            //        string: {
+            //            contains: "Contains",
+            //            doesnotcontain: "Does not contain",
+            //            eq: "Is equal to",
+            //            neq: "Is not equal to",
+            //            startswith: "Starts with",
+            //            endswith: "Ends with"
+            //        }
+            //    }
+            //},
+            //sortable: {
+            //    mode: "multiple",
+            //    allowUnsort: true
+            //},
+            pageable: {
+                refresh: true,
+                pageSizes: [10, 15, 20, 50, 100]
+            },
+            scrollable: false,
+            columns: [{
+
+                field: "Id",
+                title: "Id",
+                width: 375
+            }, {
+                field: "Name",
+                title: "Name"
+            },
+            {
+                title: "Select",
+                template: '<input id="btn" class="k-button info supplier-select-button-#= Id #" type="button" onClick="addSupplier(\'#= Id #\',\'#= Name #\',this)" name="Select" value="Select" />',
+                filterable: false,
+                sortable: false,
+                width: 100
+            }]
+        });
+
+        </text>
+                }
+                else {
+             <text>
+
+        $("#products-grid").kendoGrid({
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: {
+                        url: "@Html.Raw(Url.Action("GetAllCategories", "ASI"))",
+                        type: "POST",
+                        dataType: "json",
+                        data: additionalData()
+                    }
+                },
+                schema: {
+                    data: "Data",
+                    total: "Total",
+                    errors: "Errors"
+                },
+                error: function(e) {
+                    display_kendoui_grid_error(e);
+                    // Cancel the changes
+                    this.cancelChanges();
+                },
+                pageSize: @(defaultGridPageSize),
+                serverPaging: true,
+                serverFiltering: true,
+                serverSorting: true
+            },
+            dataBound: function () {
+                //DisplayNoResultsFound($('#products-grid'));
+                UpdateSelectedSuppliersStatus();
+            },
+            pageable: {
+                refresh: true,
+                pageSizes: [@(gridPageSizes)],
+                @Html.Partial("_GridPagerMessages")
+            },
+            editable: {
+                confirmation: "@T("Admin.Common.DeleteConfirmation")",
+                mode: "inline"
+            },
+            scrollable: false,
+            columns: [{
+
+                field: "Id",
+                title: "Category Id",
+                width: 375
+            }, {
+                field: "Name",
+                title: "@T("Admin.Catalog.Categories.Fields.Name")"
+            },
+            {
+                title: "Select",
+                template: "<input id='btn' class='k-button info supplier-select-button-#= Id #' type='button' onClick='addSupplier(\"#= Id #\",\"#= Name #\",this)' name='Select' value='Select' />",
+                filterable: false,
+                sortable: false,
+                width: 100
+            }]
+        });
+        </text>
+                }
+
+        $('#SelectBox').selectit({
+            fieldname: 'tags',
+            values: []
+        });
+    });
+
+    var selectedSupliers = [];
+    function addSupplier(Id, Name, CurrentElement) {
+        $(CurrentElement).css("display", "none");
+        var supplier = {
+            SupplierId: Id,
+            Name: Name,
+        };
+        selectedSupliers.push(supplier);
+        $('#SelectBox').selectit('add', supplier);
+    }
+    Window.HandelTagRemove = function (supplier) {
+        $(".supplier-select-button-" + supplier.SupplierId).show();
+
+        for(var i= 0; i < selectedSupliers.length;i++){
+            if(supplier.SupplierId == selectedSupliers[i].SupplierId){
+                selectedSupliers.splice(i, 1);
+            }
+        }
+    }
+    function UpdateSelectedSuppliersStatus() {
+        $("#SelectBox .selectit-option").each(function (index) {
+            var Id = $(this).attr("Id");
+            $(".supplier-select-button-" + Id).hide();
+        });
+    }
+    var type=@(Model.csvBasedOn==1 ? "1" : "0");
+    function GenerateSearchOptions() {
+
+        $(".selected-search-options").html("");
+        var container = document.getElementById("selected_search_options");
+        for (var i = 0; i < selectedSupliers.length ; i++) {
+            var input = document.createElement("input");
+            input.type = "text";
+            input.name = "options[" + i + "].SearchValue";
+            input.value =  selectedSupliers[i].SupplierId;
+            container.appendChild(input);
+            input = document.createElement("input");
+            input.type = "text";
+            input.name = "options[" + i + "].SearchOptionType";
+            //input.value =  type;
+            input.value =  $("#csvBasedOn").val();
+            container.appendChild(input);
+        }
+        $("#AddProductForm").submit();
+    }
+    function additionalData1() {
+        var data = {};
+        addAntiForgeryToken(data);
+        return data;
+    }
+</script>

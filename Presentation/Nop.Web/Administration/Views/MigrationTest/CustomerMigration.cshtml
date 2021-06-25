@@ -1,0 +1,194 @@
+﻿@using Nop.Admin.Controllers;
+@model IEnumerable<CustomerData>
+@{
+    ViewBag.Title = "CustomerMigration";
+    var allCustomer = new List<VolusionCustomers>();
+    if (Model.Count() > 0)
+    {
+        allCustomer = Model.FirstOrDefault().AllcustData;
+    }
+}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+
+<style>
+    .dangertd {
+        background-color: #F2DEDE;
+    }
+
+    .table tbody tr:hover td,
+    .table tbody tr:hover th {
+        background-color: transparent;
+    }
+</style>
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        CUSTOMER MIGRATION REPORT
+    </h1>
+
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    @Html.Label("Total volusion customer")
+                                </div>
+                                <div class="col-md-8">
+                                    @Model.FirstOrDefault().VolusionTotal
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    @Html.Label("Total Nop customer")
+                                </div>
+                                <div class="col-md-8">
+                                    @Model.FirstOrDefault().TotalcustomerInnop
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    @Html.Label("Total Not match customers")
+                                </div>
+                                <div class="col-md-8">
+                                    @Model.FirstOrDefault().NotFountInNopTotal
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="table-responsive" style="padding: 0px 15px;">
+                        <table class="table table-bordered table-responsive" id="maintable">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Framework</th>
+                                    <th>Id</th>
+                                    <th>Email</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Company</th>
+                                    <th>Phone</th>
+                                    <th>zip/Postal code</th>
+                                    <th>Fax</th>
+                                    <th>Address1</th>
+                                    <th>Address2</th>
+                                    <th>City</th>
+                                    <th>State</th>
+                                    <th>Country</th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{int count = 0;}
+                                @foreach (var i in Model)
+                                {
+                                    count = count + 1;
+                                    var customerData = allCustomer.Where(x => x.Customerid == i.filtercustomerData.Customerid).FirstOrDefault();
+
+
+                                    var clsId = i.filtercustomerData.Customerid.ToLower().Trim() == (customerData == null ? "" : customerData.Customerid.ToLower().Trim()) ? "" : "dangertd";
+                                    var clsEmailaddress = i.filtercustomerData.Emailaddress.ToLower().Trim() == (customerData == null ? "" : customerData.Emailaddress.ToLower().Trim()) ? "" : "dangertd";
+                                    var clsFirstname = i.filtercustomerData.Firstname.ToLower().Trim() == (customerData == null ? "" : customerData.Firstname.ToLower().Trim()) ? "" : "dangertd";
+                                    var clsLastname = i.filtercustomerData.Lastname.ToLower().Trim() == (customerData == null ? "" : customerData.Lastname.ToLower().Trim()) ? "" : "dangertd";
+                                    var clsCompany = i.filtercustomerData.Companyname.ToLower().Trim() == (customerData == null ? "" : customerData.Companyname.ToLower().Trim()) ? "" : "dangertd";
+                                    var clsPhone = i.filtercustomerData.Phonenumber.ToLower().Trim() == (customerData == null ? "" : customerData.Phonenumber.ToLower().Trim()) ? "" : "dangertd";
+                                    var clsZip = i.filtercustomerData.Postalcode.ToLower().Trim() == (customerData == null ? "" : customerData.Postalcode.ToLower().Trim()) ? "" : "dangertd";
+                                    var clsFax = i.filtercustomerData.Faxnumber.ToLower().Trim() == (customerData == null ? "" : customerData.Faxnumber.ToLower().Trim()) ? "" : "dangertd";
+                                    var clsAddress1 = i.filtercustomerData.Billingaddress1.ToLower().Trim() == (customerData == null ? "" : customerData.Billingaddress1.ToLower().Trim()) ? "" : "dangertd";
+                                    var clsAddress2 = i.filtercustomerData.Billingaddress2.ToLower().Trim() == (customerData == null ? "" : customerData.Billingaddress2.ToLower().Trim()) ? "" : "dangertd";
+                                    var clsCity = i.filtercustomerData.City.ToLower().Trim() == (customerData == null ? "" : customerData.City.ToLower().Trim()) ? "" : "dangertd";
+                                    var clsState = i.filtercustomerData.State.ToLower().Trim() ==
+                                        (i.filtercustomerData.State.Length>3?(customerData == null ? "" : customerData.stateAbbr.ToLower().Trim()): (customerData == null ? "" : customerData.State.ToLower().Trim())) ? "" : "dangertd";
+                                    var clsCountry = i.filtercustomerData.Country.ToLower().Trim() == (customerData == null ? "" : customerData.Country.ToLower().Trim()) ? "" : "dangertd";
+                                    var strId = customerData == null ? "" : customerData.Customerid;
+                                    var strLnk = "";
+                                    if (strId != "")
+                                    {
+                                        strLnk = Url.Action("Edit", "Customer", new { id = @strId });
+                                    }
+
+                                    <tr style="background:white;">
+                                        <td rowspan="2">@count</td>
+                                        <td><strong>Nop</strong></td>
+                                        <td class="@clsId"><a target="_blank" href="@strLnk">@strId</a></td>
+                                        <td class="@clsEmailaddress">@(customerData == null ? "" : customerData.Emailaddress) </td>
+                                        <td class="@clsFirstname">@(customerData == null ? "" : customerData.Firstname)</td>
+                                        <td class="@clsLastname">@(customerData == null ? "" : customerData.Lastname)</td>
+                                        <td class="@clsCompany">@(customerData == null ? "" : customerData.Companyname)</td>
+                                        <td class="@clsPhone">@(customerData == null ? "" : customerData.Phonenumber)</td>
+                                        <td class="@clsZip">@(customerData == null ? "" : customerData.Postalcode)</td>
+                                        <td class="@clsFax">@(customerData == null ? "" : customerData.Faxnumber)</td>
+                                        <td class="@clsAddress1">@(customerData == null ? "" : customerData.Billingaddress1)</td>
+                                        <td class="@clsAddress2">@(customerData == null ? "" : customerData.Billingaddress2)</td>
+                                        <td class="@clsCity">@(customerData == null ? "" : customerData.City) </td>
+                                        <td class="@clsState">@(customerData == null ? "" : customerData.State)</td>
+                                        <td class="@clsCountry">@(customerData == null ? "" : customerData.Country)</td>
+                                    </tr>
+                                    <tr style="background:white;">
+                                        <td><strong>Volusion</strong></td>
+                                        <td class="@clsId">@i.filtercustomerData.Customerid</td>
+                                        <td class="@clsEmailaddress">@(i.filtercustomerData.Emailaddress) </td>
+                                        <td class="@clsFirstname">@(i.filtercustomerData.Firstname)</td>
+                                        <td class="@clsLastname">@(i.filtercustomerData.Lastname)</td>
+                                        <td class="@clsCompany">@(i.filtercustomerData.Companyname)</td>
+                                        <td class="@clsPhone">@(i.filtercustomerData.Phonenumber)</td>
+                                        <td class="@clsZip">@(i.filtercustomerData.Postalcode)</td>
+                                        <td class="@clsFax">@(i.filtercustomerData.Faxnumber)</td>
+                                        <td class="@clsAddress1">@(i.filtercustomerData.Billingaddress1)</td>
+                                        <td class="@clsAddress2">@(i.filtercustomerData.Billingaddress2)</td>
+                                        <td class="@clsCity">@(i.filtercustomerData.City) </td>
+                                        <td class="@clsState">@(i.filtercustomerData.State)</td>
+                                        <td class="@clsCountry">@(i.filtercustomerData.Country)</td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                        </table>
+                        <div id="bottom_anchor"></div>
+                    </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function moveScroll() {
+        var scroll = $(window).scrollTop();
+        var anchor_top = $("#maintable").offset().top;
+        var anchor_bottom = $("#bottom_anchor").offset().top;
+        if (scroll > anchor_top && scroll < anchor_bottom) {
+            clone_table = $("#clone");
+            if (clone_table.length == 0) {
+                clone_table = $("#maintable").clone();
+                clone_table.attr('id', 'clone');
+                clone_table.css({
+                    position: 'fixed',
+                    'pointer-events': 'none',
+                    top: 0
+                });
+                clone_table.width($("#maintable").width());
+                $("#table-container").append(clone_table);
+                $("#clone").css({ visibility: 'hidden' });
+                $("#clone thead").css({ visibility: 'visible' });
+            }
+        } else {
+            $("#clone").remove();
+        }
+    }
+    $(window).scroll(moveScroll);
+</script>

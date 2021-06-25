@@ -1,0 +1,8 @@
+﻿Group: Sigma Solve
+FriendlyName: Redirect
+SystemName: Redirects
+Version: 1.0
+SupportedVersions: 3.90
+Author: SigmaSolve team
+DisplayOrder: 1
+FileName: Nop.SigmaSolve.Plugin.Redirects.dll

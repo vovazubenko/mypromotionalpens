@@ -1,0 +1,10 @@
+﻿@model FoxNetSoft.Plugin.Misc.SpeedFilters.Models.SelectedSpeedFilter
+@{
+    Layout = null;
+}
+@using Nop.Web.Models.Catalog
+@using FoxNetSoft.Plugin.Misc.SpeedFilters.Models
+@using Nop.Web.Extensions
+<div class="pager">
+  @Html.Pager(Model.pagerModel)
+</div>

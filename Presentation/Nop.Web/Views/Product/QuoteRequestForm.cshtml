@@ -1,0 +1,382 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_ColumnsTwo.cshtml";
+    //ViewBag.Title = "Quote Request Form";
+    Html.AddTitleParts(T("PageTitle.QuoteRequestForm").Text);
+}
+
+@model ProductFormModel
+@using Nop.Web.Models.Catalog;
+<div class="proofrequstformpage">
+    <h2 class="page-title">Quote Request Form</h2>
+    <h3>Please note that this form will not save what you have entered if you leave the page.</h3>
+    @using (Html.BeginForm("QuoteRequestFormSubmit", "Product", FormMethod.Post, new { id = "category-form" }))
+    {
+    <div class="fieldset proofrequstform">
+        <div class="inputs">
+            <div class="form-group">
+                <div class="col-md-3">
+                    @Html.NopLabelFor(model => model.FullName)
+                </div>
+                <div class="col-md-9">
+                    @Html.EditorFor(model => model.FullName)
+                    @Html.ValidationMessageFor(model => model.FullName)
+                </div>
+            </div>
+
+        </div>
+        <div class="inputs">
+            <div class="form-group">
+                <div class="col-md-3">
+                    @Html.NopLabelFor(model => model.Company)
+                </div>
+                <div class="col-md-9">
+                    @Html.EditorFor(model => model.Company)
+                    @Html.ValidationMessageFor(model => model.Company)
+                </div>
+            </div>
+
+        </div>
+
+        <div class="inputs">
+            <div class="form-group">
+                <div class="col-md-3">
+                    @Html.NopLabelFor(model => model.Address1)
+                </div>
+                <div class="col-md-9">
+                    @Html.EditorFor(model => model.Address1)
+                    @Html.ValidationMessageFor(model => model.Address1)
+                </div>
+            </div>
+
+        </div>
+
+        <div class="inputs">
+            <div class="form-group">
+                <div class="col-md-3">
+                    @Html.NopLabelFor(model => model.Address2)
+                </div>
+                <div class="col-md-9">
+                    @Html.EditorFor(model => model.Address2)
+                    @Html.ValidationMessageFor(model => model.Address2)
+                </div>
+            </div>
+
+        </div>
+
+        <div class="inputs">
+            <div class="form-group">
+                <div class="col-md-3">
+                    @Html.NopLabelFor(model => model.City)
+                </div>
+                <div class="col-md-9">
+                    @Html.EditorFor(model => model.City)
+                    @Html.ValidationMessageFor(model => model.City)
+                </div>
+            </div>
+
+        </div>
+
+        <div class="inputs">
+            <div class="form-group">
+                <div class="col-md-3">
+                    @Html.NopLabelFor(model => model.State)
+                </div>
+                <div class="col-md-9">
+                    @Html.EditorFor(model => model.State)
+                    @Html.ValidationMessageFor(model => model.State)
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="inputs">
+            <div class="form-group">
+                <div class="col-md-3">
+                    @Html.NopLabelFor(model => model.Zip)
+                </div>
+                <div class="col-md-9">
+                    @Html.EditorFor(model => model.Zip)
+                    @Html.ValidationMessageFor(model => model.Zip)
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="inputs">
+            <div class="form-group">
+                <div class="col-md-3">
+                    @Html.NopLabelFor(model => model.EmailAddress)
+                </div>
+                <div class="col-md-9">
+                    @Html.EditorFor(model => model.EmailAddress)
+                    @Html.ValidationMessageFor(model => model.EmailAddress)
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="inputs">
+            <div class="form-group">
+                <div class="col-md-3">
+                    @Html.NopLabelFor(model => model.PhoneNumber)
+                </div>
+                <div class="col-md-9">
+                    @Html.EditorFor(model => model.PhoneNumber)
+                    @Html.ValidationMessageFor(model => model.PhoneNumber)
+                </div>
+            </div>
+
+        </div>
+
+
+        <h3>Enter the Item numbers for the products you would like quote for:</h3>
+
+        <div class="columinputs4">
+            <div class="inputs">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.ProductCode)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.ProductCode)
+                        @Html.ValidationMessageFor(model => model.ProductCode)
+                    </div>
+                </div>
+
+            </div>
+            <div class="inputs">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.ProductColor)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.ProductColor)
+                        @Html.ValidationMessageFor(model => model.ProductColor)
+                    </div>
+                </div>
+
+            </div>
+            <div class="inputs">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.ProductImprintColor)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.ProductImprintColor)
+                        @Html.ValidationMessageFor(model => model.ProductImprintColor)
+                    </div>
+                </div>
+
+            </div>
+            <div class="inputs">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.ProductQty)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.ProductQty)
+                        @Html.ValidationMessageFor(model => model.ProductQty)
+                    </div>
+                </div>
+
+            </div>
+        </div>
+       
+        <div class="columinputs4">
+            <div class="inputs">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.ProductCode2)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.ProductCode2)
+                        @Html.ValidationMessageFor(model => model.ProductCode2)
+                    </div>
+                </div>
+
+            </div>
+            <div class="inputs">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.ProductColor2)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.ProductColor2)
+                        @Html.ValidationMessageFor(model => model.ProductColor2)
+                    </div>
+                </div>
+
+            </div>
+            <div class="inputs">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.ProductImprintColor2)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.ProductImprintColor2)
+                        @Html.ValidationMessageFor(model => model.ProductImprintColor2)
+                    </div>
+                </div>
+
+            </div>
+            <div class="inputs">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.ProductQty2)
+                    </div>
+                    <div class="col-md-9 TextAreaForall">
+                        @Html.EditorFor(model => model.ProductQty2)
+                        @Html.ValidationMessageFor(model => model.ProductQty2)
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <div class="columinputs4">
+            <div class="inputs">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.ProductCode3)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.ProductCode3)
+                        @Html.ValidationMessageFor(model => model.ProductCode3)
+                    </div>
+                </div>
+
+            </div>
+            <div class="inputs">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.ProductColor3)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.ProductColor3)
+                        @Html.ValidationMessageFor(model => model.ProductColor3)
+                    </div>
+                </div>
+
+            </div>
+            <div class="inputs">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.ProductImprintColor3)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.ProductImprintColor3)
+                        @Html.ValidationMessageFor(model => model.ProductImprintColor3)
+                    </div>
+                </div>
+
+            </div>
+            <div class="inputs">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.ProductQty3)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.ProductQty3)
+                        @Html.ValidationMessageFor(model => model.ProductQty3)
+                    </div>
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+        <div class="columinputs4">
+            <div class="inputs">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.ProductCode4)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.ProductCode4)
+                        @Html.ValidationMessageFor(model => model.ProductCode4)
+                    </div>
+                </div>
+
+            </div>
+            <div class="inputs">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.ProductColor4)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.ProductColor4)
+                        @Html.ValidationMessageFor(model => model.ProductColor4)
+                    </div>
+                </div>
+
+            </div>
+            <div class="inputs">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.ProductImprintColor4)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.ProductImprintColor4)
+                        @Html.ValidationMessageFor(model => model.ProductImprintColor4)
+                    </div>
+                </div>
+
+            </div>
+            <div class="inputs">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.ProductQty4)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.ProductQty4)
+                        @Html.ValidationMessageFor(model => model.ProductQty4)
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="inputs inputsTextArea">
+            <div class="form-group">
+                <div class="col-md-3" style="white-space: normal;">
+                    @Html.NopLabelFor(model => model.ProductInfo)
+                </div>
+                <div class="col-md-9">
+                    @Html.TextAreaFor(model => model.ProductInfo)
+
+                    @Html.ValidationMessageFor(model => model.ProductInfo)
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+            <div class="buttons">
+                <input name="submitfrm" class="button-1" value="Submit" type="submit">
+            </div>
+
+
+
+        </div>
+
+    }
+    </div>
+
+

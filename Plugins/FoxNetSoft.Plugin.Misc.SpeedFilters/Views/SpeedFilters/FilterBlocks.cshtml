@@ -1,0 +1,518 @@
+﻿@using Nop.Services.Seo
+@{
+    Layout = null;
+    if (Model.speedFiltersSettings.EnablePriceRangeFilter && Model.PriceMin < Model.PriceMax)
+    {
+        //Html.AddScriptParts(Model.PluginPath+"Scripts/jquery-ui.min.js");
+        //Html.AddCssFileParts(Model.PluginPath + "Styles/jquery-ui.css");
+
+        Html.AddScriptParts("~/Scripts/jquery-ui-1.10.3.custom.min.js");
+        Html.AppendCssFileParts("~/Content/jquery-ui-themes/smoothness/jquery-ui-1.10.3.custom.min.css");
+    }
+    //Html.AddScriptParts(Model.PluginPath + "Scripts/jDropDown.jquery.0.1.min.js");
+    Html.AddScriptParts(Model.PluginPath + "Scripts/jDropDown.jquery.0.1.js");
+    Html.AppendScriptParts(Model.PluginPath + "Scripts/ajaxSmartFilters.js");
+
+    Html.AddCssFileParts(Model.PluginPath + "Styles/jdropdown.css");
+    Html.AddCssFileParts(Model.PluginPath + "Styles/styles.css");
+
+
+    //title
+    //Html.AddTitleParts(Model.seoModel.MetaTitle);
+    //meta
+    //Html.AddMetaDescriptionParts(Model.seoModel.MetaDescription);
+    //Html.AddMetaKeywordParts(Model.seoModel.MetaKeyWord);
+
+    string speedfiltercontoller = "";
+    int datapageid = 0;
+    
+    if (Model.categoryId > 0)
+    {
+        speedfiltercontoller = Url.Action("FNSCategory", "SpeedFilters");
+        datapageid = Model.categoryId;
+    }
+    if (Model.manufacturerId > 0)
+    {
+        speedfiltercontoller = Url.Action("FNSManufacturer", "SpeedFilters");
+        datapageid = Model.manufacturerId;
+    }
+    if (Model.vendorId > 0)
+    {
+        speedfiltercontoller = Url.Action("FNSVendor", "SpeedFilters");
+        datapageid = Model.vendorId;
+    }
+    if (Model.isSearchPage)
+    {
+        speedfiltercontoller = Url.Action("FNSSearch", "SpeedFilters");
+        datapageid = 0;
+    }
+    bool enableSpecificationsFilter = false;
+    if (Model.speedFiltersSettings.EnableSpecificationsFilter && Model.specificationAttributes.Count > 0)
+    {
+        enableSpecificationsFilter = true;
+    }
+    bool enableAttributesFilter = false;
+    if (Model.speedFiltersSettings.EnableAttributesFilter && Model.productAttributes.Count > 0)
+    {
+        enableAttributesFilter = true;
+    }
+    bool enablePriceRangeFilter = false;
+    if (Model.speedFiltersSettings.EnablePriceRangeFilter && Model.PriceMin < Model.PriceMax)
+    {
+        enablePriceRangeFilter = true;
+    }
+    bool enableManufacturersFilter = false;
+    if (Model.speedFiltersSettings.EnableManufacturersFilter && Model.sfManufacturers.Count > 1)
+    {
+        enableManufacturersFilter = true;
+    }
+    bool enableVendorsFilter = false;
+    if (Model.speedFiltersSettings.EnableVendorsFilter && Model.sfVendors.Count > 1)
+    {
+        enableVendorsFilter = true;
+    }
+}
+@model FoxNetSoft.Plugin.Misc.SpeedFilters.Domain.SpeedFilter
+@using FoxNetSoft.Plugin.Misc.SpeedFilters.Domain
+@using Nop.Web.Framework
+@using Nop.Web.Framework.UI
+<div class="fns-speedfilters" data-selectorproductpagesizedropdown="@Model.speedFiltersSettings.SelectorForProductPageSize" data-selectorproductslistpanel="@Model.speedFiltersSettings.SelectorForListPanel"
+     data-selectorproductsgridpanel="@Model.speedFiltersSettings.SelectorForGridPanel" data-selectorsortoptionsdropdown="@Model.speedFiltersSettings.SelectorForSortOptions"
+     data-selectorpagerpanel="@Model.speedFiltersSettings.SelectorForPager" data-selectorviewoptionsdropdown="@Model.speedFiltersSettings.SelectorForViewOptions"
+     data-selectorproductselectors="@Model.speedFiltersSettings.ProductSelectorsSelector"
+     data-speedfiltercontoller="@speedfiltercontoller" data-datapageid="@datapageid">
+    @*<div class="title-block">
+            <p class="title">@T("FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.FilterTitle")</p>
+            <a class="clear-filter-options-all" style="display: none;">@T("FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.ClearAll")</a>
+        </div>*@
+    <div class="close-filters1"><span>close</span></div>
+    <div class="filtersPanel1">
+    </div>
+    <div class="all-filters-block">
+        @if (Model.SubCategories.Any())
+        {
+
+        <div class="block filter-block subcategory-filter-block">
+            <div class="title">
+                <div class="speedfltrToggleControl" style="color:#0072bc">Sub Categories</div>
+                <a class="speedfltrclearfilter" style="display: none;"></a>
+            </div>
+            <div class="filter-data-block">
+                <div class="subcategory-info-block" id="AllSubCatList" style="display:none">
+                    <ul>
+                        @foreach (var subcategories in Model.SubCategories.OrderBy(x => x.Name))
+                        {
+                            <li>
+                                <a class="" style="color:#0072bc;padding-left: 15px;font-size: 15px;" href="@Url.RouteUrl("Category", new {SeName = subcategories.GetSeName()})" filter-block="subcategory" filter-option-id="@subcategories.Id">@subcategories.Name</a>
+                            </li>
+                        }
+                    </ul>
+
+                </div>
+                <div class="subcategory-info-block"  id="SubCatList">
+                    <ul>
+                        @foreach (var subcategories in Model.SubCategories.OrderBy(x => x.Name).Take(6))
+                        {
+                            <li>
+                                <a class="" style="color:#0072bc;padding-left: 15px;font-size: 15px;" href="@Url.RouteUrl("Category", new {SeName = subcategories.GetSeName()})" filter-block="subcategory" filter-option-id="@subcategories.Id">@subcategories.Name</a>
+                            </li>
+                        }
+                    </ul>
+
+                </div>
+
+
+            </div>
+            
+            @if (Model.SubCategories.Count > 6 )
+            {<div class="filter-data-block" id="ShowMore" >
+                 <div class="subcategory-info-block">
+                     <span style="cursor:pointer" class="load-more" onclick="GetAllSubcatList();">Show more</span>
+                     @*<a href="#" onclick="GetAllSubcatList();">show more</a>*@
+                 </div></div><br>
+            }
+        </div>
+
+        }
+        @if (enablePriceRangeFilter)
+        {
+            <div class="block filter-block price-range-filter-block">
+                <div class="title">
+                    <div class="speedfltrToggleControl @if (Model.speedFiltersSettings.DefaultClosePriceRange)
+                                            {<text> closed</text>}">@T("FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.PriceRange.Title")</div>
+                                            <a id="clearpricerangefilter" class="speedfltrclearfilter" style="display: none;"></a>
+                                        </div>
+                                        <div class="filter-data-block" style="@if (Model.speedFiltersSettings.DefaultClosePriceRange)
+                                                      {<text>display: none;</text>}">
+                                            <div class="price-range-info-block">
+                                                <div class="pricerangeinfopricemin">
+                                                    @Model.PriceMinStr
+                                                </div>
+                                                <div class="pricerangeinfopricemax">
+                                                    @Model.PriceMaxStr
+                                                </div>
+                                            </div>
+                                            <div id="priceslider-range" class="price-slider-range"></div>
+                                            <div class="price-range-selected-block">
+                                                <span id="fns-selected-pricemin" class="price-range-selected-pricemin">@Model.PriceMin</span>
+                                                <span id="fns-selected-pricemax" class="price-range-selected-pricemax">@Model.PriceMax</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+        @if (enableSpecificationsFilter)
+        {
+            foreach (var specificationAttribute in Model.specificationAttributes)
+            {
+                <div class="block filter-block specification-filter-block">
+                    <div class="title">
+                        <div class="speedfltrToggleControl @if (Model.speedFiltersSettings.DefaultCloseSpecifications)
+                                            {<text>closed</text>}">@specificationAttribute.Name</div>
+                                            <a class="speedfltrclearfilter" style="display: none;"></a>
+                                        </div>
+                                        <div class="filter-data-block @if (!Model.speedFiltersSettings.FiltersType.Equals("checkbox", StringComparison.CurrentCultureIgnoreCase))
+                                              {<text>filter-dropdown</text>}" style="@if (Model.speedFiltersSettings.DefaultCloseSpecifications){<text>display: none;</text>}">
+                                            <div class="specification-info-block">
+                                                @if (Model.speedFiltersSettings.FiltersType.Equals("checkbox", StringComparison.CurrentCultureIgnoreCase))
+                                                {
+                                                    <ul>
+                                                        @foreach (var specificationOption in Model.specificationAttributeOptions.Where(s => s.SpecificationAttributeId == specificationAttribute.Id).OrderBy(o => o.DisplayOrder))
+                                                        {
+                                                            <li>
+                                                                <a class="filter-item-unselected" filter-block="specification" filter-option-groupid="@specificationOption.SpecificationAttributeId" filter-option-id="@specificationOption.Id" filter-option-name="@specificationOption.Name">@specificationOption.Name</a>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                }
+                                                else
+                                                {
+                                                    <div id="specification-dropdown" class="fnsDropDown jDropDown">
+                                                        <div><p></p></div>
+                                                        <ul>
+                                                            <li><span>@T("FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.All")</span></li>
+                                                            @foreach (var specificationOption in Model.specificationAttributeOptions.Where(s => s.SpecificationAttributeId == specificationAttribute.Id).OrderBy(o => o.DisplayOrder))
+                                                            {
+                                                                <li filter-block="specification" filter-option-groupid="@specificationOption.SpecificationAttributeId" filter-option-id="@specificationOption.Id" filter-option-name="@specificationOption.Name">
+                                                                    <span>@specificationOption.Name</span>
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+        @if (enableAttributesFilter)
+        {
+            foreach (var productAttribute in Model.productAttributes)
+            {
+                <div class="block filter-block attribute-filter-block">
+                    <div class="title">
+                        <div class="speedfltrToggleControl @if (Model.speedFiltersSettings.DefaultCloseAttributes)
+                                            {<text>closed</text>}">@productAttribute.Name</div>
+                                            <a class="speedfltrclearfilter" style="display: none;"></a>
+                                        </div>
+                                        <div class="filter-data-block @if (!Model.speedFiltersSettings.FiltersType.Equals("checkbox", StringComparison.CurrentCultureIgnoreCase))
+                                              {<text>filter-dropdown</text>}" style="@if (Model.speedFiltersSettings.DefaultCloseAttributes)
+                                                                                                                                                                                               {<text>display: none;</text>}">
+                                            <div class="attribute-info-block">
+                                                @if (Model.speedFiltersSettings.FiltersType.Equals("checkbox", StringComparison.CurrentCultureIgnoreCase))
+                                                {
+                                                    <ul>
+                                                        @foreach (var productOption in Model.productAttributesOptions.Where(s => s.ProductAttributeId == productAttribute.Id).OrderBy(o => o.Name))
+                                                        {
+                                                            <li>
+                                                                <a class="filter-item-unselected" filter-block="attribute" filter-option-groupid="@productOption.ProductAttributeId" filter-option-id="@productOption.Id" filter-option-name="@productOption.Name">@productOption.Name</a>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                }
+                                                else
+                                                {
+                                                    <div id="attribute-dropdown" class="fnsDropDown jDropDown">
+                                                        <div><p></p></div>
+                                                        <ul>
+                                                            <li><span>@T("FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.All")</span></li>
+                                                            @foreach (var productOption in Model.productAttributesOptions.Where(s => s.ProductAttributeId == productAttribute.Id).OrderBy(o => o.Name))
+                                                            {
+                                                                <li filter-block="attribute" filter-option-groupid="@productOption.ProductAttributeId" filter-option-id="@productOption.Id" filter-option-name="@productOption.Name">
+                                                                    <span>@productOption.Name</span>
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+        @if (enableManufacturersFilter)
+        {
+            <div class="block filter-block manufacturer-filter-block">
+                <div class="title">
+                    <div class="speedfltrToggleControl @if (Model.speedFiltersSettings.DefaultCloseManufacturers)
+                                            {<text>closed</text>}">@T("FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.Manufacturers.Title")</div>
+                                            <a class="speedfltrclearfilter" style="display: none;"></a>
+                                        </div>
+                                        <div class="filter-data-block @if (!Model.speedFiltersSettings.FiltersType.Equals("checkbox", StringComparison.CurrentCultureIgnoreCase))
+                                              {<text>filter-dropdown</text>}" style="@if (Model.speedFiltersSettings.DefaultCloseManufacturers)
+                                           {<text>display: none;</text>}">
+                                            <div class="manufacturer-info-block">
+                                                @if (Model.speedFiltersSettings.FiltersType.Equals("checkbox", StringComparison.CurrentCultureIgnoreCase))
+                                                {
+                                                    <ul>
+                                                        @foreach (var sfManufacturer in Model.sfManufacturers)
+                                                        {
+                                                            <li>
+                                                                <a class="filter-item-unselected" filter-block="manufacturer" filter-option-id="@sfManufacturer.Id">@sfManufacturer.Name</a>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                }
+                                                else
+                                                {
+                                                    <div id="manufacturer-dropdown" class="fnsDropDown jDropDown">
+                                                        <div><p></p></div>
+                                                        <ul>
+                                                            <li><span>@T("FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.All")</span></li>
+                                                            @foreach (var sfManufacturer in Model.sfManufacturers)
+                                                            {
+                                                                <li filter-block="manufacturer" filter-option-id="@sfManufacturer.Id" filter-option-name="@sfManufacturer.Name">
+                                                                    <span>@sfManufacturer.Name</span>
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+        @if (enableVendorsFilter)
+        {
+            <div class="block filter-block vendor-filter-block">
+                <div class="title">
+                    <div class="speedfltrToggleControl @if (Model.speedFiltersSettings.DefaultCloseVendors)
+                                            {<text>closed</text>}">@T("FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.Vendors.Title")</div>
+                                            <a class="speedfltrclearfilter" style="display: none;"></a>
+                                        </div>
+                                        <div class="filter-data-block @if (!Model.speedFiltersSettings.FiltersType.Equals("checkbox", StringComparison.CurrentCultureIgnoreCase))
+                                              {<text>filter-dropdown</text>}" style="@if (Model.speedFiltersSettings.DefaultCloseVendors)
+                                                                                                                                                                                               {<text>display: none;</text>}">
+                                            <div class="vendor-info-block">
+                                                @if (Model.speedFiltersSettings.FiltersType.Equals("checkbox", StringComparison.CurrentCultureIgnoreCase))
+                                                {
+                                                    <ul>
+                                                        @foreach (var sfVendor in Model.sfVendors)
+                                                        {
+                                                            <li>
+                                                                <a class="filter-item-unselected" filter-block="vendor" filter-option-id="@sfVendor.Id">@sfVendor.Name</a>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                }
+                                                else
+                                                {
+                                                    <div id="vendor-dropdown" class="fnsDropDown jDropDown">
+                                                        <div><p></p></div>
+                                                        <ul>
+                                                            <li><span>@T("FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.All")</span></li>
+                                                            @foreach (var sfVendor in Model.sfVendors)
+                                                            {
+                                                                <li filter-block="vendor" filter-option-id="@sfVendor.Id" filter-option-name="@sfVendor.Name">
+                                                                    <span>@sfVendor.Name</span>
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+    </div>
+    @*ajax loading window*@
+    <div class="fns-speedfilters-ajax-loading-block" style="display: none">
+        <div class="loading-image">
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    AjaxSmartFilter.init(@Model.PriceMin, @Model.PriceMax, @Model.SkipFirstLoadingForFilters.ToString().ToLower(), "orderby=@Model.DefaultSortOption", "viewmode=@Model.DefaultViewMode", "pagesize=@Model.DefaultPageSize", @Model.speedFiltersSettings.ScrollAfterFiltration.ToString().ToLower(), @Model.speedFiltersSettings.AllowSelectFiltersInOneBlock.ToString().ToLower(),'@Model.generatedUrl');
+    AjaxSmartFilter.enableFilters(@enableSpecificationsFilter.ToString().ToLower(),@enableAttributesFilter.ToString().ToLower(),@enablePriceRangeFilter.ToString().ToLower(),@enableManufacturersFilter.ToString().ToLower(),@enableVendorsFilter.ToString().ToLower())
+    $(function () {
+        @{
+            //pricerange
+            if (enablePriceRangeFilter)
+            {
+               <text>
+        $("#priceslider-range").slider({
+            range: true,
+            min: @Model.PriceMin,
+            max: @Model.PriceMax,
+            values: [@Model.PriceMin, @Model.PriceMax],
+            slide: function (event, ui) {
+                $("#fns-selected-pricemin").text(ui.values[0]);
+                $("#fns-selected-pricemax").text(ui.values[1]);
+            },
+            change: function( event, ui ) {
+                //alert("Change  value1="+ui.values[0]+" ,value2="+ui.values[1]);
+            },
+            stop: function( event, ui ) {
+                //alert("Stop value1="+ui.values[0]+" ,value2="+ui.values[1]);
+                AjaxSmartFilter.lastselectedobject=null;
+                AjaxSmartFilter.pagenumber = 1;
+                set_smart_filter();
+            }
+        });
+
+
+        $("#clearpricerangefilter").on("click", function () {
+            var pricerangeslider = $("#priceslider-range");
+            if (pricerangeslider != undefined)
+            {
+                pricerangeslider.slider("values", 0, AjaxSmartFilter.minPriceValue);
+                pricerangeslider.slider("values", 1, AjaxSmartFilter.maxPriceValue);
+                $("#fns-selected-pricemin").text(AjaxSmartFilter.minPriceValue);
+                $("#fns-selected-pricemax").text(AjaxSmartFilter.maxPriceValue);
+            }
+            //$slider.slider("refresh");
+            $(this).hide();
+        });
+        </text>
+            }
+        }
+        @{
+            if (!Model.speedFiltersSettings.FiltersType.Equals("checkbox", StringComparison.CurrentCultureIgnoreCase))
+            {
+                <text>
+        $(".fns-speedfilters .fnsDropDown").click(function (){AjaxSmartFilter.lastselectedobject=$(this);});
+        $(".fns-speedfilters .fnsDropDown").jDropDown({selected: 0, callback: sf_jdropdown_callback});
+        </text>
+            }
+        }
+
+        //speedfltrToggleControl
+        $(".fns-speedfilters .speedfltrToggleControl").on("click", function ()
+        {
+            var mq = window.matchMedia( "(max-width: 1000px)" );
+            if(mq.matches){
+                if ($(this).hasClass("closed"))
+                {
+                    $(this).removeClass("closed");
+                    $(this).parent().siblings(".filter-data-block").slideUp("slow", function () { $(this).css("overflow", "") });
+                }
+                else
+                {
+                    $(this).addClass("closed");
+                    $(this).parent().siblings(".filter-data-block").slideDown("slow", function () { $(this).css("overflow", "") });
+                }
+            }
+            else{
+                if ($(this).hasClass("closed"))
+                {
+                    $(this).removeClass("closed");
+                    $(this).parent().siblings(".filter-data-block").slideDown("slow", function () { $(this).css("overflow", "") });
+                }
+                else
+                {
+                    $(this).addClass("closed");
+                    $(this).parent().siblings(".filter-data-block").slideUp("slow", function () { $(this).css("overflow", "") });
+                }
+            }
+            //$(this).parent().siblings(".filter-data-block").slideToggle("slow", function () { $(this).css("overflow", "") });
+        });
+
+        //clear filter on one block
+        $(".filter-block a.speedfltrclearfilter").on("click", function () {
+
+            $(this).parent().siblings(".filter-data-block").find("a.filter-item-selected").addClass("filter-item-unselected").removeClass("filter-item-selected");
+
+            //dropdown
+            var fns_dropdown=$(this).parent().siblings(".filter-data-block").find(".fnsDropDown");
+            if (fns_dropdown!= undefined)
+            {
+                fns_dropdown.find("li.selected").removeClass("selected");
+                fns_dropdown.find("p:first").text("@T("FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.All")");
+            }
+            AjaxSmartFilter.lastselectedobject=null;
+            AjaxSmartFilter.pagenumber = 1;
+            set_smart_filter();
+            var mq = window.matchMedia( "(max-width: 1000px)" );
+            if(mq.matches){
+                $(this).parent().find('.speedfltrToggleControl').click();
+            }
+        });
+
+        //clear filter on all blocks
+        $(".clear-filter-options-all").on("click", function () {
+            $(".filter-data-block").find("a.filter-item-selected").addClass("filter-item-unselected").removeClass("filter-item-selected");
+            var pricerangeslider = $("#priceslider-range");
+            if (pricerangeslider != undefined)
+            {
+                pricerangeslider.slider("values", 0, AjaxSmartFilter.minPriceValue);
+                pricerangeslider.slider("values", 1, AjaxSmartFilter.maxPriceValue);
+                $("#fns-selected-pricemin").text(AjaxSmartFilter.minPriceValue);
+                $("#fns-selected-pricemax").text(AjaxSmartFilter.maxPriceValue);
+            }
+
+            //dropdown
+            $(".filter-data-block .fnsDropDown").each(function ()
+            {
+                $(this).find("li.selected").removeClass("selected");
+                $(this).find("p:first").text("@T("FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.All")");
+            });
+            AjaxSmartFilter.lastselectedobject=null;
+            AjaxSmartFilter.pagenumber = 1;
+            set_smart_filter();
+        });
+
+        //select-unselect option
+        $(".fns-speedfilters .filter-data-block li a[filter-option-id]").on("click", function () {
+            if ($(this).hasClass("filter-item-disabled-selected")) {
+                return false;
+            }
+            if ($(this).hasClass("filter-item-disabled-unselected")) {
+                return false;
+            }
+
+            AjaxSmartFilter.lastselectedobject=$(this).parent().parent();
+
+            if ($(this).hasClass("filter-item-unselected"))
+            {
+                $(this).removeClass("filter-item-unselected").addClass("filter-item-selected");
+                AjaxSmartFilter.pagenumber = 1;
+                set_smart_filter();
+            }
+            else
+            {
+                if ($(this).hasClass("filter-item-selected"))
+                {
+                    $(this).addClass("filter-item-unselected").removeClass("filter-item-selected");
+                    AjaxSmartFilter.pagenumber = 1;
+                    set_smart_filter();
+                }
+            }
+        });
+
+        //replace event for pager
+        sf_replace_event_pager();
+
+        //replace event for product selectors
+        sf_replace_event_productselectors();
+        //AjaxSmartFilter.allcomboxtojdropdown();
+
+        //initialize filers url
+        sf_initialize_filers();
+    });
+
+    function GetAllSubcatList() {
+        $("#AllSubCatList").show();
+        $("#SubCatList").hide();
+        $("#ShowMore").hide();
+       
+    }
+</script>

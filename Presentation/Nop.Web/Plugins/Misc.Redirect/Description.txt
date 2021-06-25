@@ -1,0 +1,9 @@
+﻿Group: Misc
+FriendlyName: Redirect
+SystemName: Misc.Redirect
+Version: 2.05
+SupportedVersions: 3.90
+Author: Nop Content
+DisplayOrder: 1
+FileName: Nop.Plugin.Misc.Redirect.dll
+Description: Change the destination and control the response codes of pages.

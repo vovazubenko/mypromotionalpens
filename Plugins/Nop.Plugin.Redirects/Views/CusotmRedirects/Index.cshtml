@@ -1,0 +1,170 @@
+﻿@using Nop.Web.Framework;
+@using Nop.Core.Infrastructure;
+@using Nop.Services.Configuration;
+@{
+    Layout = "~/Administration/Views/Shared/_AdminLayout.cshtml";
+
+    var defaultGridPageSize = EngineContext.Current.Resolve<Nop.Core.Domain.Common.AdminAreaSettings>
+    ().DefaultGridPageSize;
+    var gridPageSizes = EngineContext.Current.Resolve<Nop.Core.Domain.Common.AdminAreaSettings>
+        ().GridPageSizes;
+}
+<h1 style="float:left;position: absolute;">
+    @*Ownership verification codes*@
+    Manage Redirects
+</h1>
+<br />
+<br />
+<br />
+<br />
+<b class="pluginnotes">Note: Alias will be the url after the site url</b><br />
+<b class="pluginnotes">Example :- http://www.xyz.com/sample  (heare Alias will be "sample")</b><br />
+<b class="pluginnotes">Redirect to URL will be full url or just alias </b><br />
+<b class="pluginnotes">Example :- http://xyz.com/redirectionurl Or /alias</b>
+
+<br />
+<br />
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div id="Records-Grid"></div>
+    </div>
+</div>
+<script>
+
+            $(document).ready(function () {
+                grid = $("#Records-Grid").kendoGrid({
+                    toolbar: ["create"],
+                    dataSource: {
+                        type: "json",
+                        transport: {
+                            read: {
+                                url: "@Html.Raw(Url.Action("Records", "CusotmRedirects"))",
+                            type: "POST",
+                            dataType: "json",
+                            contentType: "application/json"
+                        },
+                        update: {
+                            url: "@Html.Raw(Url.Action("AddUpdate", "CusotmRedirects"))",
+                        type: "POST",
+                        dataType: "json"
+                    },
+                    create: {
+                        url: "@Html.Raw(Url.Action("AddUpdate", "CusotmRedirects"))",
+                    type: "POST",
+                    dataType: "json"
+                },
+                    destroy: {
+                    url: "@Html.Raw(Url.Action("Delete", "CusotmRedirects"))",
+                    type: "POST",
+                    dataType: "json"
+                    },
+                parameterMap: function(data, operation) {
+                    if (operation != "read") {
+                        return data;
+                    }
+                    else {
+                        //for some reasons only such "Filter" data be parsed
+                        return JSON.stringify(data);
+                    }
+                }
+            },
+                schema: {
+                data: "Data",
+                total: "Total",
+                errors: "Errors",
+                model: {
+                        id: "Id",
+                        fields: {
+                        Id: { type: "number" },
+                        Alias: {
+                                    editable: true,
+                                    type: "string",
+                                    validation: {
+                                required: true
+                                    }
+                        },
+                            RedirectTo: {
+                                    editable: true,
+                                    type: "string",
+                                    validation: {
+                                    required: true
+                                    }
+                            },
+                            PermanentRedirect: {
+                                    editable: true,
+                                    type: "boolean",
+                                    validation: {
+                                    required: false
+                                    }
+                            },
+                            IsEnabled:{
+                                    editable: true,
+                                    type: "boolean",
+                                    }
+                        }
+                }
+                },
+            requestEnd: function (e) {
+                //var grid1 = $('#totalSumarry-grid').data('kendoGrid');
+                //grid1.dataSource.read();
+                if (e.type == "update" || e.type=="create") {
+                    this.read();
+                }
+            },
+            error: function (e) {
+                display_kendoui_grid_error(e);
+                this.cancelChanges();
+            },
+            pageSize: @(defaultGridPageSize),
+                serverPaging: true,
+            serverFiltering: true,
+            serverSorting: true,
+            allowUnsort: true,
+            },
+            sortable: true,
+            filterable: {
+                extra: false
+            },
+            pageable: {
+                    refresh: true,
+                    numeric: true,
+                    previousNext: true,
+                    info: true,
+                    pageSizes: [@(gridPageSizes)]
+            },
+            editable: {
+                    confirmation: false,
+                    mode: "inline"
+            },
+            scrollable: false,
+                columns: [{
+                    field: "Alias",
+                    title: "Alias",
+                },
+                {
+                    field: "RedirectTo",
+                    title: "RedirectTo",
+                },
+                {
+                    field: "PermanentRedirect",
+                    title: "Permanent Redirect",
+                },
+                {
+                    field: "IsEnabled",
+                    title: "Enable",
+                },
+                {
+                    command: [{
+                        name: "edit",
+                        text: "@T("Admin.Common.Edit")"
+                    }, {
+                        name: "destroy",
+                        text: "@T("Admin.Common.Delete")"
+                }]
+            }]
+            }).data("kendoGrid");
+            }); 
+    $(document).ready(function () {
+        AdjustMenuSelection("", ".menu-item-title.Redirects");
+    });
+</script>

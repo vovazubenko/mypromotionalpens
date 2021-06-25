@@ -1,0 +1,66 @@
+﻿@model dynamic
+@using Nop.Core
+@using Nop.Core.Domain.Catalog
+@using Nop.Core.Infrastructure
+@using Nop.Services.Customers;
+@using Nop.Core.Infrastructure;
+@{
+    var _dateTimeHelper = EngineContext.Current.Resolve<Nop.Services.Helpers.IDateTimeHelper>();
+
+}
+<div class="product-item" data-productid="@Model.Products.Id" style="border:none;">
+    @*<div class="picture">
+        <a href="@Url.RouteUrl("Product", new { SeName = Model.SeName })" title="@Model.DefaultPictureModel.Title" style="max-height: 415px;">
+            <img height="auto" width="auto" alt="@Model.DefaultPictureModel.AlternateText" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" />
+        </a>
+    </div>*@
+    <div class="details">
+        <h2 class="">
+            <a href="@Url.RouteUrl("Product", new { SeName = Model.SeName })">@Model.Products.Name</a>
+        </h2>
+        @if (Model.Products.AllowCustomerReviews)
+        {
+            int ratingPercent = 0;
+
+            ProductReview review =(ProductReview)Model.ProductReview;
+            if(review!=null)
+            {
+                ratingPercent = review.Rating * 20;
+                 <div class="product-review-item">
+                     <div class="review-item-head">
+                         <div class="review-title">
+                             <strong>@review.Title</strong>
+                         </div>
+                         <div class="product-review-box">
+                             <div class="rating">
+                                 <div style="width: @(ratingPercent)%">
+                                 </div>
+                             </div>
+
+                         </div>
+                         <div class="review-info">
+                             <span class="user">
+                                 <strong>@T("Reviews.From"):</strong>
+                                 @review.Customer.FormatUserName()
+                             </span>
+                             <span class="separator">|</span>
+
+                             <span class="date">
+                                 <strong>@T("Reviews.Date"):</strong>
+                                 @_dateTimeHelper.ConvertToUserTime(review.CreatedOnUtc, DateTimeKind.Utc).ToString("g")
+                             </span>
+                         </div>
+
+                     </div>  
+                    <div class="review-text">
+                        @Html.Raw(Nop.Core.Html.HtmlHelper.FormatText(review.ReviewText, false, true, false, false, false, false))
+                    </div>
+                    
+                </div>
+            }
+        }
+        
+        
+    </div>
+</div>
+

@@ -1,0 +1,67 @@
+﻿@model Sws.Plugin.Misc.Signifyd.Models.ConfigurationModel
+@{
+    Layout = "";
+}
+
+@Html.Action("StoreScopeConfiguration", "Setting", new { area = "Admin" })
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.ApiKeyOverrideForStore, model => model.ApiKey, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.ApiKey)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.ApiKey)
+                        @Html.ValidationMessageFor(model => model.ApiKey)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.Webhook)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopDisplay(Model.Webhook)
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                SWS Solutions <a href="https://www.shop.sws-solutions.nl?utm_source=admin-panel&utm_medium=configure-signifyd&utm_content=separatorlink&utm_campaign=admin-panel" target="_blank">(website)</a>
+            </div>
+            <div class="panel-body">
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.LicenseKeyOverrideForStore, model => model.LicenseKey, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.LicenseKey)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.LicenseKey)
+                        @Html.ValidationMessageFor(model => model.LicenseKey)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-9 col-md-offset-3">
+                        <input type="submit" name="save" class="btn bg-blue" value="@T("Admin.Common.Save")" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,255 @@
+﻿@model CompareProductsModel
+@{
+    Layout = "~/Views/Shared/_ColumnsTwo.cshtml";
+
+    //title
+    Html.AddTitleParts(T("PageTitle.CompareProducts").Text);
+    //page class
+    Html.AppendPageCssClassParts("html-compare-products-page");
+}
+@using Nop.Web.Models.Catalog;
+@{
+    string columnWidth = "";
+    if (Model.Products.Count > 0)
+    {
+        columnWidth = Math.Round((decimal)(90M / Model.Products.Count), 0).ToString() + "%";
+    }
+
+
+    //var specificationAttributes = new List<ProductSpecificationModel>();
+    //foreach (var product in Model.Products)
+    //{
+    //    foreach (var attribute in product.SpecificationAttributeModels)
+    //    {
+    //        if (specificationAttributes.FirstOrDefault(sa => sa.SpecificationAttributeId == attribute.SpecificationAttributeId) == null)
+    //        {
+    //            specificationAttributes.Add(attribute);
+    //        }
+    //    }
+    //}
+}
+<div class="page compare-products-page">
+    <div class="page-title">
+        <h1>@T("Products.Compare.Title")</h1>
+    </div>
+    <div class="page-body">
+        @if (Model.Products.Count > 0)
+        {
+            <a href="#" onclick="setLocation('@Url.RouteUrl("ClearCompareList")')" class="clear-list">@T("Products.Compare.Clear")</a>
+            <div class="table-wrapper" style="overflow:auto !important">
+                <table class="compare-products-table">
+                    <tbody>
+                        <tr class="remove-product">
+                            <td class="empty">&nbsp;</td>
+                            @foreach (var product in Model.Products)
+                            {
+                                <td style="width: @columnWidth;">
+                                    <input type="button" value="@T("Common.Remove")" title="@T("Common.Remove")" class="button-2 remove-button" onclick="setLocation('@Url.RouteUrl("RemoveProductFromCompareList", new { productId = product.Id })')" />
+                                </td>
+                            }
+                        </tr>
+                        <tr class="product-picture">
+                            <td class="empty">&nbsp;</td>
+                            @foreach (var product in Model.Products)
+                            {
+                                <td style="width: @columnWidth;">
+                                    <a class="picture" href="@Url.RouteUrl("Product", new { SeName = product.SeName })"><img alt="@product.DefaultPictureModel.AlternateText" src="@product.DefaultPictureModel.ImageUrl" title="@product.DefaultPictureModel.Title" /></a>
+                                </td>
+                            }
+                        </tr>
+                        <tr class="product-name">
+                            <td>
+                                <label>@T("Products.Compare.Name")</label>
+                            </td>
+                            @foreach (var product in Model.Products)
+                            {
+                                <td style="width: @columnWidth;">
+                                    <a href="@Url.RouteUrl("Product", new { SeName = product.SeName })">@product.Name</a>
+                                </td>
+                            }
+                        </tr>
+                        <tr class="product-price">
+                            <td>
+                               
+                                <label>@T("Products.Compare.Setupfee")</label>
+                            </td>
+                            @foreach (var product in Model.Products)
+                            {
+                                <td style="width: @columnWidth;">
+                                    @product.ProductPrice.Setup
+                                </td>
+                            }
+                        </tr>
+                        <tr>
+                            <td><label>@T("Products.Compare.PriceGrid")</label></td>
+                            @foreach (var product in Model.Products)
+                            {
+                                <td >
+                                    <div class="table-price-product-right" style="height: 200px !important;overflow-y: auto;">
+                                        @if (product.ProductPrice.DiscountRanges.Count > 0)
+                                        {
+                                            <div class="table-price-product" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                                                <table style="table-layout: fixed;">
+                                                    <tr style="background-color:#dbdbdb;color:#025286 ;font-size:15px;">
+                                                        <td align="center" style="padding:0px !important;">
+                                                            Quantity Range
+                                                        </td>
+                                                        <td align="center" style="padding:0px !important;">
+                                                            Sale Price
+                                                        </td>
+                                                    </tr>
+                                                    @{
+                                                        var cnt = product.ProductPrice.DiscountRanges.Count - 1;
+                                                        var counter = 0;
+                                                        foreach (var a in product.ProductPrice.DiscountRanges)
+                                                        {
+                                                            if (counter < cnt)
+                                                            {
+                                                                <tr style="background-color:#f4f4f4; font-size:13px">
+                                                                    <td align="center" style="padding:0px !important;">
+                                                                        @a.MinQty - @a.MaxMiniQty
+                                                                    </td>
+                                                                    <td align="center" style="padding:0px !important;">
+                                                                        $@a.Amount.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) ea.
+                                                                    </td>
+                                                                </tr>
+                                                            }
+
+                                                            else
+                                                            {
+                                                                <tr style="background-color:#f4f4f4; font-size:13px">
+                                                                    <td align="center" style="padding:0px !important;">
+                                                                        @a.MinQty - More
+                                                                    </td>
+                                                                    <td align="center" style="padding:0px !important;">
+                                                                        $@a.Amount.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) ea.
+                                                                    </td>
+                                                                </tr>
+
+                                                            }
+                                                            counter = counter + 1;
+                                                        }
+                                                    }
+                                                </table>
+
+                                            </div>
+
+                                                        }
+
+                                    </div>
+                                </td>
+                            }
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            }
+        @if (Model.Products.Count > 0)
+        {
+            <table class="compare-products-table-mobile data-table">
+                <thead>
+                    <tr>
+                        <th><span class="item-count">#</span></th>
+                        <th data-hide="w480, w580, w768">@T("SevenSpikes.Themes.ProductRemove")</th>
+                        <th data-hide="w410">Picture</th>
+                        <th>@T("SevenSpikes.Themes.ProductCompareName")</th>
+                        <th data-hide="w410, w480, w580">@T("Products.Compare.Setupfee")</th>
+                        <th data-hide="w410, w480, w580">@T("Products.Compare.PriceGrid")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{var counter = 0;}
+                    @foreach (var product in Model.Products)
+                    {
+                        counter++;
+                        <tr>
+                            <td><span class="item-count">@counter</span></td>
+                            <td>
+                                <input type="button" value="@T("Common.Remove")" title="@T("Common.Remove")" class="button-2 remove-button" onclick="setLocation('@Url.RouteUrl("RemoveProductFromCompareList", new { productId = product.Id })    ')" />
+                            </td>
+                            <td>
+                                <img alt="@product.DefaultPictureModel.AlternateText" src="@product.DefaultPictureModel.ImageUrl" title="@product.DefaultPictureModel.Title" />
+                            </td>
+                            <td>
+                                <a class="link" href="@Url.RouteUrl("Product", new { SeName = product.SeName })">@product.Name</a>
+                            </td>
+                            <td>
+                                @product.ProductPrice.Setup
+                            </td>
+                             <td>
+                                    <div class="table-price-product-right">
+                                        @if (product.ProductPrice.DiscountRanges.Count > 0)
+                                        {
+                                            <div class="table-price-product" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                                                <table style="table-layout: fixed;">
+                                                    <tr style="background-color:#dbdbdb;color:#025286 ;font-size:15px;">
+                                                        <td align="center" style="padding:0px !important;">
+                                                            Quantity Range
+                                                        </td>
+                                                        <td align="center" style="padding:0px !important;">
+                                                            Sale Price
+                                                        </td>
+                                                    </tr>
+                                                    @{
+                                                        var cnt = product.ProductPrice.DiscountRanges.Count - 1;
+                                                        var counter1 = 0;
+                                                        foreach (var a in product.ProductPrice.DiscountRanges)
+                                                        {
+                                                            if (counter1 < cnt)
+                                                            {
+                                                                <tr style="background-color:#f4f4f4; font-size:13px">
+                                                                    <td align="center" style="padding:0px !important;">
+                                                                        @a.MinQty - @a.MaxMiniQty
+                                                                    </td>
+                                                                    <td align="center" style="padding:0px !important;">
+                                                                        $@a.Amount.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) ea.
+                                                                    </td>
+                                                                </tr>
+                                                            }
+
+                                                            else
+                                                            {
+                                                                <tr style="background-color:#f4f4f4; font-size:13px">
+                                                                    <td align="center" style="padding:0px !important;">
+                                                                        @a.MinQty - More
+                                                                    </td>
+                                                                    <td align="center" style="padding:0px !important;">
+                                                                        $@a.Amount.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) ea.
+                                                                    </td>
+                                                                </tr>
+
+                                                            }
+                                                            counter1 = counter1 + 1;
+                                                        }
+                                                    }
+                                                </table>
+
+                                            </div>
+
+                                                        }
+
+                                    </div>
+                                </td>
+                            
+                          
+                           
+                        </tr>
+                                        }
+                </tbody>
+            </table>
+                                        }
+                                        else
+                                        {
+                                            <div class="no-data">
+                                                @T("Products.Compare.NoItems")
+                                            </div>
+                                        }
+    </div>
+</div>
+
+@section AsidePageTitle
+{
+    <div class="page-title">
+        <h1>@T("Products.Compare.Title")</h1>
+    </div>
+}

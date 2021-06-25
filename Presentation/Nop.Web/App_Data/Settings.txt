@@ -1,0 +1,2 @@
+DataProvider: sqlserver
+DataConnectionString: Data Source=db1.cde6pijvc1hn.us-east-2.rds.amazonaws.com;Initial Catalog=PromotionalPens_test;Integrated Security=False;Persist Security Info=False;User ID=sauser;Password=SaPass4321$

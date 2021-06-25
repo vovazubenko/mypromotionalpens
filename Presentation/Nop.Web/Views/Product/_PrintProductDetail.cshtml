@@ -1,0 +1,207 @@
+﻿@model ProductDetailsModel
+@using Nop.Core.Domain.Seo;
+@using Nop.Core.Domain.Orders;
+@using Nop.Core.Infrastructure;
+@using Nop.Web.Models.Catalog;
+@using Nop.Web.Framework.Themes
+@if (Model.PrintMode)
+{
+    <style>
+@@page { size: auto;  margin: 0mm; }
+    </style>
+    Layout = "~/Views/Shared/_Print.cshtml";
+
+    var productDetails = Model;
+    if (Model.PrintMode)
+    {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                window.print();
+            });
+        </script>
+    }
+
+    <style>
+        .overview .base-price-pangv .label {
+            font-weight: 600;
+            color: #000 !important;
+            font-size: 14px;
+        }
+
+        .divcustomfields {
+            display:none;
+        }
+    </style>
+
+    <link href="@Url.Content("~/Plugins/SevenSpikes.Nop.Plugins.QuickView/Themes/Pavilion/Content/QuickView.css")" rel="stylesheet" type="text/css" />
+    var themeName = EngineContext.Current.Resolve<IThemeContext>().WorkingThemeName;
+
+    <link href="@Url.Content(string.Format("~/Themes/{0}/Content/css/styles.css", themeName))" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content(string.Format("~/Themes/{0}/Content/css/tables.css", themeName))" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content(string.Format("~/Themes/{0}/Content/css/mobile-only.css", themeName))" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content(string.Format("~/Themes/{0}/Content/css/480.css", themeName))" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content(string.Format("~/Themes/{0}/Content/css/768.css", themeName))" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content(string.Format("~/Themes/{0}/Content/css/1000.css", themeName))" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content(string.Format("~/Themes/{0}/Content/css/1280.css", themeName))" rel="stylesheet" type="text/css" />
+    <input id="add-to-cart-details" type="hidden" data-productid="@productDetails.Id"
+           data-url="@Url.RouteUrl("AddProductToCart-Details", new { productId = productDetails.Id, shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart })" />
+
+        <div class="product-essential">
+            @using (Html.BeginRouteForm("Product", new { SeName = Model.SeName }, FormMethod.Post, new { id = "product-details-form" }))
+            {
+                <div class="popup-header">
+                    <h1 class="product-name" style="text-align: center;color: black;">@Model.Name</h1>
+                </div>
+
+
+                <div class="product-content" style="float: left;padding-top: 50px;padding-left: 15px;">
+                    <div>
+                        <div class="gallery">
+                            <div class="picture">
+                                @if (Model.DefaultPictureZoomEnabled)
+                                {
+                                    <a href="@Model.DefaultPictureModel.FullSizeImageUrl" title="@Model.DefaultPictureModel.Title" id="main-product-img-lightbox-anchor-@Model.Id">
+                                        <img alt="@Model.DefaultPictureModel.AlternateText" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" itemprop="image" id="main-product-img-@Model.Id" />
+                                    </a>
+                                }
+                                else
+                                {
+                                    <img alt="@Model.DefaultPictureModel.AlternateText" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" itemprop="image" id="main-product-img-@Model.Id" />
+                                }
+                            </div>
+                        </div>
+                        <div class="overview" style="padding-left: 50px;">
+                            <div id="accordion">
+                                <h3 style="color:black;font-weight: 600;">@T("SevenSpikes.QuickView.Public.ProductDetails")</h3>
+                                <div class="product-details">
+                                    <div class="left">
+                                        <!--product SKU, manufacturer part number, stock info-->
+                                        @Html.Partial("_SKU_Man_GTIN_Ven", productDetails)
+                                        <!--delivery-->
+                                        @Html.Partial("_DeliveryInfo", productDetails)
+                                        <!--availability-->
+                                        @Html.Partial("_Availability", productDetails)
+                                        <!--product manufacturers-->
+                                        @Html.Partial("_ProductManufacturers", productDetails.ProductManufacturers)
+                                        <!--sample download-->
+                                        @Html.Partial("_DownloadSample", productDetails)
+                                    </div>
+                                    <div class="table-price-product-right">
+                                        @if (Model.DiscountRanges.Count > 0)
+                                        {
+                                        <div class="table-price-product" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                                            <table>
+                                                <tr>
+                                                    <td colspan="2" style="background-color:#940808;text-align:center;color:white;font-size:medium;font-weight:bold;">
+                                                        Discount
+                                                    </td>
+                                                </tr>
+                                                <tr style="background-color:#dbdbdb;color:#025286 ;font-size:15px;">
+                                                    <td align="center">
+                                                        Quantity Range
+                                                    </td>
+                                                    <td align="center">
+                                                        Sale Price
+                                                    </td>
+                                                </tr>
+                                                @{
+                                                        var cnt = Model.DiscountRanges.Count - 1;
+                                                        var counter = 0;
+                                                        foreach (var a in Model.DiscountRanges)
+                                                        {
+                                                            if (counter < cnt)
+                                                            {
+                                                    <tr style="background-color:#f4f4f4; font-size:13px">
+                                                        <td align="center">
+                                                            @a.MinQty - @a.MaxMiniQty
+                                                        </td>
+                                                        <td align="center">
+                                                            $@a.Amount.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) ea.
+                                                        </td>
+                                                    </tr>
+                                                            }
+
+                                                            else
+                                                            {
+                                                    <tr style="background-color:#f4f4f4; font-size:13px">
+                                                        <td align="center">
+                                                            @a.MinQty - More
+                                                        </td>
+                                                        <td align="center">
+                                                            $@a.Amount.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) ea.
+                                                        </td>
+                                                    </tr>
+
+                                                            }
+                                                            counter = counter + 1;
+                                                        }
+                                                }
+                                            </table>
+                                        </div>
+                                                        }
+                                        @Html.Action("TopicBlock", "Topic", new { systemName = "freeshipping-detail" })
+                                    </div>
+                                    <!--product tier prices-->
+                                    @*@Html.Partial("_ProductTierPrices", productDetails.TierPrices)*@
+                                    <div class="purchase-area">
+                                        @{
+                                            var dataDictPrice = new ViewDataDictionary();
+                                            dataDictPrice.TemplateInfo.HtmlFieldPrefix = string.Format("price_{0}", productDetails.Id);
+                                            @Html.Partial("_ProductPrice", productDetails.ProductPrice, dataDictPrice)
+                                        }
+                                    </div>
+                                    <div class="product-color">
+                                        @{
+                                            string str = "";
+
+                                            var attrvaluemodel = Model.ProductAttributes.Where(x => x.ProductAttributeId == 10).FirstOrDefault();
+                                            if (attrvaluemodel != null)
+                                            {
+                                                {
+
+                                                    str = string.Join(",", attrvaluemodel.Values.Select(y =>
+                                                      (y.PriceAdjustment == null ? y.Name :
+                                                      T("Products.ProductAttributes.PriceAdjustment", y.Name, y.PriceAdjustment, y.CustomerEntersQty ? T("Products.ProductAttributes.PriceAdjustment.PerItem").Text : string.Empty).Text
+                                                      )).ToList());
+                                                }
+                                            }
+
+                                            <span class="label" style="color:black;font-weight: 600;font-size: 14px;">@T("Products.Color"):</span>
+                                            <span class="value" itemprop="productcolor" id="productcolor-@Model.Id"> @str </span>
+
+                                        }
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div style="float: left;padding-top: 50px;padding-left: 15px;">
+                        @if (!String.IsNullOrEmpty(Model.ShortDescription) || !String.IsNullOrEmpty(Model.FullDescription))
+                    {
+                            <h3 style="color:black;font-weight: 600;">@T("SevenSpikes.QuickView.Public.ProductDescription")</h3>
+                            <div class="product-details">
+                                @if (!string.IsNullOrEmpty(productDetails.ShortDescription))
+                        {
+                                    <div class="short-description">
+                                        @Html.Raw(productDetails.ShortDescription)
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(productDetails.FullDescription))
+                        {
+                                    <div class="full-description">
+                                        @Html.Raw(productDetails.FullDescription)
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+
+
+                                                    }
+        </div>
+
+                                                    }

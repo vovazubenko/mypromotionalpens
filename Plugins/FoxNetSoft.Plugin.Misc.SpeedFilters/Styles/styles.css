@@ -1,0 +1,522 @@
+﻿.product-filters-wrapper {
+    display: none;
+}
+
+.product-filters {
+    display: none;
+}
+
+/*.fns-speedfilters {
+    margin: -16px 0 0;
+}*/
+
+.fns-speedfilters a {
+    cursor: pointer;
+}
+
+.fns-emptyresult {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.fns-speedfilters .title-block {
+    color: #3A4045;
+    font-size: 0.9em;
+    padding: 0 0 10px 3px;
+    text-transform: uppercase;
+    font-weight: 700;
+    overflow: hidden;
+    width: 600px;
+    margin: 0 auto;
+    max-width: 100%;
+}
+
+    .fns-speedfilters .title-block .title {
+        margin: 0;
+        float: left;
+        padding: 0;
+    }
+
+    .fns-speedfilters .title-block .clear-filter-options-all {
+        cursor: pointer;
+        color: #B80705;
+        float: right;
+        text-transform: none;
+    }
+
+.fns-speedfilters .all-filters-block {
+}
+
+.fns-speedfilters .filter-block {
+    overflow: auto;
+    padding-bottom: 0;
+}
+
+    .fns-speedfilters .filter-block .title {
+        overflow: hidden;
+        max-width: 100%;
+        /*width: 600px;
+        height: 48px;*/
+        padding: 0;
+        background: #fff url('images/toggle-arrow.png') right center no-repeat;
+        position: relative;
+    }
+
+        .fns-speedfilters .filter-block .title .speedfltrToggleControl {
+            text-decoration: none !important;
+            color: #333333;
+            display: block;
+            cursor: pointer;
+            float: left;
+            width: 100%;
+            height: 100%;
+            /*padding: 10px;*/
+            padding: 25px 35px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #333;
+            text-transform: uppercase;
+        }
+
+        .fns-speedfilters .filter-block .title a.speedfltrToggleControl.closed {
+            background-position: 0px -95px;
+        }
+
+        .fns-speedfilters .filter-block .title a.speedfltrclearfilter {
+            position: absolute;
+            top: 50%;
+            right: 4px;
+            width: 32px;
+            height: 32px;
+            margin-top: -16px;
+            background: #fff url('images/clear.png') center no-repeat;
+            font-size: 0;
+            color: #000000;
+            cursor: pointer;
+            float: right;
+            font-size: 11px;
+            line-height: 16px;
+            font-weight: bold;
+            text-transform: lowercase;
+        }
+
+    .fns-speedfilters .filter-block .filter-data-block {
+        padding: 0px 26px;
+        font-size: 11px;
+        line-height: 18px;
+        position: relative;
+        display: block;
+        background: #fff;
+        /*overflow:  visible !important;*/
+    }
+
+    /* DROPDOWN MODE */
+    .fns-speedfilters .filter-block .filter-dropdown {
+        height: 25px !important;
+    }
+
+
+/*
+.fns-speedfilters .filter-data-block a {
+   background: url("images/fns-images.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+   color: #5C5B5C;
+   padding-left: 15px;
+}
+*/
+.fns-speedfilters .filter-data-block {
+}
+
+    .fns-speedfilters .filter-data-block ul {
+        margin: 0;
+        padding: 0;
+    }
+
+    .fns-speedfilters .filter-data-block li {
+        background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+        padding: 10px;
+    }
+
+    .fns-speedfilters .filter-data-block a.filter-item-unselected {
+        background: url(images/fns-images.png) no-repeat scroll -50px 6px rgba(0, 0, 0, 0);
+        color: #777;
+        padding-left: 15px;
+        font-size: 15px;
+    }
+
+    .fns-speedfilters .filter-data-block a.filter-item-selected {
+        background: url(images/fns-images.png) no-repeat scroll -40px -17px rgba(0, 0, 0, 0);
+        padding-left: 15px;
+        color: #B80705;
+        font-size: 15px;
+    }
+
+    .fns-speedfilters .filter-data-block a.filter-item-disabled-unselected {
+        background: url(images/fns-images.png) no-repeat scroll -20px -59px rgba(0, 0, 0, 0);
+        color: #9D9D9A;
+        padding-left: 15px;
+    }
+
+    .fns-speedfilters .filter-data-block a.filter-item-disabled-selected {
+        background: url(images/fns-images.png) no-repeat scroll -30px -39px rgba(0, 0, 0, 0);
+        color: #9D9D9A;
+        padding-left: 15px;
+    }
+
+.fns-speedfilters .price-range-filter-block {
+}
+
+    .fns-speedfilters .price-range-filter-block .price-range-info-block {
+        overflow: hidden;
+        margin-bottom: 5px;
+    }
+
+    .fns-speedfilters .price-range-filter-block .filter-data-block {
+        height: auto !important;
+    }
+
+    .fns-speedfilters .price-range-filter-block .price-range-info-block .pricerangeinfopricemin {
+        float: left;
+    }
+
+    .fns-speedfilters .price-range-filter-block .price-range-info-block .pricerangeinfopricemax {
+        float: right;
+    }
+
+    .fns-speedfilters .price-range-filter-block .price-slider-range {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .fns-speedfilters .price-range-filter-block .price-range-selected-block {
+        overflow: hidden;
+        width: 100%;
+        color: #B80705;
+        font-size: 13px;
+        margin-top: 10px;
+    }
+
+        .fns-speedfilters .price-range-filter-block .price-range-selected-block .price-range-selected-pricemin {
+            float: left;
+        }
+
+        .fns-speedfilters .price-range-filter-block .price-range-selected-block .price-range-selected-pricemax {
+            float: right;
+        }
+
+
+
+
+.fns-speedfilters .specification-filter-block {
+}
+
+.fns-speedfilters .attribute-filter-block {
+}
+
+.fns-speedfilters .manufacturer-filter-block {
+}
+
+.fns-speedfilters .vendor-filter-block {
+}
+
+/*JQuery Price range*/
+.ui-slider-horizontal {
+    height: 0.2em;
+}
+
+.ui-slider .ui-slider-handle {
+    cursor: default;
+    /*height: 0.8em;*/
+    position: absolute;
+    /*width: 0.8em;*/
+    z-index: 2;
+}
+
+/*JQuery jDropDown*/
+.fns-speedfilters .fnsDropDown {
+    float: left;
+    width: 95%;
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border: 1px solid #AAAAAA;
+    border-radius: 0;
+    cursor: pointer;
+    font-size: 11px;
+    margin: 0 5px;
+    position: relative;
+}
+
+.fns-speedfilters .jDropDown div {
+    background-position: 245px -75px;
+    height: 20px;
+    border-radius: 0;
+}
+
+    .fns-speedfilters .jDropDown div p {
+        width: 95%;
+        padding: 0 0 0 5px;
+    }
+
+.fns-speedfilters .jDropDown ul {
+    top: 0px;
+    position: relative;
+    border-radius: 0;
+}
+
+    .fns-speedfilters .jDropDown ul li:hover, .fns-speedfilters .jDropDown ul li.selected {
+        background-color: #DDDDDD !important;
+        color: #000000;
+    }
+
+.viewOptionsDropDown {
+    background-position: 65px -73px;
+    width: 90px;
+}
+
+.sortOptionsDropDown {
+    background-position: 142px -73px;
+    width: 110px;
+}
+
+.productsPageSizeDropDown {
+    background-position: 14px -73px;
+    width: 40px;
+}
+
+    .viewOptionsDropDown div, .sortOptionsDropDown div, .productsPageSizeDropDown div {
+        background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    }
+
+        .viewOptionsDropDown div p, .sortOptionsDropDown div p, .productsPageSizeDropDown div p {
+            width: 88%;
+        }
+
+/* AJAX LOADING INDICATOR from NopCommerce Themas */
+.fns-speedfilters-ajax-loading-block {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 128px;
+    height: 128px;
+    overflow: hidden;
+    z-index: 1104;
+}
+
+    .fns-speedfilters-ajax-loading-block .loading-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 128px;
+        height: 128px;
+        background-image: url('images/ajax_loader_large.gif');
+    }
+
+/* product-selectors*/
+.product-selectors div {
+    border-radius: 0;
+    /*height: 20px;*/
+}
+
+.product-selectors .jDropDown div p {
+    width: 95%;
+    padding: 2px 0 0 5px;
+    text-align: left;
+}
+
+.product-selectors .fnsDropDown {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border: 1px solid #AAAAAA;
+    border-radius: 0;
+    cursor: pointer;
+    float: left;
+    font-size: 11px;
+    margin: 0 5px;
+    position: relative;
+    width: 95%;
+    height: 20px;
+    top: -3px;
+}
+
+    .product-selectors .fnsDropDown ul {
+        margin: 0;
+        padding: 0;
+        top: 20px;
+    }
+
+    .product-selectors .fnsDropDown li {
+        background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+        padding: 0;
+    }
+
+.product-selectors span {
+    font-size: 13px;
+}
+
+.product-viewmode > span {
+    float: left;
+}
+
+.product-selectors .product-viewmode .jDropDown {
+    width: 55px;
+}
+
+    .product-selectors .product-viewmode .jDropDown div {
+        background-position: 30px -75px;
+        border-radius: 0;
+    }
+
+.product-selectors .product-sorting .jDropDown {
+    float: right;
+    width: 130px;
+}
+
+    .product-selectors .product-sorting .jDropDown div {
+        background-position: 102px -75px;
+        height: 20px;
+    }
+
+.product-selectors .product-page-size .jDropDown {
+    float: right;
+    width: 50px;
+}
+
+    .product-selectors .product-page-size .jDropDown div {
+        background-position: 22px -75px;
+    }
+
+.search- .pager li {
+    display: inline-block;
+    margin: 10px 5px 0;
+    vertical-align: top;
+}
+
+@media all and (max-width: 1001px) {
+    .fns-speedfilters .filter-block .filter-data-block {
+        display: none;
+    }
+}
+
+
+
+@media all and (min-width: 1001px) {
+    .fns-speedfilters {
+        margin: -16px 0 0;
+    }
+
+        .fns-speedfilters .close-filters1 {
+            display: none;
+        }
+}
+
+@media all and (max-width: 1000px) {
+    .filtersPanel1 .page-title {
+        text-align: center !important;
+    }
+
+    .responsive-nav-wrapper div.filters-button-new {
+        background-position: -271px center;
+    }
+
+    .fns-speedfilters .close-filters1 {
+        background-color: #f6f6f6;
+        cursor: pointer;
+    }
+
+        .fns-speedfilters .close-filters1 span {
+            display: block;
+            height: 50px;
+            background: url('images/clear.png') right center no-repeat;
+            font-size: 0;
+        }
+    /* New Filter Menu only mobile*/
+    .filterbody .master-wrapper-content {
+        position: inherit;
+    }
+
+    .filterbody .master-wrapper-content {
+        position: inherit;
+    }
+
+    .fns-speedfilters .page-title {
+        margin-bottom: 0px;
+    }
+
+    .fns-speedfilters {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 320px;
+        height: 100%;
+        text-align: left;
+        background-color: #f6f6f6;
+        overflow: hidden;
+        z-index: 1070;
+        transition: all 0.5s ease;
+        overflow-y: scroll;
+    }
+
+    .notAndroid23 .fns-speedfilters {
+        -webkit-transform: translate(-320px);
+        -ms-transform: translate(-320px);
+        transform: translate(-320px);
+    }
+
+    .android23 .fns-speedfilters {
+        left: -320px;
+    }
+
+    .fns-speedfilters.open {
+        box-shadow: 1px 0 5px rgba(0,0,0,0.5);
+    }
+
+    .notAndroid23 .fns-speedfilters.open {
+        -webkit-transform: translate(0);
+        -ms-transform: translate(0);
+        transform: translate(0);
+    }
+
+    .android23 .fns-speedfilters.open {
+        left: 0;
+    }
+
+    .fns-speedfilters .close-menu,
+    .fns-speedfilters .back-button {
+        background-color: #f6f6f6;
+        cursor: pointer;
+    }
+
+        .fns-speedfilters .close-menu span,
+        .fns-speedfilters .back-button span {
+            display: block;
+            height: 50px;
+            background: url('../img/close.png') right center no-repeat;
+            font-size: 0;
+        }
+
+    .fns-speedfilters .filter-block .title .speedfltrToggleControl {
+        display: block;
+        padding: 15px 15px !important;
+        font-size: 15px;
+        font-weight: bold;
+        color: #333;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .fns-speedfilters .specification-filter-block {
+        margin-bottom: 0px;
+        width: 100%;
+    }
+
+    .fns-speedfilters.open .filter-block .title {
+        position: relative;
+        border: none;
+        padding: 0;
+    }
+
+    .fns-speedfilters .filter-data-block li {
+        text-align: left;
+    }
+
+
+
+    /* END New Filter Menu only mobile*/
+}

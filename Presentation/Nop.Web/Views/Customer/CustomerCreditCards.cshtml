@@ -1,0 +1,142 @@
+﻿@model PaymentInformationModel
+@using Nop.Web.Models.Customer;
+@using Nop.Core.Plugins;
+@{
+    Layout = "~/Views/Shared/_ColumnsTwo.cshtml";
+
+    //title
+    Html.AddTitleParts(T("PageTitle.Account").Text);
+    //page class
+    Html.AppendPageCssClassParts("html-account-page");
+    Html.AppendPageCssClassParts("html-customer-payment-page");
+    var pluginFinder = Nop.Core.Infrastructure.EngineContext.Current.Resolve<IPluginFinder>();
+    var pluginDescriptor = pluginFinder.GetPluginDescriptorBySystemName("Payments.AuthorizeNet");
+}
+@section left
+{
+    @Html.Action("CustomerNavigation", "Customer", new { selectedTabId = CustomerNavigationEnum.PaymentInformation })
+}
+<div class="page account-page creditcard-list-page">
+    <div class="page-title">
+        <h1>@T("Account.MyAccount") - @T("Account.PaymentInformation")</h1>
+    </div>
+    <div class="page-body">
+        @if (Model.ExistingPaymentProfiles.Count > 0)
+        {
+            using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <div class="PaymentInformation-list">
+                    <div style="color: red;text-align: center;padding: 20px 10px;">
+                        <strong>@T("Account.Payment.InformationMessage")</strong>
+                    </div>
+                    @for (int i = 0; i < Model.CreditCardInfos.Count; i++)
+                    {
+                        var profile = Model.CreditCardInfos[i];
+                        <div class="section PaymentInformation-item">
+                            <div class="title">
+                                <strong>@profile.CardHolderName</strong>
+                            </div><ul class="info">
+                                      <li>
+                                          <label>@T("Account.PaymentInformation.Fields.CardNumber")</label> : @profile.MaskedCreditCardNumber
+                                      </li>
+                            <li>
+                            <label>@T("Account.PaymentInformation.Fields.CardTypeId")</label> : @profile.CardType</li>
+                                      @*<li>
+                                          <label>Expire on</label> : @profile.ExpireMonth
+                                          <span class="separator">/</span>@profile.ExpireYear
+                                      </li>*@
+                                     <li> <label>@T("Account.PaymentInformation.Fields.CreatedOn"):</label>
+                                      <span>@profile.CreatedOn</span></li>  
+                                      @*<li>
+                                          <label>@T("Account.PaymentInformation.Fields.IsDefault"):</label>
+                                          <span>@(profile.IsDefault?"Yes":"No")</span>
+                                      </li>*@  
+                            </ul>
+                             <div class="buttons">
+                                @*<input type="button" class="button-2 edit-address-button" onclick="location.href = '@(Url.Action("EditCreditCard", new {id = profile.Id}))'" value="@T("Common.Edit")" />*@
+                                
+                                <input type="button" class="button-2 delete-address-button" onclick="deletecustomerpaymentinfo(@(profile.Id))" value="@T("Common.Delete")" />
+                                
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div id="delete-creditcard-dialog" title="Notification" style="display:none;">
+                    
+                </div>
+                <script type="text/javascript">
+                    function deletecustomerpaymentinfo(paymentId) {
+                        if (confirm('@T("Admin.Common.AreYouSure")')) {
+                            var postData = {
+                                id: paymentId
+                            };
+                            addAntiForgeryToken(postData);
+
+                            $.ajax({
+                                cache: false,
+                                type: 'POST',
+                                url: '@Url.Action("CreditCardInfoDelete", "Customer")',
+                                data: postData,
+                                dataType: 'json',
+                                success: function (data) {
+                                    $("#delete-creditcard-dialog").removeAttr("title");
+                                    $("#delete-creditcard-dialog").html("");
+
+                                    if (data.model.Success ==true) {
+                                        $("#delete-creditcard-dialog").attr("title","Success");
+                                        $("#delete-creditcard-dialog").html(data.model.Result);
+                                    }
+                                    else {
+                                        $("#delete-creditcard-dialog").attr("title", "Error");
+                                        $("#delete-creditcard-dialog").html(data.model.Result);
+                                    }
+                                    $("#delete-creditcard-dialog").dialog({
+                                        autoOpen: true,
+                                        modal: true,
+                                        draggable: false,
+                                        buttons: [{
+                                            id: "Confirm",
+                                            text: "Ok",
+                                            click: function () {
+                                                location.href = data.redirect;
+                                            },
+
+                                            //"Confirm": function () {
+                                            //    $('#checkout').click();
+                                            //},
+                                            //"Cancel": function () {
+                                            //    $(this).dialog("close");
+                                            //}
+                                        }],
+                                        open: function () {
+                                            $('body').find('.popup-bg').removeClass('hide');
+                                        },
+                                        close: function (event, ui) {
+                                            $('body').find('.popup-bg').addClass('hide');
+                                        }
+                                    });
+
+                                    
+                                    
+                                },
+                                error: function(xhr, ajaxOptions, thrownError) {
+                                    alert('Failed to delete');
+                                }
+                            });
+                        }
+                    }
+                </script>
+            }
+        }
+        else
+        {
+            <div class="no-data">
+                @T("Account.CreditCard.NoCreditCard")
+            </div>
+        }
+        <div class="add-button">
+            <input type="button" class="button-1 add-address-button" onclick="location.href='@Url.Action("AddCreditCard")'" value="@T("Common.AddNew")" />
+        </div>
+    </div>
+</div>

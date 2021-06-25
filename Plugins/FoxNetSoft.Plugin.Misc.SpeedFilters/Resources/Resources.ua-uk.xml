@@ -1,0 +1,488 @@
+﻿<Language Name="English" IsRightToLeft="false">
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableSpeedFilters">
+    <Value>
+      Активувати фільтри
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableSpeedFilters.Hint">
+    <Value>
+      Активувати фільтри
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.IgnoreDiscountsForCatalog">
+    <Value>
+      Ігнорувати знижки (тільки для каталога)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.IgnoreDiscountsForCatalog.Hint">
+    <Value>
+      Ігнорувати знижки (тільки для каталога)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.WidgetZone">
+    <Value>
+      WidgetZone
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.WidgetZone.Hint">
+    <Value>
+      WidgetZone
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.FiltersType">
+    <Value>
+      Тип фільтрів
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.FiltersType.Hint">
+    <Value>
+      Тип фільтрів
+    </Value>
+  </LocaleResource>  
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableFiltersForCategory">
+    <Value>
+      Активувати фільри для груп товарів
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableFiltersForCategory.Hint">
+    <Value>
+      Активувати фільри для груп товарів
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableFiltersForManufacturer">
+    <Value>
+      Активувати фільри для виробників товарів
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableFiltersForManufacturer.Hint">
+    <Value>
+      Активувати фільри для виробників товарів
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableFiltersForVendor">
+    <Value>
+      Активувати фільри для вендорів товарів
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableFiltersForVendor.Hint">
+    <Value>
+      Активувати фільри для вендорів товарів
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SkipFiltersforCategories">
+    <Value>
+      Групи товарів для яких не показувати фільтр (Id через кому)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SkipFiltersforCategories.Hint">
+    <Value>
+      Групи товарів для яких не показувати фільтр (Id через кому)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SkipFiltersforManufacturers">
+    <Value>
+      Виробники товарів для яких не показувати фільтр (Id через кому)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SkipFiltersforManufacturers.Hint">
+    <Value>
+      Виробники товарів для яких не показувати фільтр (Id через кому)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SkipFiltersforVendors">
+    <Value>
+      Вендори товарів для яких не показувати фільтр (Id через кому)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SkipFiltersforVendors.Hint">
+    <Value>
+      Вендори товарів для яких не показувати фільтр (Id через кому)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnablePriceRangeFilter">
+    <Value>
+      Активувати фільтр ціни
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnablePriceRangeFilter.Hint">
+    <Value>
+      Активувати фільтр ціни
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultClosePriceRange">
+    <Value>
+      Закрити фільтр ціни по замовчуванню
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultClosePriceRange.Hint">
+    <Value>
+      Закрити фільтр ціни по замовчуванню
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableSpecificationsFilter">
+    <Value>
+      Активувати фільтр спеціфікацій товарів
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableSpecificationsFilter.Hint">
+    <Value>
+      Активувати фільтр спеціфікацій товарів
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultCloseSpecifications">
+    <Value>
+      Закрити фільтр спеціфікацій товарів
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultCloseSpecifications.Hint">
+    <Value>
+      Закрити фільтр спеціфікацій товарів
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableAttributesFilter">
+    <Value>
+      Активувати фільтр акрибутів товару
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableAttributesFilter.Hint">
+    <Value>
+      Активувати фільтр акрибутів товару
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultCloseAttributes">
+    <Value>
+      Закрити фільтр акрибутів товару
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultCloseAttributes.Hint">
+    <Value>
+      Закрити фільтр акрибутів товару
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableManufacturersFilter">
+    <Value>
+      Активувати фільтр виробників товару
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableManufacturersFilter.Hint">
+    <Value>
+      Активувати фільтр виробників товару
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultCloseManufacturers">
+    <Value>
+      Закрити фільтр виробників товару
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultCloseManufacturers.Hint">
+    <Value>
+      Закрити фільтр виробників товару
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableVendorsFilter">
+    <Value>
+      Активувати фільтр вендорів товару
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EnableVendorsFilter.Hint">
+    <Value>
+      Активувати фільтр вендорів товару
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultCloseVendors">
+    <Value>
+      Закрити фільтр вендорів товару
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultCloseVendors.Hint">
+    <Value>
+      Закрити фільтр вендорів товару
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.FilterSettings">
+    <Value>
+      Налаштування фільтрів
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorSettings">
+    <Value>
+      HTML-селектори
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.GeneralSettings">
+    <Value>
+      Головні налаштування
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.AdvancedSettings">
+    <Value>
+      Додаткові налаштування
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForListPanel">
+    <Value>
+      Html селектор для Product List Panel
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForListPanel.Hint">
+    <Value>
+      Html селектор для Product List Panel
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForGridPanel">
+    <Value>
+      Html селектор для Product Grid Panel
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForGridPanel.Hint">
+    <Value>
+      Html селектор для Product Grid Panel
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForPager">
+    <Value>
+      Html селектор для Product Pager Panel
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForPager.Hint">
+    <Value>
+      Html селектор для Product Pager Panel
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForSortOptions">
+    <Value>
+      Html селектор для SortOptions
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForSortOptions.Hint">
+    <Value>
+      Html селектор для SortOptions
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForViewOptions">
+    <Value>
+      Html селектор для ViewOptions
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForViewOptions.Hint">
+    <Value>
+      Html селектор для ViewOptions
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForProductPageSize">
+    <Value>
+      Html селектор для Page Size
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForProductPageSize.Hint">
+    <Value>
+      Html селектор для Page Size
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.ProductSelectorsSelector">
+    <Value>
+      Html селектор для блока (OrderBy, ViewMode, PageSize)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.ProductSelectorsSelector.Hint">
+    <Value>
+      Html селектор для блока (OrderBy, ViewMode, PageSize)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForScrolling">
+    <Value>
+      Html селектор для Scrolling
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorForScrolling.Hint">
+    <Value>
+      Html селектор для Scrolling
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultProductSorting">
+    <Value>
+      Сортировка по умолчанию
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.DefaultProductSorting.Hint">
+    <Value>
+      Сортировка по умолчанию
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.ScrollAfterFiltration">
+    <Value>
+      Включить скроллинг
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.ScrollAfterFiltration.Hint">
+    <Value>
+      Включить скроллинг
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.showDebugInfo">
+    <Value>
+      Включить отладку
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.showDebugInfo.Hint">
+    <Value>
+      Включить отладку
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.WidgetZone.Required">
+    <Value>
+      Please enter a Widget
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.HTMLSelector.Required">
+    <Value>
+      HTML selector is required
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.FilterTitle">
+    <Value>
+      Фильтр:
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.ClearAll">
+    <Value>
+      Очистить
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.PriceRange.Title">
+    <Value>
+      Цены
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.Clear">
+    <Value>
+      Очистить
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.Manufacturers.Title">
+    <Value>
+      Производители
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.Vendors.Title">
+    <Value>
+      Вендоры
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.All">
+    <Value>
+      Все
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.ErrorMessage">
+    <Value>
+      Ошибка. Не могу загрузить список товаров. Обновите страницу.
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EmptyResult.Caption">
+    <Value>
+      Нет результатов фильтрации
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.EmptyResult.Text">
+    <Value>
+      Нет ни одного товара который удовлетворяет условиям фильтрации. Измените параметры фильтров.
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.ClearLogFile">
+    <Value>
+      Очистить log-файл
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.GetLogFile">
+    <Value>
+      Получить log-файл
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.FiltersConditionSpecifications">
+    <Value>
+      Тип фільтру специфікації
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.FiltersConditionSpecifications.Hint">
+    <Value>
+      Тип фільтру специфікації (на блок)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.FiltersConditionAttributes">
+    <Value>
+      Тип фільтру атрибути
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.FiltersConditionAttributes.Hint">
+    <Value>
+      Тип фільтру атрибути (на блок)
+    </Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.CustomKeyword">
+    <Value>Custom keyword</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.GlobalCategorySetting">
+    <Value>Global Category Setting</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SpecificCategorySetting">
+    <Value>Specific Category Setting</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.MetaTitle">
+    <Value>Meta Title</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.MetaDescription">
+    <Value>Meta Description</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.MetaKeyWord">
+    <Value>Meta Keyword</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.HTag">
+    <Value>H1 Tag</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.HeaderCopy">
+    <Value>Header Copy</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.Category">
+    <Value>Category</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.HeaderTitle">
+    <Value>Header Title</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.GlobalFooterTitle1">
+    <Value>Footer Title 1</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.GlobalFooterContent1">
+    <Value>Footer Content 1</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.GlobalFooterTitle2">
+    <Value>Footer Title 2</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.GlobalFooterContent2">
+    <Value>Footer Content 2</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.GlobalFooterTitle3">
+    <Value>Footer Title 3</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.GlobalFooterContent3">
+    <Value>Footer Content 3</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SpecificFooterTitle1">
+    <Value>Footer Title 1</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SpecificFooterContent1">
+    <Value>Footer Content 1</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SpecificFooterTitle2">
+    <Value>Footer Title 2</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SpecificFooterContent2">
+    <Value>Footer Content 2</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SpecificFooterTitle3">
+    <Value>Footer Title 3</Value>
+  </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.SpecificFooterContent3">
+    <Value>Footer Content 3</Value>
+  </LocaleResource>
+</Language>

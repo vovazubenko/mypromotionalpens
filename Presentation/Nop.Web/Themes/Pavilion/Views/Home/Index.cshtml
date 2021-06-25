@@ -1,0 +1,90 @@
+﻿@using Nop.Core.Domain.Seo
+@using Nop.Core.Infrastructure
+
+@{
+    Layout = "~/Views/Shared/_ColumnsOne.cshtml";
+
+    //Html.AppendCssFileParts("~/Themes/Pavilion/Content/css/owl.carousel.css");
+    //Html.AddScriptParts("~/Themes/Pavilion/Content/scripts/owl.carousel.min.js");
+
+    //page class
+    Html.AppendPageCssClassParts("html-home-page");
+    Html.AddTitleParts(T("PageTitle.HomePage").Text);
+    Html.AddMetaDescriptionParts(T("HomePage.MetaDescription").Text);
+    Html.AddMetaKeywordParts(T("HomePage.MetaKeywords").Text);
+    var canonicalUrlsEnabled = EngineContext.Current.Resolve<SeoSettings>().CanonicalUrlsEnabled;
+    if (canonicalUrlsEnabled)
+    {
+        var categoryUrl = Url.RouteUrl("HomePage", new { }, this.Request.Url.Scheme);
+        Html.AddCanonicalUrlParts(categoryUrl);
+    }
+
+    var seoSettings = EngineContext.Current.Resolve<SeoSettings>();
+    var _storeContext = EngineContext.Current.Resolve<Nop.Core.IStoreContext>();
+    //open graph META tags
+    var logoUrl = _storeContext.CurrentStore.Url.ToString() + "Themes/Pavilion/Content/img/logo.gif";
+    if (seoSettings.OpenGraphMetaTags)
+    {
+        Html.AddHeadCustomParts("<meta property=\"og:type\" content=\"website\" />");
+        Html.AddHeadCustomParts("<meta property=\"og:title\" content=\"" + T("PageTitle.HomePage").Text + "\" />");
+        Html.AddHeadCustomParts("<meta property=\"og:description\" content=\"" + Html.Encode(Nop.Core.Html.HtmlHelper.StripTags(T("HomePage.MetaDescription").Text)) + "\" />");
+        Html.AddHeadCustomParts("<meta property=\"og:image\" content=\"" + logoUrl + "\" />");
+        Html.AddHeadCustomParts("<meta property=\"og:url\" content=\"" + Request.Url.AbsoluteUri + "\" />");
+        Html.AddHeadCustomParts("<meta property=\"og:site_name\" content=\"" + _storeContext.CurrentStore.Name + "\" />");
+    }
+
+    //Twitter META tags
+    if (seoSettings.TwitterMetaTags)
+    {
+        Html.AddHeadCustomParts("<meta property=\"twitter:card\" content=\"website\" />");
+        Html.AddHeadCustomParts("<meta property=\"twitter:site\" content=\"" + _storeContext.CurrentStore.Name + "\" />");
+        Html.AddHeadCustomParts("<meta property=\"twitter:title\" content=\"" + T("PageTitle.HomePage").Text + "\" />");
+        Html.AddHeadCustomParts("<meta property=\"twitter:description\" content=\"" + Html.Encode(Nop.Core.Html.HtmlHelper.StripTags(T("HomePage.MetaDescription").Text)) + "\" />");
+        Html.AddHeadCustomParts("<meta property=\"twitter:image\" content=\"" + logoUrl + "\" />");
+        Html.AddHeadCustomParts("<meta property=\"twitter:url\" content=\"" + Request.Url.AbsoluteUri + "\" />");
+    }
+}
+
+<div class="page home-page">
+    <div class="page-body">
+        <div class="topic-before-categories">
+            @Html.Action("TopicBlock", "Topic", new { systemName = "HomePageText" })
+        </div>
+        <div class="homepage-categories Featured-Product-Categories">
+            @Html.Action("HomepageCategories", "Catalog")
+        </div>
+        <div class="homepage-products">
+            @Html.Action("HomepageProducts", "Product")
+        </div>
+        @Html.Widget("home_page_before_categories")
+
+        @Html.Widget("home_page_before_products")
+
+
+        @Html.Widget("home_page_before_best_sellers")
+        <div class="homepage-middle-wrapper">
+            @Html.Action("HomepageLatestReview", "Product", new { productThumbPictureSize = 200 })
+        </div>
+        <div class="homepage-middle-wrapper">
+            <div class="latest-blog-section">
+                @Html.Widget("pavilion_home_page_richblog")
+                <div class="homepage-topic-whyus">
+                    @Html.Action("TopicBlock", "Topic", new { systemName = "HomePageWhyUs" })
+                </div>
+            </div>
+            @*@Html.Action("HomepageBestSellers", "Product", new { productThumbPictureSize = 128 })*@
+
+        </div>
+
+
+        @Html.Widget("home_page_before_news")
+        @Html.Action("HomePageNews", "News")
+        @Html.Widget("home_page_before_poll")
+        @Html.Action("HomePagePolls", "Poll")
+
+        <div class="homepage-bottom-wrapper">
+            @Html.Widget("home_page_bottom")
+        </div>
+
+    </div>
+</div>

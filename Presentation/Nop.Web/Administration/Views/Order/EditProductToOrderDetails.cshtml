@@ -1,0 +1,80 @@
+﻿@model OrderModel.AddOrderProductModel.ProductDetailsModel
+
+@using Nop.Core.Domain.Catalog
+
+@{
+    //page title
+    ViewBag.Title = string.Format(T("Admin.Orders.Products.EditOption").Text, Model.Name, Model.OrderId);
+    //active menu item (system name)
+    Html.SetActiveMenuItemSystemName("Orders");
+}
+
+@*we add enctype = "multipart/form-data" because "File upload" attribute control type requires it*@
+@using (Html.BeginForm("EditProductToOrderDetails", "Order",
+                                                                            new RouteValueDictionary(new { orderId = Model.OrderId, productId = Model.ProductId, orderItemId=Model.orderItemId }),
+                                                                            FormMethod.Post,
+                                                                            new Dictionary<string, Object> { { "enctype", "multipart/form-data" }, { "id", "product-details-form" } }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(false)
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @string.Format(T("Admin.Orders.Products.EditOption").Text, Model.Name, Model.OrderId)
+            <small><i class="fa fa-arrow-circle-left"></i>@Html.ActionLink(T("Admin.Orders.Products.AddNew.BackToOrder").Text, "Edit", new { id = Model.OrderId })</small>
+        </h1>
+        <div class="pull-right">
+            &nbsp;
+        </div>
+    </div>
+
+    <div class="content">
+        @if (Model.Warnings.Count > 0)
+        {
+            <div class="callout callout-danger">
+                <ul>
+                    @foreach (var warning in Model.Warnings)
+                    {
+                        <li>@warning</li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <div class="form-horizontal">
+            <div class="panel-group">
+                @if (Model.ProductType == ProductType.SimpleProduct)
+                {
+                    @Html.Partial("_ProductEditAttributes", Model.ProductAttributes, new ViewDataDictionary() { new KeyValuePair<string, object>("productId", Model.ProductId) })
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <div class="col-md-9 col-md-offset-3">
+                                    <button type="submit" class="btn btn-primary">
+                                        @T("Admin.Orders.Products.EditOption")
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else if (Model.ProductType == ProductType.GroupedProduct)
+                {
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            @*TODO add support for grouped products to be added to an existing order*@
+                            Grouped products are not currently supported for adding to an existing order
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            This product type (unknown) is not currently supported for adding to an existing order
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}

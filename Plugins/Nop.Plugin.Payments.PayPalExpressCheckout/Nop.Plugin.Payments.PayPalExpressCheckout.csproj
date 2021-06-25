@@ -1,0 +1,317 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{300E43AF-0D0E-47C3-8396-B101E63E1803}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Nop.Plugin.Payments.PayPalExpressCheckout</RootNamespace>
+    <AssemblyName>Nop.Plugin.Payments.PayPalExpressCheckout</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Presentation\Nop.Web\Plugins\Payments.PayPalExpressCheckout\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\..\packages\Autofac.4.4.0\lib\net45\Autofac.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="FluentValidation">
+      <HintPath>..\..\packages\FluentValidation.6.4.0\lib\Net45\FluentValidation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Nop.Core">
+      <HintPath>..\..\Libraries\Nop.Core\bin\Debug\Nop.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Nop.Services">
+      <HintPath>..\..\Libraries\Nop.Services\bin\Debug\Nop.Services.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Nop.Web.Framework">
+      <HintPath>..\..\Presentation\Nop.Web.Framework\bin\Debug\Nop.Web.Framework.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\PaymentPayPalExpressCheckoutController.cs" />
+    <Compile Include="Helpers\PayPalHelper.cs" />
+    <Compile Include="Infrastructure\DependencyRegistrar.cs" />
+    <Compile Include="Models\AddressModel.cs" />
+    <Compile Include="Models\AddressValidator.cs" />
+    <Compile Include="Models\CheckoutConfirmModel.cs" />
+    <Compile Include="Models\CheckoutShippingAddressModel.cs" />
+    <Compile Include="Models\CheckoutShippingMethodModel.cs" />
+    <Compile Include="Models\ConfigurationModel.cs" />
+    <Compile Include="Models\MappingExtensions.cs" />
+    <Compile Include="Models\PaymentInfoModel.cs" />
+    <Compile Include="PayPalExpressCheckoutPaymentProcessor.cs" />
+    <Compile Include="PayPalExpressCheckoutPaymentSettings.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RouteProvider.cs" />
+    <Compile Include="Service References\PayPalAPI\Reference.cs" />
+    <Compile Include="Service References\PayPalAPI\Reference1.cs" />
+    <Compile Include="Service References\PayPalAPI\Reference2.cs" />
+    <Compile Include="Service References\PayPalAPI\Reference3.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Services\IPayPalCartItemService.cs" />
+    <Compile Include="Services\IPayPalCheckoutDetailsService.cs" />
+    <Compile Include="Services\IPayPalCurrencyCodeParser.cs" />
+    <Compile Include="Services\IPayPalExpressCheckoutConfirmOrderService.cs" />
+    <Compile Include="Services\IPayPalExpressCheckoutPlaceOrderService.cs" />
+    <Compile Include="Services\IPayPalExpressCheckoutService.cs" />
+    <Compile Include="Services\IPayPalExpressCheckoutShippingAddressService.cs" />
+    <Compile Include="Services\IPayPalExpressCheckoutShippingMethodService.cs" />
+    <Compile Include="Services\IPayPalInterfaceService.cs" />
+    <Compile Include="Services\IPayPalIPNService.cs" />
+    <Compile Include="Services\IPayPalOrderService.cs" />
+    <Compile Include="Services\IPayPalRecurringPaymentsService.cs" />
+    <Compile Include="Services\IPayPalRedirectionService.cs" />
+    <Compile Include="Services\IPayPalRequestService.cs" />
+    <Compile Include="Services\IPayPalSecurityService.cs" />
+    <Compile Include="Services\IPayPalShippingService.cs" />
+    <Compile Include="Services\IPayPalUrlService.cs" />
+    <Compile Include="Services\PayPalCartItemService.cs" />
+    <Compile Include="Services\PayPalCheckoutDetailsService.cs" />
+    <Compile Include="Services\PayPalCurrencyCodeParser.cs" />
+    <Compile Include="Services\PayPalExpressCheckoutConfirmOrderService.cs" />
+    <Compile Include="Services\PayPalExpressCheckoutPlaceOrderService.cs" />
+    <Compile Include="Services\PayPalExpressCheckoutService.cs" />
+    <Compile Include="Services\PayPalExpressCheckoutShippingAddressService.cs" />
+    <Compile Include="Services\PayPalExpressCheckoutShippingMethodService.cs" />
+    <Compile Include="Services\PayPalInterfaceService.cs" />
+    <Compile Include="Services\PayPalIPNService.cs" />
+    <Compile Include="Services\PayPalOrderService.cs" />
+    <Compile Include="Services\PayPalRecurringPaymentsService.cs" />
+    <Compile Include="Services\PayPalRedirectionService.cs" />
+    <Compile Include="Services\PayPalRequestService.cs" />
+    <Compile Include="Services\PayPalSecurityService.cs" />
+    <Compile Include="Services\PayPalShippingService.cs" />
+    <Compile Include="Services\PayPalUrlService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+    <None Include="Service References\PayPalAPI\CoreComponentTypes.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PayPalAPI\eBLBaseComponents.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PayPalAPI\EnhancedDataTypes.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.AddressVerifyResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.AddressVerifyResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BAUpdateResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BillAgreementUpdateResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BillOutstandingAmountResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BillOutstandingAmountResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BillUserResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BillUserResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BMButtonSearchResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BMButtonSearchResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BMCreateButtonResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BMCreateButtonResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BMGetButtonDetailsResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BMGetButtonDetailsResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BMGetInventoryResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BMGetInventoryResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BMManageButtonStatusResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BMManageButtonStatusResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BMSetInventoryResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BMSetInventoryResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BMUpdateButtonResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.BMUpdateButtonResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.CancelRecoupResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.CancelRecoupResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.CompleteRecoupResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.CompleteRecoupResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.CreateBillingAgreementResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.CreateBillingAgreementResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.CreateMobilePaymentResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.CreateMobilePaymentResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.CreateRecurringPaymentsProfileResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.CreateRecurringPaymentsProfileResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.CustomSecurityHeaderType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoAuthorizationResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoAuthorizationResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoCancelResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoCancelResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoCaptureResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoCaptureResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoDirectPaymentResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoDirectPaymentResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoExpressCheckoutPaymentResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoExpressCheckoutPaymentResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoMobileCheckoutPaymentResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoMobileCheckoutPaymentResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoNonReferencedCreditResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoNonReferencedCreditResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoReauthorizationResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoReauthorizationResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoReferenceTransactionResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoReferenceTransactionResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoUATPAuthorizationResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoUATPAuthorizationResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoUATPExpressCheckoutPaymentResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoUATPExpressCheckoutPaymentResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoVoidResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.DoVoidResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.EnterBoardingResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.EnterBoardingResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.ExecuteCheckoutOperationsResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.ExecuteCheckoutOperationsResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.ExternalRememberMeOptOutResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.ExternalRememberMeOptOutResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetAccessPermissionDetailsResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetAccessPermissionDetailsResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetAuthDetailsResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetAuthDetailsResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetBalanceResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetBalanceResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetBillingAgreementCustomerDetailsResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetBillingAgreementCustomerDetailsResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetBoardingDetailsResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetBoardingDetailsResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetExpressCheckoutDetailsResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetExpressCheckoutDetailsResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetIncentiveEvaluationResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetIncentiveEvaluationResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetMobileStatusResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetMobileStatusResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetPalDetailsResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetPalDetailsResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetRecurringPaymentsProfileDetailsResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetRecurringPaymentsProfileDetailsResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetTransactionDetailsResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.GetTransactionDetailsResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.InitiateRecoupResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.InitiateRecoupResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.ManagePendingTransactionStatusResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.ManagePendingTransactionStatusResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.ManageRecurringPaymentsProfileStatusResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.ManageRecurringPaymentsProfileStatusResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.MassPayResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.MassPayResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.RefundTransactionResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.RefundTransactionResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.ReverseTransactionResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.ReverseTransactionResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.SetAccessPermissionsResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.SetAccessPermissionsResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.SetAuthFlowParamResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.SetAuthFlowParamResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.SetCustomerBillingAgreementResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.SetCustomerBillingAgreementResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.SetExpressCheckoutResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.SetExpressCheckoutResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.SetMobileCheckoutResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.SetMobileCheckoutResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.TransactionSearchResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.TransactionSearchResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.UpdateAccessPermissionsResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.UpdateAccessPermissionsResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.UpdateRecurringPaymentsProfileResponse.datasource" />
+    <None Include="Service References\PayPalAPI\Nop.Plugin.Payments.PayPalExpressCheckout.PayPalAPI.UpdateRecurringPaymentsProfileResponseType.datasource" />
+    <None Include="Service References\PayPalAPI\PayPalSvc.wsdl" />
+    <None Include="Views\Configure.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Views\Confirm.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Views\Confirm.Mobile.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Views\PaymentInfo.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Views\PaymentInfo.Mobile.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Views\SetShippingAddress.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Views\SetShippingMethod.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Views\_CreateOrUpdateAddress.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="web.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Description.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\mobile-checkout.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="logo.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Notes.txt" />
+    <Content Include="Service References\PayPalAPI\configuration.svcinfo" />
+    <Content Include="Service References\PayPalAPI\configuration91.svcinfo" />
+    <Content Include="Service References\PayPalAPI\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference3.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

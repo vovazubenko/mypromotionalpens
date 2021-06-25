@@ -1,0 +1,274 @@
+﻿@model Nop.Core.Domain.ASI.ASI_SuppliersUpdateStatus
+@using Nop.Core.Data;
+@using Nop.Core.Domain.ASI;
+@{
+    ViewBag.Title = T("Admin.ASI.Supplier.Suppliers").Text;
+    //active menu item (system name)
+    Html.SetActiveMenuItemSystemName("ASISuppliers");
+}
+
+<style>
+    .supplier-success-notification {
+        background-color: #dff2bf;
+        color: #4f8a10;
+        display: block;
+        font-size: 15px;
+        margin-top: 10px !important;
+        padding: 10px;
+        vertical-align: middle;
+    }
+
+    .supplier-error-notification {
+        background-color: #ffbaba;
+        color: #d8000c;
+        display: block;
+        padding: 10px;
+    }
+
+    td, th {
+        padding: 0px 10px;
+    }
+</style>
+@Html.AntiForgeryToken()
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "updatesuppliers-form" }))
+{
+    
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @T("Admin.ASI.Supplier.UpdateSuppliers")
+            @*<small><i class="fa fa-arrow-circle-left"></i>@Html.ActionLink(T("Admin.Catalog.Attributes.CheckoutAttributes.BackToList").Text, "List")</small>*@
+        </h1>
+        <div class="pull-right">
+            @if (Model == null || Model.Status == SupplierUpdateStatus.Completed || Model.Status == SupplierUpdateStatus.Error)
+            {
+                <button type="submit" name="save" class="btn bg-blue">
+                    <i class="fa fa-floppy-o"></i>
+                    @T("Admin.Common.Update")
+                </button>
+            }
+
+        </div>
+    </div>
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+
+
+                <div class="panel panel-default panel-search">
+                    <div class="panel panel-body">
+                        
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="uk-grid" data-uk-grid-margin>
+                                        @if (Model == null || Model.Status == SupplierUpdateStatus.Completed || Model.Status == SupplierUpdateStatus.Error)
+                {
+                                            <div class="uk-width-1-1">
+                                                @T("Admin.ASI.Supplier.UpdateMessage")
+                                                @if (Model != null)
+                                                {
+                                                    <h4>Previous Process Status</h4>
+                                                }
+                                                @if (Model != null && Model.Status == SupplierUpdateStatus.Completed)
+                                                {
+                                                    <span class="supplier-success-notification">
+                                                        We have successfully retrived @Model.SuccessfullyRetrivedRcordCount
+                                                        @if (Model.ModifiedDate.HasValue)
+                                                        {
+                                                            <text>
+                                                                suppliers on @Model.ModifiedDate.Value.ToString("MM/dd/yyyy HH:mm:ss")
+                                                            </text>
+                                                        }
+                                                        <br />
+                                                        @if (Model.ModifiedDate.HasValue && Model.AddedDate.HasValue)
+                                                        {
+                                                            var diff = (Model.ModifiedDate.Value - Model.AddedDate.Value);
+                                                            <text>
+                                                                Total time taken to complete update process is:
+                                                                @(diff.Days > 0 ? "" + diff.Days + " day(s) " : "")
+                                                                @(diff.Hours > 0 ? "" + diff.Hours + " hour(s) " : "")
+                                                                @(diff.Minutes > 0 ? "" + diff.Minutes + " minute(s) " : "")
+                                                                @(diff.Seconds > 0 ? "" + diff.Seconds + " second(s) " : "")
+                                                            </text>
+                                                        }
+                                                    </span>
+                                                }
+                                                else if (Model != null)
+                                                {
+                                                    <span class="supplier-error-notification">
+                                                        We have faced some technical issues while updating suppliers
+                                                        @if (Model.ModifiedDate.HasValue)
+                                                        {
+                                                            <text>
+                                                                on @Model.ModifiedDate.Value.ToString("MM/dd/yyyy HH:mm:ss")
+                                                            </text>
+                                                        }
+                                                        .Please try again by click update button above.
+                                                    </span>
+                                                }
+                                            </div>
+                                        }
+                                        else if (Model.SuccessfullyRetrivedRcordCount == -1)
+                                        {
+                                            <div class="uk-width-1-1">
+                                                <h4>We have started updating suppliers. It will take a while.</h4>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="uk-width-1-1">
+                                                <h4>We are updating suppliers. You can check statics below. Once we are done with the update process we will update this screen.</h4>
+                                                <div>
+                                                    <table class="report">
+                                                        <tr>
+                                                            <td>
+                                                                Total records availabel
+                                                            </td>
+                                                            <td>
+                                                                @Model.TotalRecords
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                Number of records retrived successfully
+                                                            </td>
+                                                            <td>
+                                                                @Model.SuccessfullyRetrivedRcordCount
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                Pending records to be retrived
+                                                            </td>
+                                                            <td>
+                                                                @(Model.TotalRecords - Model.SuccessfullyRetrivedRcordCount)
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+               
+                    </div>
+                </div>
+                @if (Model == null || Model.Status == SupplierUpdateStatus.Completed || Model.Status == SupplierUpdateStatus.Error)
+                {
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div id="products-grid"></div>
+                            <script>
+    $(document).ready(function () {
+        @if (Model == null || Model.Status == SupplierUpdateStatus.Completed || Model.Status == SupplierUpdateStatus.Error)
+         {
+            <text>
+        $("#products-grid").kendoGrid({
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: {
+                        //url: url, //"/Users/List",
+                        url: "@Url.Action("GetSuppliers", "ASI")", //"/Users/List",
+                        type: "POST",
+                        dataType: "json",
+                        contentType: "application/json"
+
+                    },
+                    parameterMap: function (data, operation) {
+                        if (operation != "read") {
+                            return data;
+                        } else {
+                            //for some reasons only such "Filter" data be parsed
+                            return JSON.stringify(data);
+                        }
+                    }
+                },
+                schema: {
+                    data: "Data",
+                    total: "Total",
+                    errors: "Errors",
+                    model: {
+                        id: "Id",
+                        fields: {
+                            SupplierId: { editable: false, type: "number" },
+                            Name: { editable: false, type: "string" },
+                            ASINumber: { editable: false, type: "number" },
+                        }
+                    }
+                },
+                error: function (e) {
+                    // Cancel the changes
+                    this.cancelChanges();
+                },
+                pageSize: 15,
+                serverPaging: true,
+                serverFiltering: true,
+                serverSorting: true
+            },
+            dataBound: function () {
+                //DisplayNoResultsFound($('#products-grid'));
+                //UpdateSelectedSuppliersStatus();
+            },
+            editable: {
+                confirmation: true,
+                mode: "inline"
+            },
+            //filterable: {
+            //    extra: false,
+            //    operators: {
+            //        string: {
+            //            contains: "Contains",
+            //            doesnotcontain: "Does not contain",
+            //            eq: "Is equal to",
+            //            neq: "Is not equal to",
+            //            startswith: "Starts with",
+            //            endswith: "Ends with"
+            //        }
+            //    }
+            //},
+            //sortable: {
+            //    mode: "multiple",
+            //    allowUnsort: true
+            //},
+            pageable: {
+                refresh: true,
+                pageSizes: [10, 15, 20, 50, 100]
+            },
+            scrollable: false,
+            columns: [{
+
+                field: "SupplierId",
+                title: "SupplierId",
+                width: 375
+            }, {
+                field: "Name",
+                title: "Name"
+            }, {
+                field: "ASINumber",
+                title: "ASINumber"
+            }
+            ]
+        });
+
+        </text>
+         }
+        function additionalData() {
+            var data = {};
+            addAntiForgeryToken(data);
+            return data;
+        }
+    });
+</script>
+
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+
+

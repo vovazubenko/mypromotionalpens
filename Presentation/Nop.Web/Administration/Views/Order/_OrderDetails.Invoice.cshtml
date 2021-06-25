@@ -1,0 +1,9 @@
+﻿@model OrderModel
+<div class="panel-group">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            @Html.EditorFor(model => model.InvoiceHtml,"RichEditor", new { @cols = "500" })
+            @*@Html.Raw(Model.InvoiceHtml)*@
+        </div>
+    </div>
+</div>

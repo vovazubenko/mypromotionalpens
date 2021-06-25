@@ -1,0 +1,235 @@
+﻿
+@model ProductOverviewModel
+@using Nop.Core
+@using Nop.Core.Domain.Catalog
+@using Nop.Core.Domain.Orders
+@using Nop.Core.Domain.Tax
+@using Nop.Core.Infrastructure
+@using Nop.Web.Models.Catalog;
+@using Nop.Web.Framework.Themes
+@{
+    //prepare "Add to cart" AJAX link
+    string addtocartlink = "";
+    var shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart;
+    var quantity = 1;
+    if (Model.ProductPrice.ForceRedirectionAfterAddingToCart)
+    {
+        addtocartlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = shoppingCartTypeId, quantity = quantity, forceredirection = Model.ProductPrice.ForceRedirectionAfterAddingToCart });
+    }
+    else
+    {
+        addtocartlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = shoppingCartTypeId, quantity = quantity });
+    }
+
+    
+
+    var addtowishlistlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = (int)ShoppingCartType.Wishlist, quantity = quantity });
+    var addtocomparelink = Url.RouteUrl("AddProductToCompare", new { productId = Model.Id });
+    var themeName = EngineContext.Current.Resolve<IThemeContext>().WorkingThemeName;
+}
+<style>
+    .item-box .picture .quick-view-button a {
+        display: none;
+        
+    }
+</style>
+<div class="product-item" data-productid="@Model.Id" itemscope itemtype="http://schema.org/Product">
+    <div class="picture">
+        <a href="@Url.RouteUrl("Product", new { SeName = Model.SeName })" title="@Model.DefaultPictureModel.Title">
+            <img itemprop="image" height="auto" width="auto" style="max-height: 227px;" alt="@Model.DefaultPictureModel.AlternateText" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" />
+        </a>
+    </div>
+    <div class="details">
+        @if (Model.ReviewOverviewModel.AllowCustomerReviews)
+        {
+            int ratingPercent = 0;
+            if (Model.ReviewOverviewModel.TotalReviews != 0)
+            {
+                ratingPercent = ((Model.ReviewOverviewModel.RatingSum * 100) / Model.ReviewOverviewModel.TotalReviews) / 5;
+            }
+            <div class="product-rating-box" title="@string.Format(T("Reviews.TotalReviews").Text, Model.ReviewOverviewModel.TotalReviews)">
+                <div class="rating">
+                    <div style="width: @(ratingPercent)%">
+                    </div>
+                </div>
+            </div>
+            if (ratingPercent > 0)
+            {
+                <div style="display:none;" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+                    Rated <span itemprop="ratingValue">@(ratingPercent * 5 / 100)</span>/5
+                    based on <span itemprop="reviewCount">@Model.ReviewOverviewModel.TotalReviews</span> customer reviews
+                </div>
+            }
+        }
+        <div class="attribute-squares-wrapper"></div>
+        <h2 class="product-title" itemprop="name">
+            <a itemprop="url" href="@Url.RouteUrl("Product", new { SeName = Model.SeName })">@Model.Name</a>
+        </h2>
+
+        @if (EngineContext.Current.Resolve<CatalogSettings>().ShowSkuOnCatalogPages && !string.IsNullOrEmpty(Model.Sku))
+        {
+    <div class="sku">
+        Item # : @Model.Sku
+    </div>
+        }
+    <div class="add-info">
+        @Html.Widget("productbox_addinfo_before", Model.Id)
+        @if (Model.ProductPrice.LowestPrice > 0)
+        {
+            <div style="display:none;" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                <strong>Price start from : </strong>
+                <span itemprop="priceCurrency">$</span>
+                <span itemprop="price">
+                    @Model.ProductPrice.LowestPrice.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
+                </span>
+            </div>
+        }
+
+        @*<div class="prices" style="height:46px !important;">*@
+        <div class="prices">
+            <span class="price actual-price" >
+
+                @*@Model.ProductPrice.Price <br />*@
+                <!--as low as : $
+    @if (Model.ProductPrice.DiscountRanges != null && Model.ProductPrice.DiscountRanges.Any())
+    {
+        @Model.ProductPrice.LowestPrice.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
+    }
+    else
+    {
+        @Model.ProductPrice.PriceValue.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
+    }-->
+
+                @if (@Model.AmountMax.ToString() == @Model.AmountMin.ToString() && @Model.AmountMin > 0)
+                {
+
+
+                    <span>Price: $  @Model.AmountMin.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)</span>
+
+                }
+                else if (@Model.AmountMax <= 0 && Model.AmountMin <= 0)
+                {
+                                <span>Price: $ 0.00 </span>
+                }
+                else
+                {<span>Prices From</span>
+                    if (@Model.AmountMax > 0 && @Model.AmountMin > 0)
+                    {
+                        <span>
+                            $ @Model.AmountMin.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)  to
+                            $ @Model.AmountMax.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
+                        </span>
+                    }
+                    else
+                    {<span> $ 0.00 to $ 0.00</span>
+
+
+                    }
+
+
+
+
+                }
+
+
+
+            </span>
+
+            @if (!String.IsNullOrEmpty(Model.ProductPrice.OldPrice))
+            {
+                <span class="price old-price">@Model.ProductPrice.OldPrice</span>
+            }
+            @if (Model.ProductPrice.DisplayTaxShippingInfo)
+            {
+                var inclTax = EngineContext.Current.Resolve<IWorkContext>().TaxDisplayType == TaxDisplayType.IncludingTax;
+                //tax info is already included in the price (incl/excl tax). that's why we display only shipping info here
+                //of course, you can modify appropriate locales to include VAT info there
+                <span class="tax-shipping-info">
+                    @T(inclTax ? "Products.Price.TaxShipping.InclTax" : "Products.Price.TaxShipping.ExclTax", Url.RouteUrl("Topic", new { SeName = Html.GetTopicSeName("shippinginfo") }))
+
+                </span>
+            }
+            @if (!String.IsNullOrEmpty(Model.ProductPrice.BasePricePAngV))
+            {
+                <span class="price base-price">@Model.ProductPrice.BasePricePAngV</span>
+            }
+        </div>
+
+
+        <div class="price actual-price" >
+            <span>Minimum: @Html.Raw(Model.OrderMinimumQuantity)</span>
+
+        </div>
+        <div class="price actual-price" >
+            Item # : @Html.Raw(Model.Sku)
+
+        </div>
+        @Html.Widget("productbox_addinfo_middle", Model.Id)
+
+        @*<div class="desc">
+            @Html.Raw(GetDescription(Model.FullDescription))
+
+        </div>*@
+
+        <div class="buttons-upper1" style="z-index:5 !important">
+            @*<input type="button" value="@T("Products.Details")" class="button-1 product-box-detail-button" onclick="setLocation('@Url.RouteUrl("Product", new { SeName = Model.SeName })')" />*@
+
+
+            @if (!Model.ProductPrice.DisableWishlistButton)
+            {
+                <input type="button" value="@T("ShoppingCart.AddToWishlist")" style="background-position: 0px center !important;background-image: url('../Themes/Pavilion/Content/img/product-sprite-1.png') !important;" title="@T("ShoppingCart.AddToWishlist")" class="button-2 add-to-wishlist-button" onclick="AjaxCart.addproducttocart_catalog('@addtowishlistlink');return false;" />
+            }
+
+            @if (!Model.ProductPrice.DisableAddToCompareListButton)
+            {
+                <input type="button" value="@T("ShoppingCart.AddToCompareList")" style="background-position: -37px center !important;background-image: url('../Themes/Pavilion/Content/img/product-sprite-1.png') !important;" title="@T("ShoppingCart.AddToCompareList")" class="button-2 add-to-compare-list-button" onclick="AjaxCart.addproducttocomparelist('@addtocomparelink');return false;" />
+            }
+            <input type="button" title="@T("Products.EmailAFriend")" style="background-position: -74px center !important;background-image: url('../Themes/Pavilion/Content/img/product-sprite-1.png') !important;" value="@T("Products.EmailAFriend")" class="button-2 email-a-friend-button" onclick="setLocation('@Url.RouteUrl("ProductEmailAFriend", new { productId = Model.Id })')" />
+        </div>
+
+        <div class="buttons-lower" style="display:none">
+            @if (!Model.ProductPrice.DisableBuyButton)
+            {
+                var addToCartText = T("ShoppingCart.AddToCart").Text;
+                if (Model.ProductPrice.IsRental)
+                {
+                    addToCartText = T("ShoppingCart.Rent").Text;
+                }
+                if (Model.ProductPrice.AvailableForPreOrder)
+                {
+                    addToCartText = T("ShoppingCart.PreOrder").Text;
+                }
+                @*<button type="button" title="@T("ShoppingCart.AddToCart")" class="button-2 product-box-add-to-cart-button" onclick="AjaxCart.addproducttocart_catalog('@addtocartlink');return false;"><span>@(addToCartText)</span></button>*@
+
+
+                <a href="@Url.RouteUrl("Product", new { SeName = Model.SeName })" title="@Model.DefaultPictureModel.Title">
+                    <button type="button" title="View" class=""><span>View</span></button>
+                </a>
+
+            }
+        </div>
+        @Html.Widget("productbox_addinfo_after", Model.Id)
+    </div>
+    </div>
+    
+</div>
+
+@functions {
+
+    public String GetDescription(string desc)
+    {
+        var description = string.Empty;
+        var words = Nop.Core.Html.HtmlHelper.FormatText(desc, true, true, false, false, false, false).Split(' ').ToList();
+        if (words.Count > 8)
+        {
+            description = string.Join(" ", words.Take(8));
+            return description + "...<a href='" + Url.RouteUrl("Product", new { SeName = Model.SeName }) + "'>show more</a>";
+        }
+        else
+        {
+            description = desc;
+            return description;
+        }
+    }
+
+}

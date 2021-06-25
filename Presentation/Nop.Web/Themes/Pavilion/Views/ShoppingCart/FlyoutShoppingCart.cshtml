@@ -1,0 +1,93 @@
+﻿@model MiniShoppingCartModel
+@using Nop.Web.Models.ShoppingCart;
+@using Nop.Core.Domain.Orders;
+@{ bool isSampleProductExists = false;
+    bool isCartProductExists = false;
+}
+@if (Model != null)
+{
+    isCartProductExists = Model.Items.Where(x => x.shoppingCartType == ShoppingCartType.ShoppingCart).Count() > 0 ? true : false;
+    isSampleProductExists = Model.Items.Where(x => x.shoppingCartType == ShoppingCartType.SampleCart).Count() > 0 ? true : false;
+    <div class="flyout-cart-wrapper" id="flyout-cart" style="padding-left:0px;max-width:170px;">
+        <a href="" class="cart-trigger">
+            <i class="fa"><img alt="" src="~/Themes/Pavilion/Content/images/arrow_dow.png"></i>
+            @*@if (!isCartProductExists && !isSampleProductExists)
+        {
+            <span class="cart-qty">@T("ShoppingCart.HeaderQuantity", Model.TotalShoppingCartItem)</span>
+            <span class="cart-label">@T("SevenSpikes.Themes.Pavilion.Flyout.Cart")</span>
+        }
+        else if (isCartProductExists)
+        {
+            <span class="cart-qty">@T("ShoppingCart.HeaderQuantity", Model.TotalShoppingCartItem)</span>
+            <span class="cart-label">@T("SevenSpikes.Themes.Pavilion.Flyout.Cart")</span>
+        }
+        else {
+            <span class="cart-qty">@T("ShoppingCart.HeaderQuantity", Model.TotalSampleCartItem)</span>
+            <span class="cart-label">Samples</span>
+        }*@
+        </a>
+        
+            <div class="flyout-cart">
+                <div class="mini-shopping-cart">
+
+                    @if (isCartProductExists)
+                    {
+                        <div class="items">
+
+                            @for (int i = 0; i < Model.Items.Count; i++)
+                            {
+                                var item = Model.Items[i];
+                                if (item.shoppingCartType == ShoppingCartType.ShoppingCart)
+                                {
+
+                                    <div class="item @(i == 0 ? "first" : null)">
+                                        @if (Model.ShowProductImages)
+                                        {
+                                            <div class="picture">
+                                                <a href="@Url.RouteUrl("Product", new { SeName = item.ProductSeName })" title="@item.Picture.Title">
+                                                    <img alt="@item.Picture.AlternateText" src="@item.Picture.ImageUrl" title="@item.Picture.Title" />
+                                                </a>
+                                            </div>
+                                        }
+                                        <div class="product">
+                                            <div class="name">
+                                                <a href="@Url.RouteUrl("Product", new { SeName = item.ProductSeName })">@item.ProductName</a>
+                                            </div>
+                                            @if (!String.IsNullOrEmpty(item.AttributeInfo))
+                                            {
+                                                <div class="attributes">
+                                                    @Html.Raw(item.AttributeInfo)
+                                                </div>
+                                            }
+                                            <div class="price"><label>@item.Quantity</label> <span>x</span> <strong>@item.UnitPrice</strong></div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    }
+                    @if (isCartProductExists)
+                    {
+                        <div class="totals">@T("ShoppingCart.Totals.SubTotal"): <strong>@Model.SubTotal</strong></div>
+                    }
+                    <div class="buttons">
+                        
+                        @{ <input type="button" value="@T("ShoppingCart.Mini.ViewCart")" class="button-1 cart-button" onclick="setLocation('@(Url.RouteUrl("ShoppingCart"))')" />
+
+                            var sampleCartUrl = Url.RouteUrl("SampleCart");
+                            var sampleText = T("Checkout.SampleCart") + " (" + Model.TotalSampleCartItem+ ")";
+                            if (!isCartProductExists)
+                            {
+                                sampleText = T("Checkout.SampleCart").Text;
+                            }
+                            @*<input type="button" value="@sampleText" class="button-1 checkout-button" onclick="setLocation('@sampleCartUrl')" />*@
+                            }
+
+
+                    </div>
+
+                </div>
+            </div>
+        
+    </div>
+}

@@ -1,0 +1,48 @@
+﻿@model PaymentInformationModel
+@using Nop.Web.Models.Customer;
+@using Nop.Core.Plugins;
+@{
+    Layout = "~/Views/Shared/_ColumnsTwo.cshtml";
+
+    //title
+    Html.AddTitleParts(T("PageTitle.Account").Text);
+    //page class
+    Html.AppendPageCssClassParts("html-account-page");
+    Html.AppendPageCssClassParts("html-customer-payment-edit-page");
+    var pluginFinder = Nop.Core.Infrastructure.EngineContext.Current.Resolve<IPluginFinder>();
+    var pluginDescriptor = pluginFinder.GetPluginDescriptorBySystemName("Payments.AuthorizeNet");
+}
+@section left
+{
+    @Html.Action("CustomerNavigation", "Customer", new { selectedTabId = CustomerNavigationEnum.PaymentInformation })
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="page account-page credit-card-edit-page">
+        <div class="page-title">
+            <h1>@T("Account.MyAccount") - @T("Account.PaymentInformation.Edit")</h1>
+        </div>
+        <div class="page-body">
+            @{
+                var validationSummary = Html.ValidationSummary(true);
+            }
+            @*@if (!string.IsNullOrEmpty(Model.Result))
+            {
+                <div class="message-error">
+                    @Model.Result
+                </div>
+            }*@
+            @{
+                var dataDictAddress = new ViewDataDictionary();
+                //Merge ModelState (required for validation)
+                dataDictAddress.ModelState.Merge(ViewData.ModelState);
+                dataDictAddress.TemplateInfo.HtmlFieldPrefix = "PaymentInformation";
+                @Html.Partial("_CreateOrUpdateCreditCard", Model, dataDictAddress)
+            }
+            <div class="buttons">
+                <input type="submit" class="button-1 save-address-button" value="@T("Common.Save")" />
+            </div>
+        </div>
+    </div>
+                }

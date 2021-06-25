@@ -1,0 +1,223 @@
+﻿@model PaymentInformationModel
+@using Nop.Web.Models.Customer;
+@using Nop.Core.Plugins;
+@{
+    var pluginFinder = Nop.Core.Infrastructure.EngineContext.Current.Resolve<IPluginFinder>();
+    var pluginDescriptor = pluginFinder.GetPluginDescriptorBySystemName("Payments.AuthorizeNet");
+}
+@if (pluginDescriptor != null)
+{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $("#CardNumber, #CVVNumber").keypress(function (e) {
+                //if the letter is not digit then display error and don't type anything
+                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                    return false;
+                }
+            });
+
+            $("#@Html.FieldIdFor(model => model.CountryId)").change(function () {
+                var selectedItem = $(this).val();
+                var ddlStates = $("#@Html.FieldIdFor(model => model.StateId)");
+                var statesProgress = $("#states-loading-progress");
+                statesProgress.show();
+                $.ajax({
+                    cache: false,
+                    type: "GET",
+                    url: "@(Url.RouteUrl("GetStatesByCountryId"))",
+                    data: { "countryId": selectedItem, "addSelectStateItem": "true" },
+                    async: false,
+                    success: function (data) {
+                        ddlStates.html('');
+                        $.each(data, function (id, option) {
+                            ddlStates.append($('<option></option>').val(option.id).html(option.name));
+                        });
+                        statesProgress.hide();
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Failed to retrieve states.');
+                        statesProgress.hide();
+                    }
+                });
+            });
+
+
+
+
+        });
+
+
+    </script>
+}
+@if (pluginDescriptor != null)
+{
+    <div class="page account-page customer-payment-page">
+        <div class="page-title">
+            <h1>@T("Account.MyAccount") - @T("Account.PaymentInformation")</h1>
+        </div>
+        <div class="page-body">
+
+            @if (!string.IsNullOrEmpty(Model.Result))
+            {
+                <div class="message-error" style="padding: 10px 60px;">
+                    @Model.Result
+                </div>
+            }
+            @if (Model.warnings.Any())
+            {
+
+                <div class="message-error" style="padding: 10px 60px;"> 
+                    <ul>
+                        @foreach (var msg in Model.warnings)
+                        {
+                            <li>
+                                @msg
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+            <div style="color: red;text-align: center;padding: 20px 10px;">
+                <strong>@T("Account.Payment.InformationMessage")</strong>
+            </div>
+            <div class="fieldset">
+                <div class="title">
+                    <strong>@T("MyAccount.PaymentInfo")</strong>
+                </div>
+                <div class="form-fields">
+                    @Html.HiddenFor(model => model.Id)
+                    @Html.HiddenFor(model => model.addressId)
+                    @Html.HiddenFor(model => model.PaymentProfileId)
+                    @Html.HiddenFor(model => model.deletePaymentProfileFlag)
+
+                    @*<div class="inputs">
+                            <div class="form-group selectnav">
+                                <div class="form-group custom-select inputwidth">
+                                    @Html.DropDownListFor(model => model.ExistingPaymentProfileId, Model.ExistingPaymentProfiles, new { })
+                                </div>
+                                <span id="card-loading-progress" style="display: none;" class="please-wait">@T("Common.Wait...")</span>
+                            </div>
+                        </div>*@
+                    <div class="inputs" id="divFirstName">
+
+                        @Html.LabelFor(model => model.FirstName, new { }, ":")
+                        @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { placeholder = Html.DisplayNameFor(m => m.FirstName) } })
+                        @Html.RequiredHint()
+                        @Html.ValidationMessageFor(model => model.FirstName)
+                    </div>
+                    <div class="inputs" id="divLastName">
+                        @Html.LabelFor(model => model.LastName, new { }, ":")
+                        @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { placeholder = Html.DisplayNameFor(m => m.LastName) } })
+                        @Html.RequiredHint()
+                        @Html.ValidationMessageFor(model => model.LastName)
+                    </div>
+                    <div id="AllInfo">
+                        @if (Model.Id <= 0)
+                        {
+                            <div class="form-group custom-select inputwidth inputs spReqired" id="CardTypeInfo">
+                                @Html.LabelFor(model => model.CartTypeId, new { }, ":")
+                                @Html.DropDownListFor(model => model.CartTypeId, Model.CardTypes)
+                                @Html.RequiredHint()
+                                @Html.ValidationMessageFor(model => model.CartTypeId)
+                            </div>
+                            <div id="CardInfo">
+                                <div class="inputs inputwidth spReqired" id="divCardNumber">
+                                    @Html.LabelFor(model => model.CardNumber, new { }, ":")
+                                    @Html.EditorFor(model => model.CardNumber, new { htmlAttributes = new { placeholder = Html.DisplayNameFor(m => m.CardNumber), autocomplete = "off" } })
+                                    @Html.RequiredHint()
+                                    @Html.ValidationMessageFor(model => model.CardNumber)
+                                </div>
+                                <div class="form-group1 spReqired" id="divExpireMonth">
+                                    <div class="form-group custom-select inputs">
+                                        @Html.LabelFor(model => model.ExpireMonth, new { }, ":")
+                                        @Html.DropDownListFor(model => model.ExpireMonth, Model.ExpireMonths, new { })
+                                        @Html.RequiredHint()
+                                        @Html.ValidationMessageFor(model => model.ExpireMonth)
+                                    </div>
+                                </div>
+                                <div class="form-group1 spReqired" id="divExpireYear">
+                                    <div class="form-group custom-select inputs">
+                                        @Html.LabelFor(model => model.ExpireYear, new { }, ":")
+                                        @Html.DropDownListFor(model => model.ExpireYear, Model.ExpireYears, new { })
+                                        @Html.RequiredHint()
+                                        @Html.ValidationMessageFor(model => model.ExpireYear)
+                                    </div>
+                                </div>
+                                <div class="inputs CVVNumber" id="divCVVNumber">
+                                    @Html.LabelFor(model => model.CVVNumber, new { }, ":")
+                                    @Html.EditorFor(model => model.CVVNumber, new { htmlAttributes = new { placeholder = Html.DisplayNameFor(m => m.CVVNumber), autocomplete = "off" } })
+                                    @Html.RequiredHint()
+                                    @Html.ValidationMessageFor(model => model.CVVNumber)
+                                </div>
+
+                            </div>
+                        }
+                        @*<div class="inputs">
+                            <div class="checkbox">
+                                <input data-val="true" data-val-required="The Follow field is required." @(Model.IsDefault == true ? "checked='checked'" : "") id="IsDefault" name="IsDefault" type="checkbox" value="true" />
+                                <label for="IsDefault" style="margin-left:0px;">@T("Account.PaymentInformation.Fields.Isdefault")</label>
+                            </div>
+                            <input name="IsDefault" type="hidden" value="false">
+                        </div>*@
+                        <input name="IsDefault" type="hidden" value="false">
+                    </div>
+                    @*<div class="col-xs-12">
+                        <h3><strong>@T("MyAccount.PaymentBillInfo")</strong></h3>
+                        <div class="inputs">
+                            @Html.LabelFor(model => model.Address1, new { }, ":")
+                            @Html.EditorFor(model => model.Address1, new { htmlAttributes = new { placeholder = Html.DisplayNameFor(m => m.Address1) } })
+                            @Html.RequiredHint()
+                            @Html.ValidationMessageFor(model => model.Address1)
+                        </div>
+                        <div class="inputs">
+                            @Html.LabelFor(model => model.Address2, new { }, ":")
+                            @Html.EditorFor(model => model.Address2, new { htmlAttributes = new { placeholder = Html.DisplayNameFor(m => m.Address2) } })
+                            @Html.RequiredHint()
+                            @Html.ValidationMessageFor(model => model.Address2)
+                        </div>
+                        <div class="inputs inputwidth">
+                            @Html.LabelFor(model => model.City, new { }, ":")
+                            @Html.EditorFor(model => model.City, new { htmlAttributes = new { placeholder = Html.DisplayNameFor(m => m.City) } })
+                            @Html.RequiredHint()
+                            @Html.ValidationMessageFor(model => model.City)
+                        </div>
+                        <div class="form-group custom-select inputs">
+                            @Html.LabelFor(model => model.CountryId, new { }, ":")
+                            @Html.DropDownListFor(model => model.CountryId, Model.AvailableCountries, new { })
+                            @Html.RequiredHint()
+                            @Html.ValidationMessageFor(model => model.CountryId)
+                        </div>
+                        <div class="form-group custom-select inputs">
+                            @Html.LabelFor(model => model.StateId, new { }, ":")
+                            @Html.DropDownListFor(model => model.StateId, Model.AvailableStates, new { })
+                            @Html.RequiredHint()
+                            @Html.ValidationMessageFor(model => model.StateId)
+                            <label id="states-loading-progress" style="display: none;" class="please-wait">@T("Common.Wait...")</label>
+                        </div>
+                        <div class="inputs">
+                            @Html.LabelFor(model => model.ZipCode, new { }, ":")
+                            @Html.EditorFor(model => model.ZipCode)
+                            @Html.RequiredHint()
+                            @Html.ValidationMessageFor(model => model.ZipCode)
+                        </div>
+
+
+
+
+                    </div>*@
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+}
+else
+{
+    <span>
+        You need to install Payments.AuthorizeNet Plugin.
+    </span>
+}
+

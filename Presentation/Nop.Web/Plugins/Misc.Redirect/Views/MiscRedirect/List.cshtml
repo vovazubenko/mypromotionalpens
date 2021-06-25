@@ -1,0 +1,312 @@
+﻿@using Nop.Plugin.Misc.Redirect.Models;
+@using Nop.Plugin.Misc.Redirect.Services;
+@using Nop.Core.Infrastructure;
+@using Nop.Plugin.Misc.Redirect;
+@{
+    Layout = "~/Administration/Views/Shared/_AdminLayout.cshtml";
+
+    var defaultGridPageSize = EngineContext.Current.Resolve<Nop.Core.Domain.Common.AdminAreaSettings>().DefaultGridPageSize;
+    var gridPageSizes = EngineContext.Current.Resolve<Nop.Core.Domain.Common.AdminAreaSettings>().GridPageSizes;
+
+    //page title
+    ViewBag.Title = T("Nop.Plugin.Misc.Redirect").Text; 
+    //active menu item (system name)
+    Html.SetActiveMenuItemSystemName("Redirects");
+}
+@Html.AntiForgeryToken()
+ <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @T("Nop.Plugin.Misc.Redirect") 
+        </h1>
+        <div class="pull-right">
+            @if (ViewBag.New == "true")
+            {
+                <a href="@Url.Action("List")" class="btn bg-purple">
+                    <i class="fa fa-info-circle"></i>
+                    @T("Nop.Plugin.Misc.Redirect.ShowAll")
+                </a>
+            }
+            else
+            {
+                <a href="@Url.Action("List", new { @new = "true" })" class="btn bg-purple" title="@T("Nop.Plugin.Misc.Redirect.ShowNew.Hint")">
+                    <i class="fa fa-info-circle"></i>
+                    @T("Nop.Plugin.Misc.Redirect.ShowNew")
+                </a>
+            } 
+            <a href="@Url.Action("ExportCsv")" class="btn bg-green">
+                <i class="fa fa-download"></i>
+                @T("Admin.Common.ExportToCsv")
+            </a>
+            <button type="button" name="importcsv" class="btn bg-olive" data-toggle="modal" data-target="#importcsv-window">
+                <i class="fa fa-upload"></i>
+                @T("Admin.Common.ImportFromCsv")
+            </button>
+            <a type="button" href="@Url.Action("DeleteAll")" class="btn bg-red" onclick="return confirm('@T("Admin.Common.AreYouSure")');">
+                <i class="fa fa-trash-o"></i>
+                @T("Nop.Plugin.Misc.Redirect.DeleteAll")
+            </a>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div id="redirect-grid"></div>
+
+                            <script type="text/javascript">
+
+                                var selectedIds = [];
+                                var reportAggregates = "";
+                                var UrlId = "";
+
+                                $(document).ready(function () {
+
+                                    $("#redirect-grid").kendoGrid({
+                                        dataSource: {
+                                            type: "json",
+                                            transport: {
+                                                read: {
+                                                    url: "@Html.Raw(Url.Action("List", "MiscRedirect" , new { @new = ViewBag.New }))",
+                                                type: "POST",
+                                                dataType: "json",
+                                                contentType: "application/json"
+                                                //any-forgery does not work with this contentType for some reasons
+                                                //data: addAntiForgeryToken
+                                            },
+                                            create: {
+                                                url: "@Html.Raw(Url.Action("RedirectAdd", "MiscRedirect"))",
+                                                type: "POST",
+                                                dataType: "json",
+                                                data: addAntiForgeryToken
+                                        },
+                                        update: {
+                                            url:"@Html.Raw(Url.Action("RedirectUpdate", "MiscRedirect"))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: addAntiForgeryToken
+                                    },
+                                        destroy: {
+                                        url: "@Html.Raw(Url.Action("RedirectDelete", "MiscRedirect"))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: addAntiForgeryToken
+                                        },
+                                    parameterMap: function(data, operation) {
+                                        if (operation != "read") {
+                                            return data;
+                                        } else {
+                                            //for some reasons only such "Filter" data be parsed
+                                            return JSON.stringify(data);
+                                        }
+                                    }
+                                },
+                                    schema: {
+                                    data: "Data",
+                                    total: "Total",
+                                    errors: "Errors",
+                                    model: {
+                                            id: "Id",
+                                            fields: {
+                                            SeName: { editable: true, type: "string" },
+                                            Destination: { editable: true, type: "string" },
+                                            Type: { editable: true, type: "string" },
+                                            TypeId: { editable: true, type: "number" },
+                                            Id: { editable: false, type: "number" }
+                                            }
+                                    }
+                                    },
+                                requestEnd: function (e) {
+                                    if (e.type == "create" || e.type == "update") {
+                                        this.read();
+                                    }
+                                },
+                                error: function (e) {
+                                    display_kendoui_grid_error(e);
+                                    this.cancelChanges();
+                                },
+                                pageSize: @(defaultGridPageSize),
+                                    serverPaging: true,
+                                serverFiltering: true,
+                                serverSorting: true
+                                },
+                                pageable: {
+                                        refresh: true,
+                                        pageSizes: [@(gridPageSizes)]
+                                },
+                                sortable: true,
+                                    toolbar: [{ name: "create", text: "@T("Admin.Common.AddNewRecord")" }],
+                                editable: {
+                                    confirmation: true,
+                                    mode: "inline"
+                                },
+                                filterable: {
+                                        extra: false,
+                                        operators: {
+                                        string: {
+                                                    contains: "Contains",
+                                                    eq: "Is equal to",
+                                                    startswith: "Starts with"
+                                        }
+                                        }
+                                },
+                                scrollable: false,
+                                    columns: [{
+                                        field: "SeName",
+                                        headerTemplate: "<div class='ico-help' title='@T("Nop.Plugin.Misc.Redirect.Fields.SeName.Hint")'><i class='fa fa-question-circle'></i> @T("Nop.Plugin.Misc.Redirect.Fields.SeName")</div>",
+                                    filterable: true,
+                                sortable: true
+                                }, {
+                                    field: "Destination",
+                                    headerTemplate: "<div class='ico-help' title='@T("Nop.Plugin.Misc.Redirect.Fields.Destination.Hint")'><i class='fa fa-question-circle'></i> @T("Nop.Plugin.Misc.Redirect.Fields.Destination")</div>", 
+                                    filterable: true,
+                                    sortable: true,
+                                    editor:  destinationDropDownEditor
+                                }, {
+                                field: "TypeId",
+                                headerTemplate: "<div class='ico-help' title='@T("Nop.Plugin.Misc.Redirect.Fields.Type.Hint")'><i class='fa fa-question-circle'></i> @T("Nop.Plugin.Misc.Redirect.Fields.Type")</div>",
+                                editor: typeDropDownEditor,
+                                template: "#:Type#",
+                                filterable: true,
+                                sortable: true,
+                                }, {
+                                command: [{
+                                    name: "edit",
+                                    text: "@T("Admin.Common.Edit")"
+                                }, {
+                                    name: "destroy",
+                                    text: "@T("Admin.Common.Delete")"
+                                }
+                                ],
+                                width: 200,
+                                filterable: false
+                                }]
+                                });
+
+                                //local datasource
+                                var allTypes = [
+                                    {
+                                        Id : 0,
+                                        Name : "301 Moved Permanently"
+                                    }
+                                @{
+                                var redirectService = new RedirectService();
+                                var allTypes = redirectService.GetAllTypes();
+                                }
+                                                @for (int i = 1; i < allTypes.Count(); i++)
+                                {
+                                                <text>
+                                                , {
+                                    Id: @(allTypes[i].Id),
+                                    Name: "@(Html.Raw(HttpUtility.JavaScriptStringEncode(allTypes[i].Name)))"
+                                                }
+                                            </text>
+                                                }
+                                                ];
+
+                                    function typeDropDownEditor(container, options) {
+                                        $('<input required data-text-field="Name" data-value-field="Id" data-bind="value:TypeId"/>')
+                                            .appendTo(container)
+                                            .kendoDropDownList({
+                                                    autoBind: false,
+                                                    dataSource: allTypes
+                                                });
+                                                }
+
+                                    var allUrls = [
+                                        @{
+                                            var allUrls = redirectService.GetAllUrls();
+                                }
+                                        @for (int i = 0; i < allUrls.Count(); i++)
+                                {
+                                            var url = allUrls[i];
+                                        <text>
+                                {
+                                    Id: "@(Html.Raw(HttpUtility.JavaScriptStringEncode(url)))",
+                                    Name: "@(Html.Raw(HttpUtility.JavaScriptStringEncode(url)))"
+                                        }
+                                        </text>
+                                        if (i != allUrls.Count() - 1)
+                                        {
+                                        <text>,</text>
+                                        }
+                                        }
+                                        ];
+
+                                    function destinationDropDownEditor(container, options) {
+                                        $('<input style="width:60%;" class="k-input k-textbox" type="text" name="Destination" data-bind="value:Destination">').appendTo(container);
+                                        $('<input data-text-field="Name" data-value-field="Id" style="width:40%;" name="DestinationDropDown"/>')
+                                                .appendTo(container)
+                                                .kendoDropDownList({
+                                            autoBind: false,
+                                            select: onSelect,
+                                            optionLabel: "@T("Nop.Plugin.Misc.Redirect.Fields.ChooseDestination")",
+                                            dataSource: allUrls
+                                        });
+                                }
+
+                                });
+
+                                function onSelect(e) {
+                                    var dataItem = this.dataItem(e.item.index());
+                                    var firstItem = $('#redirect-grid').data().kendoGrid.dataSource.data()[0];
+                                    firstItem.set('Destination',dataItem.Id);
+                                };
+
+                            </script>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+@if (ViewBag.ShowHelpIcons == "false")
+{
+<script>
+    $(document).ready(function () {
+        $(".ico-help").hide();  
+    });
+</script>
+}
+
+<div id="importcsv-window" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="importcsv-window-title">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="importcsv-window-title">@T("Admin.Common.ImportFromCsv")</h4>
+            </div>
+            @using (Html.BeginForm("ImportCsv", "MiscRedirect", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="form-horizontal">
+                    <div class="modal-body">
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                <div class="label-wrapper">
+                                    <label class="control-label">
+                                        @T("Admin.Common.CsvFile")
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <input type="file" id="importcsvfile" name="importcsvfile" class="form-control" />
+                            </div>
+                            <div class="col-md-10">
+                                <h4>@T("Nop.Plugin.Misc.Redirect.Csv.Import").Text</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">
+                            @T("Admin.Common.ImportFromCsv")
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

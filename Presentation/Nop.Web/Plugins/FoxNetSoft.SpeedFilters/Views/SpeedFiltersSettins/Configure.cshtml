@@ -1,0 +1,833 @@
+﻿@{
+    Layout = "";
+    Html.SetActiveMenuItemSystemName("FoxNetSoft.SpeedFilters.Configure");
+
+    Html.AppendScriptParts("~/Plugins/FoxNetSoft.SpeedFilters/Scripts/bootstrap-multiselect.js");
+
+    Html.AddCssFileParts("~/Plugins/FoxNetSoft.SpeedFilters/Styles/bootstrap-multiselect.css");
+
+    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css" type="text/css">
+
+        <script type = "text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.js"></script>*@
+}
+@model SpeedFiltersSettingsModel
+@using FoxNetSoft.Plugin.Misc.SpeedFilters.Models
+@using System.Web.Mvc.Html
+@using Nop.Web.Framework
+@using Nop.Web.Framework.UI
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="content-header clearfix">
+        <div class="pull-right">
+            <button type="submit" name="save" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>
+                @T("Admin.Common.Save")
+            </button>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#@Html.FieldIdFor(model => model.showDebugInfo)").click(toggleshowDebugInfo);
+            toggleshowDebugInfo();
+        });
+
+        function toggleshowDebugInfo() {
+            if ($('#@Html.FieldIdFor(model => model.showDebugInfo)').is(':checked')) {
+                $('#pnlclearlogfile, #pnlgetlogfile').show();
+            }
+            else {
+                $('#pnlclearlogfile, #pnlgetlogfile').hide();
+            }
+        }
+    </script>
+    <div class="content">
+        <div class="form-horizontal">
+            @Html.Action("StoreScopeConfiguration", "Setting")
+            @Html.Action("Mode", "Setting")
+            @Html.ValidationSummary(false)
+            <div id="speedFilter-plugin-configure" class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    @Html.RenderBootstrapTabHeader("tab-generalsetting", @T("FoxNetSoft.Plugin.Misc.SpeedFilters.GeneralSettings"), true)
+                    @Html.RenderBootstrapTabHeader("tab-FilterSettings", @T("FoxNetSoft.Plugin.Misc.SpeedFilters.FilterSettings"))
+                    @Html.RenderBootstrapTabHeader("tab-SelectorSettings", @T("FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorSettings"))
+                    @Html.RenderBootstrapTabHeader("tab-AdvancedSettings", @T("FoxNetSoft.Plugin.Misc.SpeedFilters.AdvancedSettings"))
+                    @Html.RenderBootstrapTabHeader("tab-GlobalCategorySetting", @T("FoxNetSoft.Plugin.Misc.SpeedFilters.GlobalCategorySetting"))
+                    @Html.RenderBootstrapTabHeader("tab-SpecificCategorySetting", @T("FoxNetSoft.Plugin.Misc.SpeedFilters.SpecificCategorySetting"))
+                </ul>
+                <div class="tab-content">
+                    @Html.RenderBootstrapTabContent("tab-generalsetting", @TabGeneralsetting(), true)
+                    @Html.RenderBootstrapTabContent("tab-FilterSettings", @TabFilterSettings())
+                    @Html.RenderBootstrapTabContent("tab-SelectorSettings", @TabSelectorSettings())
+                    @Html.RenderBootstrapTabContent("tab-AdvancedSettings", @TabAdvancedSettings())
+                    @Html.RenderBootstrapTabContent("tab-GlobalCategorySetting", @TabGlobalCategorySetting())
+                    @Html.RenderBootstrapTabContent("tab-SpecificCategorySetting", @TabSpecificCategorySetting())
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+@helper TabGeneralsetting()
+{
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @*<p>
+                        <b>@T("FoxNetSoft.Plugin.Misc.SpeedFilters.GeneralSettings")</b>
+                    </p>*@
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.EnableSpeedFilters_OverrideForStore, model => model.EnableSpeedFilters, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.EnableSpeedFilters)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.EnableSpeedFilters)
+                        @Html.ValidationMessageFor(model => model.EnableSpeedFilters)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.IgnoreDiscountsForCatalog_OverrideForStore, model => model.IgnoreDiscountsForCatalog, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.IgnoreDiscountsForCatalog)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.IgnoreDiscountsForCatalog)
+                        @Html.ValidationMessageFor(model => model.IgnoreDiscountsForCatalog)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.WidgetZone_OverrideForStore, model => model.WidgetZone, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.WidgetZone)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopDropDownListFor(model => model.WidgetZone, Model.AvailableWidgets)
+                        @Html.ValidationMessageFor(model => model.WidgetZone)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.EnableFiltersForCategory_OverrideForStore, model => model.EnableFiltersForCategory, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.EnableFiltersForCategory)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.EnableFiltersForCategory)
+                        @Html.ValidationMessageFor(model => model.EnableFiltersForCategory)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.EnableFiltersForManufacturer_OverrideForStore, model => model.EnableFiltersForManufacturer, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.EnableFiltersForManufacturer)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.EnableFiltersForManufacturer)
+                        @Html.ValidationMessageFor(model => model.EnableFiltersForManufacturer)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.EnableFiltersForVendor_OverrideForStore, model => model.EnableFiltersForVendor, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.EnableFiltersForVendor)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.EnableFiltersForVendor)
+                        @Html.ValidationMessageFor(model => model.EnableFiltersForVendor)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.EnableFiltersForSearchPage_OverrideForStore, model => model.EnableFiltersForSearchPage, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.EnableFiltersForSearchPage)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.EnableFiltersForSearchPage)
+                        @Html.ValidationMessageFor(model => model.EnableFiltersForSearchPage)
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+
+@helper TabFilterSettings()
+{
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @*<p>
+                        <b>@T("FoxNetSoft.Plugin.Misc.SpeedFilters.FilterSettings")</b>
+                    </p>*@
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.FiltersType_OverrideForStore, model => model.FiltersType, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.FiltersType)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopDropDownListFor(model => model.FiltersType, Model.AvailableFiltersTypes)
+                        @Html.ValidationMessageFor(model => model.FiltersType)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.EnablePriceRangeFilter_OverrideForStore, model => model.EnablePriceRangeFilter, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.EnablePriceRangeFilter)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.EnablePriceRangeFilter)
+                        @Html.ValidationMessageFor(model => model.EnablePriceRangeFilter)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.EnableSpecificationsFilter_OverrideForStore, model => model.EnableSpecificationsFilter, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.EnableSpecificationsFilter)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.EnableSpecificationsFilter)
+                        @Html.ValidationMessageFor(model => model.EnableSpecificationsFilter)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.EnableAttributesFilter_OverrideForStore, model => model.EnableAttributesFilter, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.EnableAttributesFilter)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.EnableAttributesFilter)
+                        @Html.ValidationMessageFor(model => model.EnableAttributesFilter)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.EnableManufacturersFilter_OverrideForStore, model => model.EnableManufacturersFilter, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.EnableManufacturersFilter)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.EnableManufacturersFilter)
+                        @Html.ValidationMessageFor(model => model.EnableManufacturersFilter)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.EnableVendorsFilter_OverrideForStore, model => model.EnableVendorsFilter, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.EnableVendorsFilter)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.EnableVendorsFilter)
+                        @Html.ValidationMessageFor(model => model.EnableVendorsFilter)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@helper TabSelectorSettings()
+{
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @*<p>
+                        <b>@T("FoxNetSoft.Plugin.Misc.SpeedFilters.SelectorSettings")</b>
+                    </p>*@
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.SelectorForListPanel_OverrideForStore, model => model.SelectorForListPanel, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.SelectorForListPanel)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.SelectorForListPanel)
+                        @Html.ValidationMessageFor(model => model.SelectorForListPanel)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.SelectorForGridPanel_OverrideForStore, model => model.SelectorForGridPanel, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.SelectorForGridPanel)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.SelectorForGridPanel)
+                        @Html.ValidationMessageFor(model => model.SelectorForGridPanel)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.SelectorForPager_OverrideForStore, model => model.SelectorForPager, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.SelectorForPager)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.SelectorForPager)
+                        @Html.ValidationMessageFor(model => model.SelectorForPager)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.SelectorForSortOptions_OverrideForStore, model => model.SelectorForSortOptions, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.SelectorForSortOptions)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.SelectorForSortOptions)
+                        @Html.ValidationMessageFor(model => model.SelectorForSortOptions)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.SelectorForViewOptions_OverrideForStore, model => model.SelectorForViewOptions, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.SelectorForViewOptions)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.SelectorForViewOptions)
+                        @Html.ValidationMessageFor(model => model.SelectorForViewOptions)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.SelectorForProductPageSize_OverrideForStore, model => model.SelectorForProductPageSize, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.SelectorForProductPageSize)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.SelectorForProductPageSize)
+                        @Html.ValidationMessageFor(model => model.SelectorForProductPageSize)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.ProductSelectorsSelector_OverrideForStore, model => model.ProductSelectorsSelector, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.ProductSelectorsSelector)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.ProductSelectorsSelector)
+                        @Html.ValidationMessageFor(model => model.ProductSelectorsSelector)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.SelectorForScrolling_OverrideForStore, model => model.SelectorForScrolling, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.SelectorForScrolling)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.SelectorForScrolling)
+                        @Html.ValidationMessageFor(model => model.SelectorForScrolling)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@helper TabAdvancedSettings()
+{
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @*<p>
+                        <b>@T("FoxNetSoft.Plugin.Misc.SpeedFilters.AdvancedSettings")</b>
+                    </p>*@
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.DefaultProductSorting_OverrideForStore, model => model.DefaultProductSorting, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.DefaultProductSorting)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopDropDownListFor(model => model.DefaultProductSorting, Model.DefaultProductSortingValues)
+                        @Html.ValidationMessageFor(model => model.DefaultProductSorting)
+                    </div>
+                </div>
+                @*<div class="form-group">
+                        <div class="col-md-3">
+                            @Html.OverrideStoreCheckboxFor(model => model.ScrollAfterFiltration_OverrideForStore, model => model.ScrollAfterFiltration, Model.ActiveStoreScopeConfiguration)
+                            @Html.NopLabelFor(model => model.ScrollAfterFiltration):
+                        </div>
+                        <div class="col-md-9">
+                            @Html.NopEditorFor(model => model.ScrollAfterFiltration)
+                            @Html.ValidationMessageFor(model => model.ScrollAfterFiltration)
+                        </div>
+                    </div>
+                *@
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.FiltersConditionSpecifications_OverrideForStore, model => model.FiltersConditionSpecifications, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.FiltersConditionSpecifications)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopDropDownListFor(model => model.FiltersConditionSpecifications, Model.AvailableFiltersConditionSpecifications)
+                        @Html.ValidationMessageFor(model => model.FiltersConditionSpecifications)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.FiltersConditionAttributes_OverrideForStore, model => model.FiltersConditionAttributes, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.FiltersConditionAttributes)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopDropDownListFor(model => model.FiltersConditionAttributes, Model.AvailableFiltersConditionAttributes)
+                        @Html.ValidationMessageFor(model => model.FiltersConditionAttributes)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.FiltersConditionBetweenBlocks_OverrideForStore, model => model.FiltersConditionBetweenBlocks, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.FiltersConditionBetweenBlocks)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopDropDownListFor(model => model.FiltersConditionBetweenBlocks, Model.AvailableFiltersConditionBetweenBlocks)
+                        @Html.ValidationMessageFor(model => model.FiltersConditionBetweenBlocks)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.AllowSelectFiltersInOneBlock_OverrideForStore, model => model.AllowSelectFiltersInOneBlock, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.AllowSelectFiltersInOneBlock)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.AllowSelectFiltersInOneBlock)
+                        @Html.ValidationMessageFor(model => model.AllowSelectFiltersInOneBlock)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.SkipFiltersforCategory_OverrideForStore, model => model.SkipFiltersforCategories, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.SkipFiltersforCategories)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.SkipFiltersforCategories)
+                        @Html.ValidationMessageFor(model => model.SkipFiltersforCategories)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.SkipFiltersforManufacturer_OverrideForStore, model => model.SkipFiltersforManufacturers, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.SkipFiltersforManufacturers)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.SkipFiltersforManufacturers)
+                        @Html.ValidationMessageFor(model => model.SkipFiltersforManufacturers)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.SkipFiltersforVendors_OverrideForStore, model => model.SkipFiltersforVendors, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.SkipFiltersforVendors)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.SkipFiltersforVendors)
+                        @Html.ValidationMessageFor(model => model.SkipFiltersforVendors)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.DefaultClosePriceRange_OverrideForStore, model => model.DefaultClosePriceRange, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.DefaultClosePriceRange)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.DefaultClosePriceRange)
+                        @Html.ValidationMessageFor(model => model.DefaultClosePriceRange)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.DefaultCloseSpecifications_OverrideForStore, model => model.DefaultCloseSpecifications, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.DefaultCloseSpecifications)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.DefaultCloseSpecifications)
+                        @Html.ValidationMessageFor(model => model.DefaultCloseSpecifications)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.DefaultCloseAttributes_OverrideForStore, model => model.DefaultCloseAttributes, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.DefaultCloseAttributes)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.DefaultCloseAttributes)
+                        @Html.ValidationMessageFor(model => model.DefaultCloseAttributes)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.DefaultCloseManufacturers_OverrideForStore, model => model.DefaultCloseManufacturers, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.DefaultCloseManufacturers)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.DefaultCloseManufacturers)
+                        @Html.ValidationMessageFor(model => model.DefaultCloseManufacturers)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.DefaultCloseVendors_OverrideForStore, model => model.DefaultCloseVendors, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.DefaultCloseVendors)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.DefaultCloseVendors)
+                        @Html.ValidationMessageFor(model => model.DefaultCloseVendors)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.showDebugInfo)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.showDebugInfo)
+                        @Html.ValidationMessageFor(model => model.showDebugInfo)
+                        <div id="pnlclearlogfile">
+                            <a href="@Url.Action("ClearLogFile")" class="k-button">@T("FoxNetSoft.Plugin.Misc.SpeedFilters.ClearLogFile")</a>
+                        </div>
+                        <div id="pnlgetlogfile">
+                            <a href="@Url.Action("GetLogFile")" class="k-button">@T("FoxNetSoft.Plugin.Misc.SpeedFilters.GetLogFile")</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@helper TabGlobalCategorySetting()
+{
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @*<p>
+                        <b>@T("FoxNetSoft.Plugin.Misc.SpeedFilters.GlobalCategorySetting")</b>
+                    </p>*@
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.GlobalCustomKeyword)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.GlobalCustomKeyword)
+                        @Html.ValidationMessageFor(model => model.GlobalCustomKeyword)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.GlobalMetaTitle)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.GlobalMetaTitle)
+                        @Html.ValidationMessageFor(model => model.GlobalMetaTitle)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.GlobalMetaDescription)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.TextAreaFor(model => model.GlobalMetaDescription, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.GlobalMetaDescription)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.GlobalMetaKeyWord)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.TextAreaFor(model => model.GlobalMetaKeyWord, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.GlobalMetaKeyWord)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.GlobalHTag)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.GlobalHTag, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.GlobalHTag)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.GlobalHeaderCopy)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.TextAreaFor(model => model.GlobalHeaderCopy, new { @class = "form-control" })
+                        @*@Html.ValidationMessageFor(model => model.GlobalHeaderCopy)*@
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.GlobalHeaderTitle)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.TextAreaFor(model => model.GlobalHeaderTitle, new { @class = "form-control" })
+                        @*@Html.ValidationMessageFor(model => model.GlobalHeaderCopy)*@
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.GlobalFooterTitle1)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.GlobalFooterTitle1)
+                        @Html.ValidationMessageFor(model => model.GlobalFooterTitle1)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.GlobalFooterContent1)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.GlobalFooterContent1, "RichEditor")
+                        @Html.ValidationMessageFor(model => model.GlobalFooterContent1)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.GlobalFooterTitle2)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.GlobalFooterTitle2)
+                        @Html.ValidationMessageFor(model => model.GlobalFooterTitle2)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.GlobalFooterContent2)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.GlobalFooterContent2, "RichEditor")
+                        @Html.ValidationMessageFor(model => model.GlobalFooterContent2)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.GlobalFooterTitle3)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.GlobalFooterTitle3)
+                        @Html.ValidationMessageFor(model => model.GlobalFooterTitle3)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.GlobalFooterContent3)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.GlobalFooterContent3, "RichEditor")
+                        @Html.ValidationMessageFor(model => model.GlobalFooterContent3)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@helper TabSpecificCategorySetting()
+{
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @*<p>
+                        <b>@T("FoxNetSoft.Plugin.Misc.SpeedFilters.SpecificCategorySetting")</b>
+                    </p>*@
+                @Html.HiddenFor(model => model.SpecificCategorySettingId)
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.OptimizedCategory)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopDropDownListFor(model => model.OptimizedCategory, Model.AvailableCategories, new { })
+                        @*@Html.ValidationMessageFor(model => model.OptimizesCategory)*@
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.SpecificCustomKeyword)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.SpecificCustomKeyword)
+                        @Html.ValidationMessageFor(model => model.SpecificCustomKeyword)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.SpecificMetaTitle)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.SpecificMetaTitle)
+                        @Html.ValidationMessageFor(model => model.SpecificMetaTitle)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.SpecificMetaDescription)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.TextAreaFor(model => model.SpecificMetaDescription, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SpecificMetaDescription)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.SpecificMetaKeyWord)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.TextAreaFor(model => model.SpecificMetaKeyWord, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SpecificMetaKeyWord)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.SpecificHTag)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.SpecificHTag, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SpecificHTag)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.SpecificHeaderCopy)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.TextAreaFor(model => model.SpecificHeaderCopy, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SpecificHeaderCopy)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.SpecificHeaderTitle)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.TextAreaFor(model => model.SpecificHeaderTitle, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SpecificHeaderTitle)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.SpecificFooterTitle1)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.SpecificFooterTitle1)
+                        @Html.ValidationMessageFor(model => model.SpecificFooterTitle1)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.SpecificFooterContent1)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.SpecificFooterContent1, "RichEditor")
+                        @Html.ValidationMessageFor(model => model.SpecificFooterContent1)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.SpecificFooterTitle2)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.SpecificFooterTitle2)
+                        @Html.ValidationMessageFor(model => model.SpecificFooterTitle2)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.SpecificFooterContent2)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.SpecificFooterContent2, "RichEditor")
+                        @Html.ValidationMessageFor(model => model.SpecificFooterContent2)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.SpecificFooterTitle3)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.SpecificFooterTitle3)
+                        @Html.ValidationMessageFor(model => model.SpecificFooterTitle3)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.SpecificFooterContent3)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.SpecificFooterContent3, "RichEditor")
+                        @Html.ValidationMessageFor(model => model.SpecificFooterContent3)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#OptimizedCategory').on('change', function () {
+                var postData = {
+                    categoryId: parseInt($(this).val())
+                };
+                addAntiForgeryToken(postData);
+                $.ajax({
+                    url: "@(Url.Action("GetSpecificCategorySettingByCatId", "SpeedFiltersSettins"))",
+                    datatype: 'json',
+                    type: 'post',
+                    data: postData,
+                    success: function (response) {
+                        if (response != null) {
+                            $("#SpecificCategorySettingId").val(response.Id);
+                            $('#SpecificCustomKeyword').val(response.CustomKeyword);
+                            $('#SpecificMetaTitle').val(response.MetaTitle);
+                            $('#SpecificMetaDescription').val(response.MetaDescription);
+                            $('#SpecificMetaKeyWord').val(response.MetaKeyword);
+                            $('#SpecificHTag').val(response.H1Tag);
+                            $('#SpecificHeaderCopy').val(response.HeaderCopy);
+                            $('#SpecificHeaderTitle').val(response.HeaderTitle);
+                            $('#SpecificFooterTitle1').val(response.FooterTitle1);
+                            tinymce.get("SpecificFooterContent1").setContent(response.FooterContent1 != null? response.FooterContent1:"");
+                            $('#SpecificFooterTitle2').val(response.FooterTitle2);
+                            tinymce.get("SpecificFooterContent2").setContent(response.FooterContent2 != null ? response.FooterContent2 : "");
+                            $('#SpecificFooterTitle3').val(response.FooterTitle3);
+                            tinymce.get("SpecificFooterContent3").setContent(response.FooterContent3 != null ? response.FooterContent3 : "");
+                        }
+                        else {
+                            $("#SpecificCategorySettingId").val(0);
+                            $('#SpecificCustomKeyword').val('');
+                            $('#SpecificMetaTitle').val('');
+                            $('#SpecificMetaDescription').val('');
+                            $('#SpecificMetaKeyWord').val('');
+                            $('#SpecificHTag').val('');
+                            $('#SpecificHeaderCopy').val('');
+                            $('#SpecificHeaderTitle').val('');
+                            $('#SpecificFooterTitle1').val('');
+                            tinymce.get("SpecificFooterContent1").setContent('');
+                            $('#SpecificFooterTitle2').val('');
+                            tinymce.get("SpecificFooterContent2").setContent('');
+                            $('#SpecificFooterTitle3').val('');
+                            tinymce.get("SpecificFooterContent3").setContent('');
+                        }
+                    }
+                })
+            });
+        });
+
+    </script>
+}

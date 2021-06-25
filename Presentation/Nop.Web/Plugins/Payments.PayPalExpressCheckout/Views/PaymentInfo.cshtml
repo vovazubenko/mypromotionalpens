@@ -1,0 +1,27 @@
+﻿@{ var error = TempData["paypal-ec-error"]; }
+
+<img id="payPalExpressCheckoutImage" output="url" alt="" src="https://www.paypalobjects.com/en_GB/i/btn/btn_xpressCheckout.gif" style="cursor:pointer;" />
+
+@if (error != null)
+{
+    <p class="error">@error</p>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        @*$('#payPalExpressCheckoutImage').click(function () {
+            if (!$('#termsofservice').is(':checked')) {
+                $("#terms-of-service-warning-box").dialog({ draggable: false });
+                return false;
+            }
+            else {
+                setLocation('@Url.RouteUrl("Plugin.Payments.PayPalExpressCheckout.SubmitButton")');
+            }
+        });*@
+        $('#payPalExpressCheckoutImage').click(function () {
+
+            setLocation('@Url.RouteUrl("Plugin.Payments.PayPalExpressCheckout.SubmitButton")');
+
+        });
+
+    });
+</script>

@@ -1,0 +1,211 @@
+﻿@using Nop.Services;
+@model OrderModel
+
+@{
+    //page title
+    ViewBag.Title = T("Admin.Orders.EditOrderDetails").Text;
+    //active menu item (system name)
+    Html.SetActiveMenuItemSystemName("Orders");
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "order-form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @T("Admin.Orders.EditOrderDetails") - @Model.CustomOrderNumber
+            <small><i class="fa fa-arrow-circle-left"></i>@Html.ActionLink(T("Admin.Orders.BackToList").Text, "List")</small>
+        </h1>
+        <div class="pull-right">
+            <a href="javascript:void(0)" class="btn bg-purple" data-toggle="modal" data-target="#myModal">
+                <i class="fa fa-file-pdf-o"></i>
+                @T("Admin.Orders.SendInvoice")
+            </a>
+            @*<a href="@Url.Action("SendInvoice", new {orderId = Model.Id})" class="btn bg-purple">
+                    <i class="fa fa-file-pdf-o"></i>
+                    @T("Admin.Orders.SendInvoice")
+                </a>*@
+            @{
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">@T("Admin.Orders.SendInvoice")</h4>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="orderId" name="orderId" value="@Model.Id" />
+                                <div class="form-group" style="float: left;width: 100%;padding-bottom:10px;">
+                                    <div class="col-md-3">
+                                        @Html.Label("Send To")
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.NopDropDownListFor(model => model.ResendInvoiceTo, ((ResendInvoiceTo)Model.ResendInvoiceTo).ToSelectList())
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="resend-email-otheremail" style="display:none;float: left;width: 100%;padding-bottom: 10px;">
+                                    <div class="col-md-3">
+                                        @Html.Label("Email")
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.NopEditorFor(model => model.ResendInvoiceEmail)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer" style="border:none !important;">
+                                <button type="submit" class="btn btn-primary" name="SendInvoice">
+                                    @T("Admin.Orders.SendInvoice")
+                                </button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <script>
+                    $("#ResendInvoiceTo").change(function () {
+                        $("#ResendInvoiceEmail").removeAttr('required');
+                        $("#resend-email-otheremail").hide();
+                        if ($(this).val() == 3) {
+                            $("#resend-email-otheremail").show();
+                            $("#ResendInvoiceEmail").attr('required', 'required');
+                        }
+                    });
+                </script>
+            }
+
+
+            <a href="@Url.Action("PdfInvoice", new {orderId = Model.Id})" class="btn bg-purple">
+                <i class="fa fa-file-pdf-o"></i>
+                @T("Admin.Orders.PdfInvoice")
+            </a>
+            @*<a href="@Url.Action("PurchaseOrder","PurchaseOrder", new { orderid = Model.Id})" class="btn bg-purple">
+                    <i class="fa fa-shopping-cart"></i>
+                    @T("Admin.Orders.PurchaseOrder")
+                </a>*@
+
+
+
+            @if (!Model.IsLoggedInAsVendor)
+            {
+                <span id="order-delete" class="btn bg-red">
+                    <i class="fa fa-trash-o"></i>
+                    @T("Admin.Common.Delete")
+                </span>
+            }
+            <input type="submit" id="btnRefreshPage" style="display: none" />
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $('#btnRefreshPage').click(function () {
+                        //refresh page
+                        location.reload();
+                    });
+                });
+            </script>
+        </div>
+    </div>
+
+    @Html.ValidationSummary(false)
+
+                <script>
+                    $(document).ready(function () {
+                        bindBootstrapTabSelectEvent('order-edit');
+                    });
+                </script>
+
+                <div class="content">
+                    @if (Model.Warnings.Count > 0)
+                    {
+                        <div class="callout callout-danger">
+                            <ul>
+                                @foreach (var warning in Model.Warnings)
+                    {
+                                    <li>@warning</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                    <div class="form-horizontal">
+                        <div id="order-edit" class="nav-tabs-custom">
+                            <ul class="nav nav-tabs">
+                                @Html.RenderBootstrapTabHeader("tab-info", @T("Admin.Orders.Info"), true)
+                                @Html.RenderBootstrapTabHeader("tab-billing-info", @T("Admin.Orders.BillingInfo"))
+                                @Html.RenderBootstrapTabHeader("tab-shipping-info", @T("Admin.Orders.ShippingInfo"))
+                                @Html.RenderBootstrapTabHeader("tab-products", @T("Admin.Orders.Products"))
+                                @if (!Model.IsLoggedInAsVendor)
+                                {
+                                    @Html.RenderBootstrapTabHeader("tab-order-notes", @T("Admin.Orders.OrderNotes"))
+                                }
+                                @Html.RenderBootstrapTabHeader("tab-invoice", @T("Admin.Orders.HtmlInvoice"))
+                                @if (!Model.IsLoggedInAsVendor)
+                                {
+                                    @Html.RenderBootstrapTabHeader("tab-OrderTransactionSummary", @T("Admin.Orders.OrderTransactionSummary"))
+                                }
+                            </ul>
+                            <div class="tab-content">
+                                @Html.RenderBootstrapTabContent("tab-info", @TabInfo(), true)
+                                @Html.RenderBootstrapTabContent("tab-billing-info", @TabBillingInfo())
+                                @Html.RenderBootstrapTabContent("tab-shipping-info", @TabShippingInfo())
+                                @Html.RenderBootstrapTabContent("tab-products", @TabProducts())
+                                @if (!Model.IsLoggedInAsVendor)
+                                {
+                                    @Html.RenderBootstrapTabContent("tab-order-notes", @TabOrderNotes())
+                                }
+                                @Html.RenderBootstrapTabContent("tab-invoice", @TabOrderInvoice())
+                                @if (!Model.IsLoggedInAsVendor)
+                                {
+                                    @Html.RenderBootstrapTabContent("tab-OrderTransactionSummary", @TabOrderTransactionSummary())
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {
+                    //custom tabs
+                    var eventMessage = new AdminTabStripCreated(this.Html, "order-edit");
+                    EngineContext.Current.Resolve<IEventPublisher>
+                        ().Publish(eventMessage);
+                    foreach (var eventBlock in eventMessage.BlocksToRender)
+                    {
+                        @eventBlock
+                    }
+                }
+
+                @*save selected tab name*@
+                <input type="hidden" id="selected-tab-name" name="selected-tab-name" value="@(Html.GetSelectedTabName())">
+                }
+@Html.DeleteConfirmation("order-delete")
+
+@helper TabInfo()
+{
+    @Html.Partial("_OrderDetails.Info", Model)
+}
+@helper TabBillingInfo()
+{
+    @Html.Partial("_OrderDetails.Billing", Model)
+}
+@helper TabShippingInfo()
+{
+    @Html.Partial("_OrderDetails.Shipping", Model)
+}
+@helper TabProducts()
+{
+    @Html.Partial("_OrderDetails.Products", Model)
+}
+@helper TabOrderNotes()
+{
+    @Html.Partial("_OrderDetails.Notes", Model)
+}
+@helper TabOrderInvoice()
+{
+    @Html.Partial("_OrderDetails.Invoice", Model)
+}
+@helper TabOrderTransactionSummary()
+{
+    @Html.Partial("TransactionSummary", Model)
+}

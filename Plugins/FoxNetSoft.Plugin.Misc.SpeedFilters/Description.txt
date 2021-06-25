@@ -1,0 +1,8 @@
+﻿Group: Misc
+FriendlyName: FoxNetSoft SpeedFilters
+SystemName: FoxNetSoft.Plugin.Misc.SpeedFilters
+Version: 1.15
+SupportedVersions: 3.90
+Author: www.foxnetsoft.com
+DisplayOrder: 1
+FileName: FoxNetSoft.Plugin.Misc.SpeedFilters.dll         

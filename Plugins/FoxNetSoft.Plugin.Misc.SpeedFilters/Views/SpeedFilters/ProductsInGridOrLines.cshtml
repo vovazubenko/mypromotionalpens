@@ -1,0 +1,59 @@
+﻿@model FoxNetSoft.Plugin.Misc.SpeedFilters.Models.SelectedSpeedFilter
+@{
+    Layout = null;
+}
+@using Nop.Web.Models.Catalog;
+@using FoxNetSoft.Plugin.Misc.SpeedFilters.Models;
+
+        @*product list*@
+        @if (Model.Products.Count > 0)
+        {
+            if (Model.ViewMode == "list")
+            {
+            @*list mode*@
+            <div class="product-list">
+                <div class="item-grid">
+                    @foreach (var product in Model.Products)
+                    {
+                        <div class="item-box">
+                            @Html.Partial("_ProductBox", product)
+                        </div>
+                    }
+                </div>       
+            </div>       
+            }
+            else
+            {
+            @*grid mode*@
+            <div class="product-grid">
+                <div class="item-grid">
+                    @foreach (var product in Model.Products)
+                    {
+                        <div class="item-box">
+                            @Html.Partial("_ProductBox", product)
+                        </div>
+                    }
+                </div>
+            </div>
+            }
+        }
+        else
+        {
+            if (Model.showEmptyResult)
+            {
+                if (Model.ViewMode == "list")
+                {
+                @*list mode*@
+                <div class="product-list">
+                        <p>@T("FoxNetSoft.Plugin.Misc.SpeedFilters.EmptyResult.Text")</p>
+                </div>       
+                }
+                else
+                {
+                @*grid mode*@
+                <div class="product-grid">
+                        <p class="fns-emptyresult">@T("FoxNetSoft.Plugin.Misc.SpeedFilters.EmptyResult.Text")</p>
+                </div>
+                }
+            }            
+        }

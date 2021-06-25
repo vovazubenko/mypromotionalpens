@@ -1,0 +1,9 @@
+﻿Group: Misc
+FriendlyName: Signifyd
+SystemName: Sws.Misc.Signifyd
+Version: 1.0.6
+SupportedVersions: 3.90
+Author: SWS Solutions
+DisplayOrder: 1
+FileName: Sws.Plugin.Misc.Signifyd.dll
+Description: This plugin protects your nopCommerce store against fraud and chargeback

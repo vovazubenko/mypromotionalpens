@@ -1,0 +1,394 @@
+﻿@model ProductDetailsModel
+@using Nop.Core.Domain.Seo;
+@using Nop.Core.Domain.Orders;
+@using Nop.Core.Infrastructure;
+@using Nop.Web.Models.Catalog;
+@using Nop.Web.Framework.Themes
+@using Nop.Core;
+@using Nop.Services.Security;
+@using Nop.Core.Domain.Customers;
+@{
+    Layout = null;
+
+    var _workContext = EngineContext.Current.Resolve<IWorkContext>();
+    var CurrentCustomer = _workContext.CurrentCustomer;
+
+    Html.AddCssFileParts("~/Scripts/fineuploader/fineuploader-4.2.2.min.css");
+    Html.AddScriptParts("~/Scripts/fineuploader/jquery.fineuploader-4.2.2.js");
+
+    var downloadService = EngineContext.Current.Resolve<Nop.Services.Media.IDownloadService>();
+    var themeName = EngineContext.Current.Resolve<IThemeContext>().WorkingThemeName;
+    var controlId = "Quote-artUpload";
+}
+<style>
+    .ui-dialog {
+        width: auto !important;
+    }
+</style>
+
+<div id="Quote-dialog" title="Quote Request Form" style="display:none;">
+    @{
+    <form method="post" action="@Url.Action("ProductDetails","Product")" id="product-details-Quote-request-form" style="padding: 10px 20px;">
+        <input type="hidden" value="@Model.Sku" name="Quoterequest-sku" id="Quoterequest-sku" />
+        <input type="hidden" value="@Model.Name" name="Quoterequest-product-name" id="Quoterequest-product-name" />
+        <input type="hidden" value="@Model.Id" name="id" />
+        <div class="attributes-form">
+            <dl>
+                <dt style="float:left;">
+                    <label class="text-prompt">
+                        Item Color
+                    </label>
+                </dt>
+                <dd style="float:left;">
+                    <select name="Quote-ItemColor" id="Quote-ItemColor" class="form-control">
+                        @{var QuoteItemColors = Model.ProductAttributes.Where(x => x.Name.ToLower().Contains("item color")).FirstOrDefault();
+                        }
+                        @if (QuoteItemColors != null)
+                        {
+                            foreach (var attributeValue in QuoteItemColors.Values)
+                            {
+                                <option selected="@attributeValue.IsPreSelected" value="@attributeValue.Name">
+                                    @attributeValue.Name
+                                </option>
+                            }
+                        }
+                    </select>
+                </dd>
+                <dt style="float:left;">
+                    <label class="text-prompt">
+                        Imprint Color
+                    </label>
+                </dt>
+                <dd style="float:left;">
+                    <select name="Quote-ImprintColor" id="Quote-ImprintColor" class="form-control">
+                        @{var QuoteImprintColor = Model.ProductAttributes.Where(x => x.Name.ToLower().Contains("imprint color")).FirstOrDefault();
+                        }
+                        @if (QuoteImprintColor != null)
+                        {
+                            foreach (var attributeValue in QuoteImprintColor.Values)
+                            {
+                                <option selected="@attributeValue.IsPreSelected" value="@attributeValue.Name">
+                                    @attributeValue.Name
+                                </option>
+                            }
+                        }
+                    </select>
+                </dd>
+                <dt style="float:left;">
+                    <label class="text-prompt">
+                        Imprint Text
+                    </label>
+                </dt>
+                <dd style="float:left;">
+                    @{var QuoteImprinLines = Model.ProductAttributes.Where(x => x.Id == 15 || x.Name.ToLower().Contains("imprint line(s)")).FirstOrDefault();
+                    }
+                    @if (QuoteImprinLines != null)
+                    {
+                        foreach (var a in QuoteImprinLines.Values)
+                        {
+                            <input name="Quote-ImprintText" value="@a.DefaultValue" type="text" class="textbox" id="@(a.Id)" placeholder="@a.Name" style="margin-top:5px;" />
+                            <br />
+                        }
+                    }
+                </dd>
+                <dt style="float:left;">
+                    <label class="text-prompt">
+                        Comments
+                    </label>
+                </dt>
+                <dd style="float:left;">
+                    <textarea name="Quote-Comment" class="textbox" id="Quote-Comment" style="margin-top:5px;"></textarea>
+                </dd>
+                <dt style="float:left;">
+                    <label class="text-prompt">
+                        Art Upload
+                    </label>
+                </dt>
+                <dd style="float:left;">
+                    <input id="@(controlId)" name="@(controlId)" type="hidden" />
+                    <div id="@(controlId)uploader"></div>
+                    <script type="text/template" id="@(controlId)-qq-template">
+                        <div class="qq-uploader-selector qq-uploader">
+                            <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
+                                <span>@T("Common.FileUploader.DropFiles")</span>
+                            </div>
+                            <div class="qq-upload-button-selector qq-upload-button">
+                                <div>@T("Common.FileUploader.Upload")</div>
+                            </div>
+                            <span class="qq-drop-processing-selector qq-drop-processing">
+                                <span>@T("Common.FileUploader.Processing")</span>
+                                <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
+                            </span>
+                            <ul class="qq-upload-list-selector qq-upload-list">
+                                <li>
+                                    <div class="qq-progress-bar-container-selector">
+                                        <div class="qq-progress-bar-selector qq-progress-bar"></div>
+                                    </div>
+                                    <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
+                                    <span class="qq-edit-filename-icon-selector qq-edit-filename-icon"></span>
+                                    <span class="qq-upload-file-selector qq-upload-file"></span>
+                                    <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
+                                    <span class="qq-upload-size-selector qq-upload-size"></span>
+
+                                    <div class="custome_upload">
+                                        <ul>
+                                            <li><a class="qq-upload-cancel-selector qq-upload-cancel" href="#">@T("Common.FileUploader.Cancel")</a></li>
+                                            <li><a class="qq-upload-retry-selector qq-upload-retry" href="#">@T("Common.FileUploader.Retry")</a></li>
+                                            @*<li><a class="qq-upload-delete-selector qq-upload-delete" href="#">@T("Common.FileUploader.Delete")</a></li>*@
+                                        </ul>
+                                    </div>
+
+
+
+
+                                    <span class="qq-upload-status-text-selector qq-upload-status-text"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </script>
+                    <script type="text/javascript">
+                                    $(document).ready(function() {
+                                        var themeName1='@themeName';
+                                        var path="/Themes/"+themeName1+"/Content/img/download.png";
+                                        $("#@(controlId)uploader").fineUploader({
+                                            request: {
+                                                endpoint: '@(Url.Action("UploadArtWork","Product"))'
+                                            },
+                                            template: "@(controlId)-qq-template",
+                                            multiple: false,
+                                        }).on("complete", function(event, id, name, responseJSON, xhr) {
+
+                                           $("#@(controlId)").val(responseJSON.downloadGuid);
+                                            if (responseJSON.success) {
+                                                $("#@(controlId + "downloadurl")").html("<a title='@T("Common.FileUploader.DownloadUploadedFile")' class='download-uploaded-file' href='" + responseJSON.downloadUrl + "'><img class='custom-upload-image' src='"+path+"'/></a>");
+                                                $("#@(controlId + "remove")").show();
+                                                $("#@(controlId + "filename") p").html(responseJSON);
+                                                $(".qq-upload-cancel").hide();
+                                                $(".qq-upload-retry").hide();
+                                                $(".qq-upload-delete").hide();
+                                                $(".qq-upload-button").hide();
+                                                $(".qq-upload-success").css("background-color","none !important");
+                                                //$(".qq-upload-success").hide();
+                                            }
+                                            if (responseJSON.message) {
+                                                alert(responseJSON.message);
+                                            }
+                                        });
+
+                                        $("#@(controlId + "remove")").click(function(e) {
+                                            $(".qq-upload-button").show();
+                                            $("#@(controlId + "downloadurl")").html("");
+                                            $("#@(controlId + "filename") p").hide();
+                                            $("#@(controlId + "uldownloadurl")").hide("");
+                                            $("#@(controlId)").val('');
+                                            $(".qq-upload-success").hide();
+                                            $(this).hide();
+                                        });
+                                    });
+                    </script>
+                    <div class="custome_remove">
+                        <ul id="@(controlId + "uldownloadurl")" style="display:none;">
+                            <li style="width:100%;word-break: break-all;padding-bottom: 0px !important;margin-bottom: 0px;">
+                                <div id="@(controlId + "filename")">
+
+                                </div>
+                            </li>
+                        </ul>
+                        <ul>
+
+                            <li>
+                                <div id="@(controlId + "downloadurl")">
+
+                                </div>
+                            </li>
+                            <li>
+                                <div>
+                                    <a id="@(controlId + "remove")" title="@T("Common.FileUploader.RemoveDownload")" class="remove-download-button" style="display: none;"><img class='custom-upload-image' src="@string.Format("/Themes/{0}/Content/img/remove-icon.png", themeName)" /></a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </dd>
+                <dt style="float:left;">
+                    <label class="text-prompt">
+                        Quantity
+                    </label>
+                </dt>
+                <dd style="float:left;">
+                    <input name="Quote-Quantity" value="" type="text" class="textbox" id="Quote-Quantity" style="margin-top:5px;" />
+                </dd>
+            </dl>
+        </div>
+        <br />
+        <div class="edit-address Quoterequstform-shipping-info">
+            <div class="inputs ">
+                @Html.LabelFor(model => model.FillShippingInfoVirtual.Company, new { }, ":")
+                @Html.EditorFor(model => model.FillShippingInfoVirtual.Company)
+                @if (Model.FillShippingInfoVirtual.CompanyRequired)
+                {
+                    @Html.RequiredHint()
+                }
+                @Html.ValidationMessageFor(model => model.FillShippingInfoVirtual.Company)
+            </div>
+            <div class="inputs ">
+                @Html.LabelFor(model => model.FillShippingInfoVirtual.FirstName, new { }, ":")
+                @Html.EditorFor(model => model.FillShippingInfoVirtual.FirstName)
+                @Html.RequiredHint()
+                @Html.ValidationMessageFor(model => model.FillShippingInfoVirtual.FirstName)
+            </div>
+            <div class="inputs ">
+                @Html.LabelFor(model => model.FillShippingInfoVirtual.LastName, new { }, ":")
+                @Html.EditorFor(model => model.FillShippingInfoVirtual.LastName)
+                @Html.RequiredHint()
+                @Html.ValidationMessageFor(model => model.FillShippingInfoVirtual.LastName)
+
+            </div>
+            <div class="inputs ">
+                @Html.LabelFor(model => model.FillShippingInfoVirtual.Email, new { }, ":")
+                @Html.EditorFor(model => model.FillShippingInfoVirtual.Email)
+                @Html.RequiredHint()
+                @Html.ValidationMessageFor(model => model.FillShippingInfoVirtual.Email)
+            </div>
+            <div class="inputs ">
+                @Html.LabelFor(model => model.FillShippingInfoVirtual.Address1, new { }, ":")
+                @Html.EditorFor(model => model.FillShippingInfoVirtual.Address1)
+                @if (Model.FillShippingInfoVirtual.StreetAddressRequired)
+                {
+                    @Html.RequiredHint()
+                }
+                @Html.ValidationMessageFor(model => model.FillShippingInfoVirtual.Address1)
+            </div>
+            <div class="inputs ">
+                @Html.LabelFor(model => model.FillShippingInfoVirtual.Address2, new { }, ":")
+                @Html.EditorFor(model => model.FillShippingInfoVirtual.Address2)
+                @if (Model.FillShippingInfoVirtual.StreetAddress2Required)
+                {
+                    @Html.RequiredHint()
+                }
+                @Html.ValidationMessageFor(model => model.FillShippingInfoVirtual.Address2)
+            </div>
+            <div class="inputs ">
+                @Html.LabelFor(model => model.FillShippingInfoVirtual.City, new { }, ":")
+                @Html.EditorFor(model => model.FillShippingInfoVirtual.City)
+
+                @if (Model.FillShippingInfoVirtual.CityRequired)
+                {
+                    @Html.RequiredHint()
+                }
+                @Html.ValidationMessageFor(model => model.FillShippingInfoVirtual.City)
+            </div>
+            <div class="inputs ">
+                @Html.LabelFor(model => model.FillShippingInfoVirtual.CountryId, new { }, ":")
+                @Html.DropDownListFor(model => model.FillShippingInfoVirtual.CountryId, Model.FillShippingInfoVirtual.AvailableCountries)
+                @Html.RequiredHint()
+                @Html.ValidationMessageFor(model => model.FillShippingInfoVirtual.CountryId)
+            </div>
+            <div class="inputs ">
+                @Html.LabelFor(model => model.FillShippingInfoVirtual.StateProvinceId, new { }, ":")
+                @Html.DropDownListFor(model => model.FillShippingInfoVirtual.StateProvinceId, Model.FillShippingInfoVirtual.AvailableStates)
+                <span id="states-loading-progress" style="display: none;" class="please-wait">@T("Common.Wait...")</span>
+                @Html.ValidationMessageFor(model => model.FillShippingInfoVirtual.StateProvinceId)
+            </div>
+            <div class="inputs ">
+                @Html.LabelFor(model => model.FillShippingInfoVirtual.ZipPostalCode, new { }, ":")
+                @Html.EditorFor(model => model.FillShippingInfoVirtual.ZipPostalCode)
+                @if (Model.FillShippingInfoVirtual.ZipPostalCodeRequired)
+                {
+                    @Html.RequiredHint()
+                }
+                @Html.ValidationMessageFor(model => model.FillShippingInfoVirtual.ZipPostalCode)
+            </div>
+            <div class="inputs ">
+                @Html.LabelFor(model => model.FillShippingInfoVirtual.PhoneNumber, new { }, ":")
+                @Html.EditorFor(model => model.FillShippingInfoVirtual.PhoneNumber)
+                @if (Model.FillShippingInfoVirtual.PhoneRequired)
+                {
+                    @Html.RequiredHint()
+                }
+                @Html.ValidationMessageFor(model => model.FillShippingInfoVirtual.PhoneNumber)
+            </div>
+            @Html.HiddenFor(x => x.FillShippingInfoVirtual.StateProvinceName)
+            @Html.HiddenFor(x => x.FillShippingInfoVirtual.CountryName)
+        </div>
+
+        <div class="overview Quote-request-form-submit-div">
+            <button type="submit" id="Quote-request-form-submit" name="QuotesRequestForm" class="button-1">Submit</button>
+        </div>
+    </form>
+
+    }
+</div>
+
+<script>
+    $("#btn-Quote-request").click(function () {
+        var currentCustomer = '@CurrentCustomer';
+        if (currentCustomer == '') {
+            window.location.href = '@Url.Action("login","customer",new { returnUrl = Url.RouteUrl("Product", new { SeName = Model.SeName }, this.Request.Url.Scheme) })';
+        }
+        else {
+
+            if ('@CurrentCustomer.IsGuest()'.toLowerCase() == 'true') {
+                window.location.href = '@Url.Action("login","customer",new { returnUrl = Url.RouteUrl("Product", new { SeName = Model.SeName }, this.Request.Url.Scheme) })';
+            }
+            else {
+                $("#Quote-dialog").dialog({
+                    width: 500,
+                    autoOpen: true,
+                    modal: true,
+                    draggable: true,
+                    position: { my: "center", at: "center" },
+                    resizable: true,
+                    top: '10px',
+                    open: function () {
+                        $("#Quote-request-form-submit").click(function () {
+                            $("#product-details-Quote-request-form").submit();
+
+                        });
+                        $('body').find('.popup-bg').removeClass('hide');
+                    },
+                    close: function (event, ui) {
+                        $('body').find('.popup-bg').addClass('hide');
+                    }
+                });
+            }
+
+        }
+    });
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        $("#@Html.FieldIdFor(model => model.FillShippingInfoVirtual.CountryId)").change(function () {
+            $("#@Html.FieldIdFor(model => model.FillShippingInfoVirtual.CountryName)").val($("#@Html.FieldIdFor(model => model.FillShippingInfoVirtual.CountryId) option:selected").html());
+            var selectedItem = $(this).val();
+            var ddlStates = $("#@Html.FieldIdFor(model => model.FillShippingInfoVirtual.StateProvinceId)");
+            var statesProgress = $("#states-loading-progress");
+            statesProgress.show();
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "@(Url.RouteUrl("GetStatesByCountryId"))",
+                data: { "countryId": selectedItem, "addSelectStateItem": "false", "addEmptyStateIfRequired": "true" },
+                success: function (data) {
+                    ddlStates.html('');
+                    if (data.length > 0) {
+                        $("#@Html.FieldIdFor(model => model.FillShippingInfoVirtual.StateProvinceName)").val(data[0].name);
+                    }
+                    $.each(data, function (id, option) {
+                        ddlStates.append($('<option></option>').val(option.id).html(option.name));
+                    });
+                    statesProgress.hide();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Failed to retrieve states.');
+                    statesProgress.hide();
+                }
+            });
+        });
+
+        $("#@Html.FieldIdFor(model => model.FillShippingInfo.StateProvinceId)").change(function () {
+            $("#@Html.FieldIdFor(model => model.FillShippingInfo.StateProvinceName)").val($("#@Html.FieldIdFor(model => model.FillShippingInfo.StateProvinceId) option:selected").html());
+        });
+    });
+</script>

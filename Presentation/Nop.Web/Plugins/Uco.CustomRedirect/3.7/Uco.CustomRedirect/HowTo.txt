@@ -1,0 +1,18 @@
+﻿Need to redirect url 301? With this plugin you can easy redirect list of url's.
+
+1. Install the plugin
+
+2. Edit file "404.txt"
+
+Example: 
+/test1 <-> /test2
+/test3 <-> /test4
+
+Result:
+test1 will be redirected to test2
+test3 will be redirected to test4
+
+The best way to create "404.txt" file is to create Excel file with 2 columns "Old url" and "New url" and fill it with all url's you need to redirect.
+After it copy this 2 rows to notepad and replace "	/"(tab/) to " <-> /" and replace domain names with "".
+
+3. Restart application

@@ -1,0 +1,800 @@
+﻿@model PurchaseOrderModel
+@using Nop.Core.Domain.Tax;
+@using Nop.Core.Domain.Catalog;
+@{
+    //page title
+    ViewBag.Title = T("Admin.Orders.PurchaseOrder").Text;
+    //active menu item (system name)
+    Html.SetActiveMenuItemSystemName("Orders");
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "order-form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @T("Admin.Purchaseorder.Purchaseorder")
+            <small>
+                <i class="fa fa-arrow-circle-left"></i>
+                <a href="@Url.Action("Edit","Order", new { Id=Model.OrderModel.Id})">@T("Admin.Orders.BackToOrder").Text</a>
+                @*@Html.ActionLink(T("Admin.Orders.BackToOrder").Text, "Edit","Order", new { Id=Model.OrderModel.Id})*@
+            </small>
+        </h1>
+        <div class="pull-right">
+            <button type="submit" name="save" id="btnSavePo" class="btn bg-blue" >
+                <i class="fa fa-floppy-o"></i>
+                @T("Admin.Common.Save")
+            </button>
+            <button type="submit" name="save-continue" id="btnSavePoAndCnt" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>
+                @T("Admin.Common.SaveContinue")
+            </button>
+            @if (!Model.OrderModel.IsLoggedInAsVendor)
+            {
+                if (Model.Id > 0)
+                {
+                    <a href="@Url.Action("SendPurchaseOrder", new { id = Model.Id })" class="btn bg-purple">
+                        <i class="fa fa-at"></i>
+                        @T("Admin.Purchaseorder.SendPurchaseOrder")
+                    </a>
+
+                    <span id="purchaseorder-delete" class="btn bg-red">
+                        <i class="fa fa-trash-o"></i>
+                        @T("Admin.Common.Delete")
+                    </span>
+                }
+            }<input type="submit" id="btnRefreshPage" style="display: none" />
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $('#btnRefreshPage').click(function () {
+                        //refresh page
+                        location.reload();
+                    });
+                });
+            </script>
+        </div>
+    </div>
+
+    @Html.ValidationSummary(false)
+
+    <script>
+        $(document).ready(function () {
+            bindBootstrapTabSelectEvent('order-edit');
+        });
+    </script>
+
+    <div class="content">
+        @if (Model.OrderModel.Warnings.Count > 0)
+        {
+            <div class="callout callout-danger">
+                <ul>
+                    @foreach (var warning in Model.OrderModel.Warnings)
+                    {
+                        <li>@warning</li>
+                    }
+                </ul>
+            </div>
+        }
+        <div class="form-horizontal">
+            <div id="order-edit" class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    @Html.RenderBootstrapTabHeader("tab-info", @T("Admin.Orders.Info"), true)
+                    @Html.RenderBootstrapTabHeader("tab-shipping-info", @T("Admin.Orders.ShippingInfo"))
+                    @Html.RenderBootstrapTabHeader("tab-products", @T("Admin.Orders.Products"))
+
+                </ul>
+                <div class="tab-content">
+                    @Html.RenderBootstrapTabContent("tab-info", @TabInfo(), true)
+
+                    @Html.RenderBootstrapTabContent("tab-shipping-info", @TabShipping())
+                    @Html.RenderBootstrapTabContent("tab-products", TabProduct())
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {
+        //custom tabs
+        var eventMessage = new AdminTabStripCreated(this.Html, "order-edit");
+        EngineContext.Current.Resolve<IEventPublisher>
+            ().Publish(eventMessage);
+        foreach (var eventBlock in eventMessage.BlocksToRender)
+        {
+            @eventBlock
+        }
+    }
+
+    @*save selected tab name*@
+    <input type="hidden" id="selected-tab-name" name="selected-tab-name" value="@(Html.GetSelectedTabName())">
+}
+@Html.DeleteConfirmation("purchaseorder-delete")
+@helper TabInfo()
+{
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.VendorId)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopDropDownListFor(model => model.VendorId, Model.AvailableVendors)
+                        @Html.ValidationMessageFor(model => model.VendorId)
+                        @Html.HiddenFor(x => x.OrderId)
+                        @Html.HiddenFor(x => x.Id)
+                    </div>
+                    <script type="text/javascript">
+                        $(document).ready(function () {
+                            $("#@Html.FieldIdFor(model => model.VendorId)").change(function () {
+                                var selectedItem = $(this).val();
+                                var VendorAddress = $("#@Html.FieldIdFor(model => model.VendorAddress)");
+                                var VendorCity = $("#@Html.FieldIdFor(model => model.VendorCity)");
+                                var VendorState = $("#@Html.FieldIdFor(model => model.VendorState)");
+                                var VendorPostalCode = $("#@Html.FieldIdFor(model => model.VendorPostalCode)");
+                                var VendorEmail = $("#@Html.FieldIdFor(model => model.VendorEmail)");
+                                var VendorTitle = $("#@Html.FieldIdFor(model => model.VendorTitle)");
+                                $.ajax({
+                                    cache: false,
+                                    type: "GET",
+                                    url: "@(Url.Action("GetVendorDetails", "PurchaseOrder", new RouteValueDictionary { { "area", "Admin" } }))",
+                                    data: { "vendorId": selectedItem },
+                                    success: function (data) {
+                                        VendorAddress.val(data.Address.Address1);
+                                        VendorCity.val(data.Address.City);
+                                        VendorState.val(data.Address.StateProvinceName);
+                                        VendorPostalCode.val(data.Address.ZipPostalCode);
+                                        VendorEmail.val(data.Email);
+                                        VendorTitle.val(data.Name);
+                                    },
+                                    error: function (xhr, ajaxOptions, thrownError) {
+                                        alert('Failed to retrieve vendors.');
+                                    }
+                                });
+                            });
+                        });
+                    </script>
+
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.VendorAddress)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.VendorAddress)
+                        @Html.ValidationMessageFor(model => model.VendorAddress)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.VendorCity)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.VendorCity)
+                        @Html.ValidationMessageFor(model => model.VendorCity)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.VendorState)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.VendorState)
+                        @Html.ValidationMessageFor(model => model.VendorState)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.VendorPostalCode)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.VendorPostalCode)
+                        @Html.ValidationMessageFor(model => model.VendorPostalCode)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.VendorEmail)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.VendorEmail)
+                        @Html.ValidationMessageFor(model => model.VendorEmail)
+
+                        @Html.HiddenFor(model => model.VendorTitle)
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.PoDate)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.PoDate)
+                        @Html.ValidationMessageFor(model => model.PoDate)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.PONumber)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.PONumber)
+                        @Html.ValidationMessageFor(model => model.PONumber)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.POShipVia)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.POShipVia)
+                        @Html.ValidationMessageFor(model => model.POShipVia)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.POShippingCost)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.POShippingCost)
+                        @Html.ValidationMessageFor(model => model.POShippingCost)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.POTerm)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.POTerm)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.PODeliveryDate)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.PODeliveryDate)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.POAuthorizedBy)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.POAuthorizedBy)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.PONotes)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopTextAreaFor(model => model.PONotes)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@helper TabShipping()
+{
+    <div class="panel-group">
+        @if (Model.OrderModel.IsShippable)
+        {
+            if (Model.OrderModel.ShippingAddress != null)
+            {
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.NopLabelFor(model => Model.OrderModel.ShippingAddress)
+                            </div>
+                            <div class="col-md-9">
+                                <img alt="google maps" src="@Url.Content("~/Administration/Content/images/google-maps.gif")" />
+                                <a href="@Html.Raw(Model.OrderModel.ShippingAddressGoogleMapsUrl)" style="margin-bottom: 10px;" target="_blank">@T("Admin.Orders.Fields.ShippingAddress.ViewOnGoogleMaps")</a>
+
+                                <table class="table table-hover table-bordered" style="max-width: 400px;">
+                                    @if (Model.OrderModel.ShippingAddress.FirstNameEnabled || Model.OrderModel.ShippingAddress.LastNameEnabled)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @T("Admin.Orders.Address.FullName")
+                                            </td>
+                                            <td>
+                                                @Model.OrderModel.ShippingAddress.FirstName @Model.OrderModel.ShippingAddress.LastName
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (Model.OrderModel.ShippingAddress.EmailEnabled)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @T("Admin.Orders.Address.Email")
+                                            </td>
+                                            <td>
+                                                @Model.OrderModel.ShippingAddress.Email
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (Model.OrderModel.ShippingAddress.PhoneEnabled)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @T("Admin.Orders.Address.Phone")
+                                            </td>
+                                            <td>
+                                                @Model.OrderModel.ShippingAddress.PhoneNumber
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (Model.OrderModel.ShippingAddress.FaxEnabled)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @T("Admin.Orders.Address.Fax")
+                                            </td>
+                                            <td>
+                                                @Model.OrderModel.ShippingAddress.FaxNumber
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (Model.OrderModel.ShippingAddress.CompanyEnabled)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @T("Admin.Orders.Address.Company")
+                                            </td>
+                                            <td>
+                                                @Model.OrderModel.ShippingAddress.Company
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (Model.OrderModel.ShippingAddress.StreetAddressEnabled)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @T("Admin.Orders.Address.Address1")
+                                            </td>
+                                            <td>
+                                                @Model.OrderModel.ShippingAddress.Address1
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (Model.OrderModel.ShippingAddress.StreetAddress2Enabled)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @T("Admin.Orders.Address.Address2")
+                                            </td>
+                                            <td>
+                                                @Model.OrderModel.ShippingAddress.Address2
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (Model.OrderModel.ShippingAddress.CityEnabled)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @T("Admin.Orders.Address.City")
+                                            </td>
+                                            <td>
+                                                @Model.OrderModel.ShippingAddress.City
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (Model.OrderModel.ShippingAddress.StateProvinceEnabled)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @T("Admin.Orders.Address.StateProvince")
+                                            </td>
+                                            <td>
+                                                @Model.OrderModel.ShippingAddress.StateProvinceName
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (Model.OrderModel.ShippingAddress.ZipPostalCodeEnabled)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @T("Admin.Orders.Address.ZipPostalCode")
+                                            </td>
+                                            <td>
+                                                @Model.OrderModel.ShippingAddress.ZipPostalCode
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (Model.OrderModel.ShippingAddress.CountryEnabled)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @T("Admin.Orders.Address.Country")
+                                            </td>
+                                            <td>
+                                                @Model.OrderModel.ShippingAddress.CountryName
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (!String.IsNullOrEmpty(Model.OrderModel.ShippingAddress.FormattedCustomAddressAttributes))
+                                    {
+                                        <tr class="custom-attributes-view">
+                                            <td colspan="2">
+                                                @Html.Raw(Model.OrderModel.ShippingAddress.FormattedCustomAddressAttributes)
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+
+            if (Model.OrderModel.PickupAddress != null)
+            {
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.NopLabelFor(model => Model.OrderModel.PickupAddress)
+                            </div>
+                            <div class="col-md-9">
+                                <img alt="google maps" src="@Url.Content("~/Administration/Content/images/google-maps.gif")" />
+                                <a href="@Html.Raw(Model.OrderModel.PickupAddressGoogleMapsUrl)" style="margin-bottom: 10px;" target="_blank">@T("Admin.Orders.Fields.PickupAddress.ViewOnGoogleMaps")</a>
+
+                                <table class="table table-hover table-bordered" style="max-width: 400px;">
+                                    @if (!string.IsNullOrEmpty(Model.OrderModel.PickupAddress.Address1))
+                                    {
+                                        <tr>
+                                            <td>
+                                                @T("Admin.Orders.Address.Address1")
+                                            </td>
+                                            <td>
+                                                @Model.OrderModel.PickupAddress.Address1
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.OrderModel.PickupAddress.City))
+                                    {
+                                        <tr>
+                                            <td>
+                                                @T("Admin.Orders.Address.City")
+                                            </td>
+                                            <td>
+                                                @Model.OrderModel.PickupAddress.City
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.OrderModel.PickupAddress.CountryName))
+                                    {
+                                        <tr>
+                                            <td>
+                                                @T("Admin.Orders.Address.Country")
+                                            </td>
+                                            <td>
+                                                @Model.OrderModel.PickupAddress.CountryName
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.OrderModel.PickupAddress.ZipPostalCode))
+                                    {
+                                        <tr>
+                                            <td>
+                                                @T("Admin.Orders.Address.ZipPostalCode")
+                                            </td>
+                                            <td>
+                                                @Model.OrderModel.PickupAddress.ZipPostalCode
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+    </div>
+}
+@helper TabProduct()
+{
+
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-md-12" style="overflow-x: auto;">
+                        <table class="table table-hover table-bordered text-center">
+                            @foreach (var item in Model.Items)
+                            {
+                                <script type="text/javascript">
+                                    $(document).ready(function () {
+                                        togglePurchaseOrderItemEdit@(item.Id)(false);
+                                    });
+                                </script>
+
+                                <script type="text/javascript">
+                                    function togglePurchaseOrderItemEdit@(item.Id)(editMode) {
+                                        if (editMode) {
+                                            $('#pnlEditPvUnitPrice@(item.Id)').show();
+                                            $('#pnlEditPvQuantity@(item.Id)').show();
+                                            $('#pnlEditPvReceivedQuantity@(item.Id)').show();
+                                            $('#btnEditOrderItem@(item.Id)').hide();
+                                            $('#btnDeleteOrderItem@(item.Id)').hide();
+                                            $('#btnSaveOrderItem@(item.Id)').show();
+                                            $('#btnCancelOrderItem@(item.Id)').show();
+
+
+                                        } else {
+                                            $('#pnlEditPvUnitPrice@(item.Id)').hide();
+                                            $('#pnlEditPvQuantity@(item.Id)').hide();
+                                            $('#pnlEditPvReceivedQuantity@(item.Id)').hide();
+                                            $('#btnEditOrderItem@(item.Id)').show();
+                                            $('#btnDeleteOrderItem@(item.Id)').show();
+                                            $('#btnSaveOrderItem@(item.Id)').hide();
+                                            $('#btnCancelOrderItem@(item.Id)').hide();
+
+                                        }
+                                    }
+                                </script>
+                            }
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @T("Admin.PurchaseOrder.PurchaseOrderNumber")
+                                    </th>
+                                    <th>
+                                        @T("Admin.PurchaseOrder.PurchaseOrderItems.Sku")
+                                    </th>
+                                    <th>
+                                        @T("Admin.PurchaseOrder.PurchaseOrderItems.ProductName")
+                                    </th>
+
+                                    <th>
+                                        @T("Admin.PurchaseOrder.PurchaseOrderItems.Price")
+                                    </th>
+
+                                    <th>
+                                        @T("Admin.PurchaseOrder.PurchaseOrderItems.Quantity")
+                                    </th>
+                                    <th>
+                                        @T("Admin.PurchaseOrder.PurchaseOrderItems.ReceivedQuantity")
+                                    </th>
+                                    <th>
+                                        @T("Admin.Orders.Products.Total")
+                                    </th>
+                                    @if (!Model.OrderModel.IsLoggedInAsVendor && Model.Id > 0)
+                                    {
+                                        <th>
+                                            @T("Admin.Common.Edit")
+                                        </th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Items)
+                                {
+                                    <tr>
+                                        <td>
+                                            @item.PONumber
+                                        </td>
+                                        <td>
+                                            @item.ProductCode
+                                        </td>
+                                        <td style="text-align: left; width: 15%;">
+                                            <em>@item.ProductName</em>
+                                            @if (!String.IsNullOrEmpty(item.AttributeDescription))
+                                            {
+                                                <p>
+                                                    @Html.Raw(item.AttributeDescription)
+                                                </p>
+                                            }
+                                        </td>
+
+
+                                        <td style="width: 15%;">
+                                            <div>@item.UnitPrice</div>
+                                            <div id="pnlEditPvUnitPrice@(item.Id)">
+                                                <div class="form-group">
+                                                  
+                                                        <div class="col-md-8 col-md-offset-1">
+                                                            <input name="pvPrice@(item.Id)" type="text" value="@item.Price" id="pvPrice@(item.Id)" class="form-control input-sm" />
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        </td>
+
+                                        <td style="width: 10%;">
+                                            <div>@item.Quantity</div>
+                                            <div id="pnlEditPvQuantity@(item.Id)">
+                                                <div class="form-group">
+                                                    <div class="col-md-10 col-md-offset-1">
+                                                        <input name="pvQuantity@(item.Id)" type="text" value="@item.Quantity" id="pvQuantity@(item.Id)" class="form-control input-sm" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </td>
+
+                                        <td style="width: 10%;">
+                                            <div>@item.QuantityReceived</div>
+                                            <div id="pnlEditPvReceivedQuantity@(item.Id)">
+                                                <div class="form-group">
+                                                    <div class="col-md-10 col-md-offset-1">
+                                                        <input name="pvReceivedQuantity@(item.Id)" type="text" value="@item.QuantityReceived" id="pvReceivedQuantity@(item.Id)" class="form-control input-sm" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </td>
+
+                                        <td style="width: 15%;">
+                                            @item.Subtotal
+                                        </td>
+
+                                        @if (!Model.OrderModel.IsLoggedInAsVendor && item.Id > 0)
+                                        {
+                                            <td style="width: 15%;">
+                                                <button type="submit" class="btn btn-default" name="btnEditOrderItem@(item.Id)" onclick="togglePurchaseOrderItemEdit@(item.Id)(true);return false;" id="btnEditOrderItem@(item.Id)">
+                                                    <i class="fa fa-pencil"></i>
+                                                    @T("Admin.Common.Edit")
+                                                </button>
+
+                                                @*<button type="submit" class="btn btn-default" name="btnDeleteOrderItem@(item.Id)" id="btnDeleteOrderItem@(item.Id)">
+                                                    <i class="fa fa-trash"></i>
+                                                    @T("Admin.Common.Delete")
+                                                </button>*@
+                                                @Html.ActionConfirmation("btnDeleteOrderItem" + item.Id)
+
+                                                <button type="submit" class="btn btn-default" name="btnSaveOrderItem@(item.Id)" id="btnSaveOrderItem@(item.Id)" style="display: none;">
+                                                    <i class="fa fa-floppy-o"></i>
+                                                    @T("Admin.Common.Save")
+                                                </button>
+                                                @Html.ActionConfirmation("btnSaveOrderItem" + item.Id)
+
+                                                <button type="submit" class="btn btn-default" name="btnCancelOrderItem@(item.Id)" onclick="togglePurchaseOrderItemEdit@(item.Id)(false);return false;" id="btnCancelOrderItem@(item.Id)" style="display: none;">
+                                                    <i class="fa fa-close"></i>
+                                                    @T("Admin.Common.Cancel")
+                                                </button>
+                                            </td>
+                                        }
+
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @*<div class="">
+
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <div class="label-wrapper">
+                                <label class="control-label">@T("Admin.Orders.Fields.OrderSubtotal")</label>
+
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="row">
+                                @if (Model.OrderModel.AllowCustomersToSelectTaxDisplayType || Model.OrderModel.TaxDisplayType == TaxDisplayType.IncludingTax)
+                                {
+                                    <div class="col-md-2">
+                                        <div class="form-text-row">
+                                            @Html.DisplayFor(model => Model.OrderModel.OrderSubtotalInclTax) <strong>@T("Admin.Orders.Fields.OrderSubtotalInclTax")</strong>
+                                        </div>
+                                    </div>
+                                }
+                                @if (Model.OrderModel.AllowCustomersToSelectTaxDisplayType || Model.OrderModel.TaxDisplayType == TaxDisplayType.ExcludingTax)
+                                {
+                                    <div class="col-md-10">
+                                        <div class="form-text-row">
+                                            @Html.DisplayFor(model => Model.OrderModel.OrderSubtotalExclTax) <strong>@T("Admin.Orders.Fields.OrderSubtotalExclTax")</strong>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <div class="label-wrapper">
+                                <label class="control-label">@T("Admin.Orders.Fields.OrderShipping")</label>
+
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="row">
+                                @if (Model.OrderModel.AllowCustomersToSelectTaxDisplayType || Model.OrderModel.TaxDisplayType == TaxDisplayType.IncludingTax)
+                                {
+                                    <div class="col-md-2">
+                                        <div class="form-text-row">
+                                            @Html.DisplayFor(model => Model.OrderModel.OrderShippingInclTax) <strong>@T("Admin.Orders.Fields.OrderShippingInclTax")</strong>
+                                        </div>
+                                    </div>
+                                }
+                                @if (Model.OrderModel.AllowCustomersToSelectTaxDisplayType || Model.OrderModel.TaxDisplayType == TaxDisplayType.ExcludingTax)
+                                {
+                                    <div class="col-md-2">
+                                        <div class="form-text-row">
+                                            @Html.DisplayFor(model => Model.OrderModel.OrderShippingExclTax) <strong>@T("Admin.Orders.Fields.OrderShippingExclTax")</strong>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.NopLabelFor(model => Model.OrderModel.OrderTotal)
+                        </div>
+                        <div class="col-md-9">
+                            @Html.NopDisplayFor(model => Model.OrderModel.OrderTotal)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.NopLabelFor(model => Model.OrderModel.PaymentMethod)
+                        </div>
+                        <div class="col-md-9">
+                            @Html.NopDisplayFor(model => Model.OrderModel.PaymentMethod)
+                        </div>
+                    </div>
+                </div>*@
+
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+
+
+
+
+
+
+

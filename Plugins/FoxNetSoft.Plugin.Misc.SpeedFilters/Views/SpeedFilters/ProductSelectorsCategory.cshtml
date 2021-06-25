@@ -1,0 +1,48 @@
+﻿@model FoxNetSoft.Plugin.Misc.SpeedFilters.Models.SelectedSpeedFilter
+@{
+    Layout = null;
+}
+@using Nop.Web.Models.Catalog
+@using FoxNetSoft.Plugin.Misc.SpeedFilters.Models
+@using Nop.Web.Extensions
+<style>
+    $('html, body').animate({scrollTop: $('.category-page').offset().top}, 'slow');
+</style>
+<div class="product-selectors">
+    @*view mode*@
+    @if (Model.PagingFilteringContext.AllowProductViewModeChanging && Model.Products.Count > 0)
+    {
+     @*<div class="product-viewmode">
+           <span>@T("Catalog.ViewMode")</span>
+             @Html.DropDownList("products-viewmode", Model.PagingFilteringContext.AvailableViewModes, new { onchange = "sf_productselectors_onchange();" })
+     </div>*@
+        <div class="product-viewmode">
+            <span>@T("Catalog.ViewMode")</span>
+            @if (Model.PagingFilteringContext.AvailableViewModes.Count > 1)
+            {
+                var gridMode = Model.PagingFilteringContext.AvailableViewModes[0];
+                var listMode = Model.PagingFilteringContext.AvailableViewModes[1];
+
+                <a class="viewmode-icon grid @if(gridMode.Selected){<text>selected</text>}" href="@gridMode.Value" title="@gridMode.Text">@gridMode.Text</a>
+                <a class="viewmode-icon list @if (listMode.Selected){<text>selected</text>}" href="@listMode.Value" title="@listMode.Text">@listMode.Text</a>
+            }
+        </div>
+    }
+    @*sorting*@
+    @if (Model.PagingFilteringContext.AllowProductSorting && Model.Products.Count > 0)
+    {
+         <div class="product-sorting">
+          <span>@T("Catalog.OrderBy")</span>
+            @Html.DropDownList("products-orderby", Model.PagingFilteringContext.AvailableSortOptions, new { onchange = "sf_productselectors_onchange();" })
+        </div>
+    }
+    @*page size*@
+    @if (Model.PagingFilteringContext.AllowCustomersToSelectPageSize && Model.Products.Count > 0)
+    {
+    <div class="product-page-size">
+        <span>@T("Catalog.PageSize")</span> 
+          @Html.DropDownList("products-pagesize", Model.PagingFilteringContext.PageSizeOptions, new { onchange = "sf_productselectors_onchange();" })
+        <span>@T("Catalog.PageSize.PerPage")</span>
+    </div>
+    }
+</div>

@@ -1,0 +1,49 @@
+﻿@*@using Nop.Web.Models.Catalog
+    @using Nop.Core.Domain.Catalog
+    @using System.Dynamic
+
+    @model List<ExpandoObject>
+    @{
+        List<ExpandoObject> lst = Model;
+        Model.AddRange(lst);
+    }*@
+@*@if (Model.Count > 0)
+    {
+        <div class="rich-blog-homepage homepage-review bestsellers @if (Model.Count > 0){<text>carousel</text>}">
+            <div class="title">
+                <strong>@T("Latest Reviews")</strong>
+            </div>
+            <div class="blog-posts">
+                @for (int a = 0; a < Model.Count; a++)
+                {
+                    <div class="three-items-holder">
+                        @if (Model.Count > a)
+                        {
+                            <div class="blog-post item-box" style="border:none;">
+                                @Html.Partial("_ProductReviewBox", Model[a])
+                            </div>
+                        }
+
+                    </div>
+                }
+            </div>
+        </div>
+    }*@
+<div id="google-reviews" class="rich-blog-homepage homepage-review bestsellers carousel">
+</div>
+
+@*<script async defer src="//maps.googleapis.com/maps/api/js?key=AIzaSyCyGSRQ7ZBnxtqMuPfCpTfMSqHx1jrK0Lk&libraries=places" type="text/javascript"></script>*@
+<script async defer src="//maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=@T("Google.Map.Key")&callback=initialize" type="text/javascript"></script>
+<script src="~/Themes/Pavilion/Content/scripts/jquery-google-reviews.js"></script>
+<script>
+    function initialize() {
+        if ($("#google-reviews").length == 0) {
+            return
+        }
+
+        $("#google-reviews").googlePlaces({
+            placeId: '@T("Google.Place.Id")',//'ChIJmRgqcrXLWTkRdaoq2xePWk0',
+            header: '<div class="title"><strong>@T("Latest Reviews")</strong></div>'
+        });
+    }
+</script>

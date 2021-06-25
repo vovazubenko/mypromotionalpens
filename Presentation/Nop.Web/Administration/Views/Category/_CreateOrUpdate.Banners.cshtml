@@ -1,0 +1,234 @@
+﻿@model CategoryModel
+
+<div class="panel-group">
+    @if (Model.Id > 0)
+    {
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div id="categorybanners-grid"></div>
+
+                <script>
+                    $(document).ready(function() {
+                        $("#categorybanners-grid").kendoGrid({
+                            dataSource: {
+                                type: "json",
+                                transport: {
+                                    read: {
+                                        url: "@Html.Raw(Url.Action("CategoryBannerList", "Category", new { categoryId = Model.Id}))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: addAntiForgeryToken
+                                    },
+                                    update: {
+                                        url: "@Html.Raw(Url.Action("CategoryBannerUpdate", "Category"))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: addAntiForgeryToken
+                                    },
+                                    destroy: {
+                                        url: "@Html.Raw(Url.Action("CategoryBannerDelete", "Category"))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: addAntiForgeryToken
+                                    }
+                                },
+                                schema: {
+                                    data: "Data",
+                                    total: "Total",
+                                    errors: "Errors",
+                                    model: {
+                                        id: "Id",
+                                        fields: {
+                                            PictureUrl: { editable: false, type: "string" },
+                                            BannerUrl: { editable: true, type: "string" },
+                                            DisplayOrder: { editable: true, type: "number" },
+                                            OverrideAltAttribute: { editable: true, type: "string" },
+                                            OverrideTitleAttribute: { editable: true, type: "string" }
+                                        }
+                                    }
+                                },
+                                requestEnd: function(e) {
+                                    if (e.type == "update") {
+                                        this.read();
+                                    }
+                                },
+                                error: function(e) {
+                                    display_kendoui_grid_error(e);
+                                    // Cancel the changes
+                                    this.cancelChanges();
+                                },
+                                serverPaging: true,
+                                serverFiltering: true,
+                                serverSorting: true
+                            },
+                            pageable: {
+                                refresh: true,
+                                numeric: false,
+                                previousNext: false,
+                                info: false,
+                                @Html.Partial("_GridPagerMessages")
+                            },
+                            editable: {
+                                confirmation: "@T("Admin.Common.DeleteConfirmation")",
+                                mode: "inline"
+                            },
+                            scrollable: false,
+                            columns: [
+                            {
+                                field: "PictureUrl",
+                                title: "@T("Admin.Catalog.Categories.Banners.Fields.Picture")",
+                                template: '<a href="#=PictureUrl#" target="_blank"><img alt="#=PictureId#" src="#=PictureUrl#" width="150" /></a>',
+                                width: 200
+                            },{
+                                    field: "BannerUrl",
+                                title: "@T("Admin.Catalog.Categories.Banners.Fields.BannerUrl")",
+                                    template: '<a href="#=BannerUrl#" target="_blank">#=BannerUrl#</a>',
+                                width: 200
+                            }, {
+                                field: "DisplayOrder",
+                                title: "@T("Admin.Catalog.Categories.Banners.Fields.DisplayOrder")",
+                                //integer format
+                                format: "{0:0}",
+                                width: 150
+                            }, {
+                                field: "OverrideAltAttribute",
+                                title: "@T("Admin.Catalog.Categories.Banners.Fields.OverrideAltAttribute")",
+                                width: 200
+                            }, {
+                                field: "OverrideTitleAttribute",
+                                title: "@T("Admin.Catalog.Categories.Banners.Fields.OverrideTitleAttribute")",
+                                width: 200
+                            }, {
+                                command: [
+                                {
+                                    name: "edit",
+                                    text: {
+                                        edit: "@T("Admin.Common.Edit")",
+                                        update: "@T("Admin.Common.Update")",
+                                        cancel: "@T("Admin.Common.Cancel")"
+                                    }
+                                }, {
+                                    name: "destroy",
+                                    text: "@T("Admin.Common.Delete")"
+                                }
+                                ],
+                                width: 200
+                            }
+                            ]
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @T("Admin.Catalog.Categories.Banners.AddNew")
+            </div>
+            <div class="panel-body">
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        $('#addCategoryBanner').click(function() {
+                            var bannerId = $("#@Html.FieldIdFor(model => model.AddBannerModel.BannerId)").val();
+                            var bannerUrl = $("#@Html.FieldIdFor(model => model.AddBannerModel.BannerUrl)").val();
+                            var overrideAltAttribute = $("#@Html.FieldIdFor(model => model.AddBannerModel.OverrideAltAttribute)").val();
+                            var overrideTitleAttribute = $("#@Html.FieldIdFor(model => model.AddBannerModel.OverrideTitleAttribute)").val();
+                            var displayOrder = $("#@Html.FieldIdFor(model => model.AddBannerModel.DisplayOrder)").val();
+
+                            if (bannerId == 0) {
+                                alert('Upload picture first');
+                                return;
+                            }
+
+                            $('#addCategoryBanner').attr('disabled', true);
+
+                            var postData = {
+                                bannerId: bannerId,
+                                displayOrder: displayOrder,
+                                overrideAltAttribute: overrideAltAttribute,
+                                overrideTitleAttribute: overrideTitleAttribute,
+                                categoryId: @Model.Id,
+                                bannerUrl: bannerUrl
+                                };
+                            addAntiForgeryToken(postData);
+
+                            $.ajax({
+                                cache: false,
+                                type: "POST",
+                                url: "@(Url.Action("CategoryBannerAdd", "Category"))",
+                                data: postData,
+                                success: function(data) {
+                                    var grid = $("#categorybanners-grid");
+                                    grid.data('kendoGrid').dataSource.read();
+                                    $('#addCategoryBanner').attr('disabled', false);
+                                },
+                                error: function(xhr, ajaxOptions, thrownError) {
+                                    alert('Failed to add category banner.');
+                                    $('#addCategoryBanner').attr('disabled', false);
+                                }
+                            });
+                        });
+                    });
+                </script>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.AddBannerModel.BannerId)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.AddBannerModel.BannerId)
+                        @Html.ValidationMessageFor(model => model.AddBannerModel.BannerId)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.AddBannerModel.BannerUrl)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.AddBannerModel.BannerUrl)
+                        @Html.ValidationMessageFor(model => model.AddBannerModel.BannerUrl)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.AddBannerModel.OverrideAltAttribute)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.AddBannerModel.OverrideAltAttribute)
+                        @Html.ValidationMessageFor(model => model.AddBannerModel.OverrideAltAttribute)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.AddBannerModel.OverrideTitleAttribute)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.AddBannerModel.OverrideTitleAttribute)
+                        @Html.ValidationMessageFor(model => model.AddBannerModel.OverrideTitleAttribute)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.AddBannerModel.DisplayOrder)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.AddBannerModel.DisplayOrder)
+                        @Html.ValidationMessageFor(model => model.AddBannerModel.DisplayOrder)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-9 col-md-offset-3">
+                        <button type="button" id="addCategoryBanner" class="btn btn-primary">@T("Admin.Catalog.Categories.Banners.AddButton")</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @T("Admin.Catalog.Categories.Banners.SaveBeforeEdit")
+            </div>
+        </div>
+    }
+</div>
