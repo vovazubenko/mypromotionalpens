@@ -8,12 +8,12 @@
 @if (Model.Enabled)
 {
     <div class="breadcrumb">
-        <ul>
+        <ul itemscope itemtype="http://schema.org/BreadcrumbList">
             @Html.Widget("productbreadcrumb_before", Model.ProductId)
             <li>
-                <span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+                <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
                     <a href="@Url.RouteUrl("HomePage")" itemprop="url">
-                        <span itemprop="title">@T("Products.Breadcrumb.Top")</span>
+                        <span itemprop="name">@T("Products.Breadcrumb.Top")</span>
                     </a>
                 </span>
                 <span class="delimiter">@breadcrumbDelimiter</span>
@@ -21,9 +21,9 @@
             @foreach (var category in Model.CategoryBreadcrumb)
             {
                 <li>
-                    <span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
                         <a href="@Url.RouteUrl("Category", new { SeName = category.SeName })" itemprop="url">
-                            <span itemprop="title">@category.Name</span>
+                            <span itemprop="name">@category.Name</span>
                         </a>
                     </span>
                     <span class="delimiter">@breadcrumbDelimiter</span>
