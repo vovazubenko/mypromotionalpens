@@ -402,10 +402,10 @@
                                     var dataDictAttributes = new ViewDataDictionary();
                                     dataDictAttributes.TemplateInfo.HtmlFieldPrefix = string.Format("attributes_{0}", Model.Id);
                                     <div class="product_attributes">
-                                        <div class="divProductAttribute" style="@(Model.updatecartitemid!=0?"display:block;":"display:none;")">
+                                        <div class="divProductAttribute" style="display:none;">
                                             @Html.Partial("_ProductAttributes", Model.ProductAttributes, dataDictAttributes)
                                         </div>
-                                        <div class="divProductAttribute attributes overall-buttons" style="@(Model.updatecartitemid!=0?"display:block;":"display:none;")">
+                                        <div class="divProductAttribute attributes overall-buttons" style="display: none;">
 
                                             <div class="overview-buttons">
                                                 @{var dataDictAddToCart = new ViewDataDictionary();
