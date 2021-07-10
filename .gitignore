@@ -31,3 +31,5 @@ msbuild.err
 msbuild.wrn
 /.vs
 Presentation/Nop.Web/Content/Images/
+*.dll
+*.pdb
