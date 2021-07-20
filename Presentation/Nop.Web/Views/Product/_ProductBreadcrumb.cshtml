@@ -7,13 +7,16 @@
 }
 @if (Model.Enabled)
 {
+    int position = 1;
+
     <div class="breadcrumb">
         <ul itemscope itemtype="http://schema.org/BreadcrumbList">
             @Html.Widget("productbreadcrumb_before", Model.ProductId)
             <li>
-                <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                    <a href="@Url.RouteUrl("HomePage")" itemprop="url">
+                <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem" >
+                    <a href="@Url.RouteUrl("HomePage")" itemprop="item">
                         <span itemprop="name">@T("Products.Breadcrumb.Top")</span>
+                        <meta itemprop="position" content="@position" />
                     </a>
                 </span>
                 <span class="delimiter">@breadcrumbDelimiter</span>
@@ -22,8 +25,9 @@
             {
                 <li>
                     <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                        <a href="@Url.RouteUrl("Category", new { SeName = category.SeName })" itemprop="url">
+                        <a href="@Url.RouteUrl("Category", new { SeName = category.SeName })" itemprop="item">
                             <span itemprop="name">@category.Name</span>
+                            <meta itemprop="position" content="@(++position)" />
                         </a>
                     </span>
                     <span class="delimiter">@breadcrumbDelimiter</span>
