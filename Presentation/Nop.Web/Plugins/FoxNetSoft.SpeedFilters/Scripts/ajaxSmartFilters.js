@@ -84,6 +84,12 @@ var AjaxSmartFilter = {
             return;
         }
 
+        if (urlparam.includes("pagenumber")) {
+            var newParams = urlparam.replace("pagenumber", "pageNumber").replace("orderby", "orderBy");
+            var newUrl = window.location.href + newParams;
+            window.location.href = newUrl;
+        }
+
         this.setLoadWaiting(true);
         $.ajax({
             cache: false,
