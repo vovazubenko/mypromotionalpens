@@ -69,6 +69,20 @@
         height: 45px !important;
         min-width: 45px !important;
     }
+    .productbutton-button .button-1 {
+        color: #18509d !important;
+        background: none !important;
+        cursor: pointer;
+        border: none !important;
+        font-size: 16px;
+        font-weight: normal;
+        text-transform: none;
+        padding: 8px !important;
+        text-decoration: underline;
+    }
+    .padding-none {
+        padding: 0px !important;
+    }
 </style>
 @Html.Widget("productdetails_after_breadcrumb", Model.Id)
 <div class="page product-details-page order-details-page">
@@ -397,12 +411,12 @@
                                     <span class="sep-or">OR</span>
                                 </div>
 
-                                <div class="overall-buttons">
+                                <div class="overall-buttons padding-none">
                                     <div class="productbutton-button" style="width:100%">
                                         <ul>
-                                            <li><a class="button-1" id="btn-sample-request">Sample Request</a></li>
-                                            <li><a class="button-1" id="btn-proof-request">Proof Request</a></li>
                                             <li><a class="button-1" id="btn-Quote-request">Quote Request</a></li>
+                                            <li><a class="button-1" id="btn-sample-request">Sample Request</a></li>
+                                            <li><a class="button-1" id="btn-proof-request">Art Proof Request</a></li>
                                         </ul>
                                     </div>
                                 </div>
