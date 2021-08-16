@@ -340,22 +340,16 @@
 
                         </div>
 
-
-                        @*@if (!string.IsNullOrEmpty(Model.FullDescription))
-                        {
-                            <div class="desc" style="float: right;">
-                                <div style="font-weight: 700;"></div><b><strong>Description</strong></b> <div>@Html.Raw(GetDescription(Model.FullDescription))</div>
-                            </div>}*@
-
-
-
                         @if (Model.IsFreeShipping == true)
                         {
                             if (!string.IsNullOrEmpty(Model.FullDescription))
                             {
                                 <div class="desc" style="float: right;">
-                                    <div style="font-weight: 700;"></div><b><strong>Description</strong></b> <div>@Html.Raw(GetDescription(Model.FullDescription))</div>
-                                </div>}
+                                    <div style="font-weight: 700;"></div>
+                                    <b><strong>Description</strong></b> 
+                                    <div class="show-description">@Html.Raw(GetDescription(Model.FullDescription))</div>
+                                </div>
+                            }
                             @Html.Action("TopicBlock", "Topic", new { systemName = "freeshipping-detail" })
                         }
                         else
@@ -365,7 +359,7 @@
                                     <div style="font-weight: 700;"></div><b><strong>Description</strong></b>
 
                                 </div>
-                                <div class="desc">@Html.Raw(GetDescription(Model.FullDescription))</div>
+                                <div class="desc show-description">@Html.Raw(GetDescription(Model.FullDescription))</div>
 
                             }
                         }
@@ -533,7 +527,7 @@
         {
             description = string.Join(" ", words.Take(8));
             //return description + "...<a  href='" + Url.RouteUrl("Product", new { SeName = Model.SeName }) + "'>show more</a>";
-            return description + "...<a  href='#' onclick='FullDiscription();'>show more</a>";
+            return description + "...<a href='#' onclick='showFullDescription(event);'>show more</a>";
         }
         else
         {
@@ -547,19 +541,24 @@
 
 }
 <script>
-    function FullDiscription() {       
-        $('html, body').animate({
-            scrollTop: $(".productTabs-header").offset().top
-        }, 400);
-        
+    function showFullDescription(event) {
+        event.preventDefault();
+
+        var fullDescription = $(".full-description").html();
+        var result = fullDescription + "<a  href='#' onclick='showLessDescription(event);'>show less</a>";
+        $(".show-description").html(result);
     }
+
+    function showLessDescription(event) {
+        event.preventDefault();
+
+        var lessDescription = "@Html.Raw(GetDescription(Model.FullDescription))";
+        $(".show-description").html(lessDescription);
+    }
+
     $(document).ready(function () {
-       
-
-        $("html,body").animate({
+         $("html,body").animate({
             scrollTop: 0
-
-
         }, 10)
     });
 </script>
