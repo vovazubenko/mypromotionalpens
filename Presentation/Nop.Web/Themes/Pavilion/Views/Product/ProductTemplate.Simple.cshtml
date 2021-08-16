@@ -175,35 +175,18 @@
                                 <div style="float:left;">
                                     @Html.Partial("_SKU_Man_GTIN_Ven", Model)
                                 </div>
-                                <div class="productbutton-button" style="width:85%">
-                                   
-                                    <ul>
-                                        @*@if (_workContext.CurrentCustomer.IsRegistered())
-                                        {
-                                            <li><a class="cust-button-1 button-1">Buy Now</a></li>
-                                        }*@
 
-                                        <li><a class="button-1" id="btn-sample-request">Sample Request</a></li>
-                                        <li><a class="button-1" id="btn-proof-request">Proof Request</a></li>
-                                        <li><a class="button-1" id="btn-Quote-request">Quote Request</a></li>
-
-
-                                    </ul>
-                                    @*@if (_workContext.CurrentCustomer.IsRegistered())
-                                    {
-                                        <ul>
-
-                                            <li><a class="cust-button-1 button-1">Buy Now</a></li>
-
-
-                                            <li><a class="button-1" id="btn-sample-request">Sample Request</a></li>
-                                            <li><a class="button-1" id="btn-proof-request">Proof Request</a></li>
-                                            <li><a class="button-1" id="btn-Quote-request">Quote Request</a></li>
-
-
-                                        </ul>
-                                    }*@
-                                </div>
+                                <div class="overview-buttons" style="float:right; padding: 0px 0px;">
+                                        @Html.Widget("productdetails_inside_overview_buttons_before", Model.Id)
+                                        @{
+                                            var dataDictAddToWishlist = new ViewDataDictionary();
+                                            dataDictAddToWishlist.TemplateInfo.HtmlFieldPrefix = string.Format("addtocart_{0}", Model.Id);
+                                            @Html.Partial("_AddToWishlist", Model.AddToCart, dataDictAddToWishlist)
+                                        }
+                                        @Html.Partial("_CompareProductsButton", Model)
+                                        @Html.Partial("_ProductEmailAFriendButton", Model)
+                                        @Html.Widget("productdetails_inside_overview_buttons_after", Model.Id)
+                                    </div>
                             </div>
                             <div class="table-price-product-right" style="padding-top:10px;">
                                 @if (Model.DiscountRanges.Count > 0)
@@ -413,19 +396,14 @@
                                 <div class="ortext">
                                     <span class="sep-or">OR</span>
                                 </div>
+
                                 <div class="overall-buttons">
-
-
-                                    <div class="overview-buttons">
-                                        @Html.Widget("productdetails_inside_overview_buttons_before", Model.Id)
-                                        @{
-                                            var dataDictAddToWishlist = new ViewDataDictionary();
-                                            dataDictAddToWishlist.TemplateInfo.HtmlFieldPrefix = string.Format("addtocart_{0}", Model.Id);
-                                            @Html.Partial("_AddToWishlist", Model.AddToCart, dataDictAddToWishlist)
-                                        }
-                                        @Html.Partial("_CompareProductsButton", Model)
-                                        @Html.Partial("_ProductEmailAFriendButton", Model)
-                                        @Html.Widget("productdetails_inside_overview_buttons_after", Model.Id)
+                                    <div class="productbutton-button" style="width:100%">
+                                        <ul>
+                                            <li><a class="button-1" id="btn-sample-request">Sample Request</a></li>
+                                            <li><a class="button-1" id="btn-proof-request">Proof Request</a></li>
+                                            <li><a class="button-1" id="btn-Quote-request">Quote Request</a></li>
+                                        </ul>
                                     </div>
                                 </div>
 
