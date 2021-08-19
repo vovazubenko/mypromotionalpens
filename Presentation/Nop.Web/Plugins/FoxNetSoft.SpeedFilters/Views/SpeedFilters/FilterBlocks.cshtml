@@ -160,50 +160,6 @@
                                         </div>
                                     </div>
                                 }
-        @if (enableSpecificationsFilter)
-        {
-            foreach (var specificationAttribute in Model.specificationAttributes)
-            {
-                <div class="block filter-block specification-filter-block">
-                    <div class="title">
-                        <div class="speedfltrToggleControl @if (Model.speedFiltersSettings.DefaultCloseSpecifications)
-                                            {<text>closed</text>}">@specificationAttribute.Name</div>
-                                            <a class="speedfltrclearfilter" style="display: none;"></a>
-                                        </div>
-                                        <div class="filter-data-block @if (!Model.speedFiltersSettings.FiltersType.Equals("checkbox", StringComparison.CurrentCultureIgnoreCase))
-                                              {<text>filter-dropdown</text>}" style="@if (Model.speedFiltersSettings.DefaultCloseSpecifications){<text>display: none;</text>}">
-                                            <div class="specification-info-block">
-                                                @if (Model.speedFiltersSettings.FiltersType.Equals("checkbox", StringComparison.CurrentCultureIgnoreCase))
-                                                {
-                                                    <ul>
-                                                        @foreach (var specificationOption in Model.specificationAttributeOptions.Where(s => s.SpecificationAttributeId == specificationAttribute.Id).OrderBy(o => o.DisplayOrder))
-                                                        {
-                                                            <li>
-                                                                <a class="filter-item-unselected" filter-block="specification" filter-option-groupid="@specificationOption.SpecificationAttributeId" filter-option-id="@specificationOption.Id" filter-option-name="@specificationOption.Name">@specificationOption.Name</a>
-                                                            </li>
-                                                        }
-                                                    </ul>
-                                                }
-                                                else
-                                                {
-                                                    <div id="specification-dropdown" class="fnsDropDown jDropDown">
-                                                        <div><p></p></div>
-                                                        <ul>
-                                                            <li><span>@T("FoxNetSoft.Plugin.Misc.SpeedFilters.UserMode.All")</span></li>
-                                                            @foreach (var specificationOption in Model.specificationAttributeOptions.Where(s => s.SpecificationAttributeId == specificationAttribute.Id).OrderBy(o => o.DisplayOrder))
-                                                            {
-                                                                <li filter-block="specification" filter-option-groupid="@specificationOption.SpecificationAttributeId" filter-option-id="@specificationOption.Id" filter-option-name="@specificationOption.Name">
-                                                                    <span>@specificationOption.Name</span>
-                                                                </li>
-                                                            }
-                                                        </ul>
-                                                    </div>
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            }
         @if (enableAttributesFilter)
         {
             foreach (var productAttribute in Model.productAttributes)
