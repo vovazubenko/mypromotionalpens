@@ -30,6 +30,7 @@ using Nop.Services.Shipping;
 using Nop.Services.Tax;
 using Nop.Web.Framework.Security.Captcha;
 using Nop.Web.Infrastructure.Cache;
+using Nop.Web.Models.Catalog;
 using Nop.Web.Models.Common;
 using Nop.Web.Models.Media;
 using Nop.Web.Models.ShoppingCart;
@@ -43,6 +44,7 @@ namespace Nop.Web.Factories
     {
         #region Fields
 
+        private readonly IProductService _productService;
         private readonly IAddressModelFactory _addressModelFactory;
         private readonly IWorkContext _workContext;
         private readonly IStoreContext _storeContext;
@@ -87,7 +89,8 @@ namespace Nop.Web.Factories
 
 		#region Ctor
 
-        public ShoppingCartModelFactory(IAddressModelFactory addressModelFactory, 
+        public ShoppingCartModelFactory(IAddressModelFactory addressModelFactory,
+            IProductService productService,
             IStoreContext storeContext,
             IWorkContext workContext,
             IShoppingCartService shoppingCartService, 
@@ -126,6 +129,7 @@ namespace Nop.Web.Factories
             CustomerSettings customerSettings)
         {
             this._addressModelFactory = addressModelFactory;
+            this._productService = productService;
             this._workContext = workContext;
             this._storeContext = storeContext;
             this._shoppingCartService = shoppingCartService;
@@ -410,6 +414,54 @@ namespace Nop.Web.Factories
                 PictureId = Convert.ToInt32(sci.PictureId),
                 SetupFee = _priceFormatter.FormatPrice(_currencyService.ConvertFromPrimaryStoreCurrency(Convert.ToDecimal(sci.SetupFee), _workContext.WorkingCurrency))
             };
+
+            var product = _productService.GetProductById(sci.Product.Id);
+            var applied = product.AppliedDiscounts.Where(x => x.DiscountType == Core.Domain.Discounts.DiscountType.AssignedToSkus && x.UsePercentage == false);
+            cartItemModel.DiscountRanges = (from a in applied
+                                    select new ProductDetailsModel.DiscountRange
+                                    {
+                                        Discount = a.Name,
+                                        DiscountID = a.Id,
+                                        Amount = product.Price - a.DiscountAmount,
+                                        MaxMiniQty = a.MaximumDiscountedQuantity,
+                                        MinQty = a.MinimumDiscountedQuantity
+
+                                    }).OrderByDescending(x => x.Amount).ToList();
+            cartItemModel.DiscountRanges.ForEach(x => x.Amount = x.Amount < 0 ? 0 : x.Amount);
+
+            // for some product we don't have saved discount in variable. calculate new discount
+            foreach (var discount in cartItemModel.DiscountRanges)
+            {
+                var editedDiscountAmounth = discount.Discount.Split('-').Count();
+
+                if (editedDiscountAmounth <= 1)
+                {
+                    int? maximumDiscountQty_N;
+                    decimal shoppingCartItemDiscountBase_N;
+                    List<DiscountForCaching> scDiscounts_N;
+
+                    int oldQunatity = sci.Quantity;
+                    int newQuantity = discount.MinQty.Value;
+
+                    sci.Quantity = newQuantity;
+                    var someValue = _priceCalculationService.GetSubTotal(sci, true, out shoppingCartItemDiscountBase_N, out scDiscounts_N, out maximumDiscountQty_N);
+
+                    if (scDiscounts_N.Count > 0)
+                    {
+                        var newDiscount = scDiscounts_N.FirstOrDefault()?.DiscountAmount;
+                        var discountString = discount.Discount;
+
+                        if (newDiscount != null)
+                        {
+                            discountString = "Discount_" + newDiscount + "(" + oldQunatity + ")";
+                        }
+
+                        discount.Discount = discountString;
+                    }
+
+                    sci.Quantity = oldQunatity;
+                }
+            }
 
             //allow editing?
             //1. setting enabled?

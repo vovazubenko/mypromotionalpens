@@ -395,6 +395,7 @@
     <Compile Include="Models\Common\SitemapModel.cs" />
     <Compile Include="Models\Customer\EmailRevalidationModel.cs" />
     <Compile Include="Models\Customer\PaymentInformationModel.cs" />
+    <Compile Include="Models\ShoppingCart\ProductCartQuantityModel.cs" />
     <Compile Include="Models\Vendors\ApplyVendorModel.cs" />
     <Compile Include="Models\Customer\CustomerAttributeModel.cs" />
     <Compile Include="Models\Catalog\CustomerBackInStockSubscriptionsModel.cs" />

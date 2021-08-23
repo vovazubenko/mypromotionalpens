@@ -1627,6 +1627,22 @@ namespace Nop.Web.Controllers
             return RedirectToRoute("SampleRequestCheckout");
         }
 
+        //[ValidateInput(false)]
+        //[HttpGet, ActionName("update-quantity-for-product")]
+        ////public virtual ActionResult UpdateQuantityForProduct([System.Web.Http.FromUri] List<ProductCartQuantityModel> data)
+        //public virtual ActionResult UpdateQuantityForProduct()
+        //{
+        //    if (!_permissionService.Authorize(StandardPermissionProvider.EnableShoppingCart))
+        //        return RedirectToRoute("HomePage");
+
+        //    var cart = _workContext.CurrentCustomer.ShoppingCartItems
+        //        .Where(sci => sci.ShoppingCartType == ShoppingCartType.ShoppingCart)
+        //        .LimitPerStore(_storeContext.CurrentStore.Id)
+        //        .ToList();
+
+        //    return Json(new { success = true });
+        //}
+
 
         [ValidateInput(false)]
         [HttpPost, ActionName("Cart")]

@@ -6,7 +6,7 @@ using Nop.Web.Framework.Mvc;
 using Nop.Web.Models.Common;
 using Nop.Web.Models.Media;
 using System.ComponentModel.DataAnnotations;
-
+using Nop.Web.Models.Catalog;
 
 namespace Nop.Web.Models.ShoppingCart
 {
@@ -101,6 +101,8 @@ namespace Nop.Web.Models.ShoppingCart
 
             public string SetupFee { get; set; }
 
+
+            public List<ProductDetailsModel.DiscountRange> DiscountRanges { get; set; }
         }
 
         public partial class CheckoutAttributeModel : BaseNopEntityModel
