@@ -519,12 +519,13 @@
             });
         });
 
-    // TODO ---> UPDATE TOTAL IN CHECKOUT
-    // TODO ---> UPDATE SAMPLE REQUEST
-    $(".qty-input").on('change keydown paste input propertychange keyup', function(e) {
+    function ConvertMoneyToFloat(value) {
+        return parseFloat(value.replace("$", "").replace(",", ""));
+    }
 
-        quantity = e.target.value;
-        var items = $(e.target).parent().find(".discount-items-unique");
+    function CalculateNewPriceData($this) {
+        quantity = $this.value;
+        var items = $($this).parent().find(".discount-items-unique");
 
         $(items).each(function (item, value) {
 
@@ -539,8 +540,8 @@
 
             if (minQuantity <= quantity && quantity <= maxQuantity) {
 
-                var parentTr = $(e.target).parent().parent();
-                var setupFee = parseFloat(parentTr.find(".product-subtotal-setupfee").attr("data-id").replace("$", "").replace(",", ""));
+                var parentTr = $($this).parent().parent();
+                var setupFee = ConvertMoneyToFloat(parentTr.find(".product-subtotal-setupfee").attr("data-id"));
 
                 parentTr.find(".product-unit-price").html("$" + discPrice);
                 parentTr.find(".product-subtotal").html("$" + ((discPrice * quantity) + setupFee).toFixed(2));
@@ -554,47 +555,27 @@
 
                 $(".cart-total .order-subtotal .cart-total-right .value-summary").html("$" + newFullAmount.toFixed(2));
 
+                if ($(".cart-total .order-total .cart-total-right .value-summary strong").html() !== undefined) {
+                    var subtotal = ConvertMoneyToFloat($(".cart-total .order-subtotal .cart-total-right .value-summary").html());
+                    var shipping = ConvertMoneyToFloat($(".cart-total .shipping-cost .cart-total-right .value-summary").html());
+                    var tax = ConvertMoneyToFloat($(".cart-total .tax-value .cart-total-right .value-summary").html());
+
+                    $(".cart-total .order-total .cart-total-right .value-summary strong").html("$" + (subtotal + shipping + tax).toFixed(2));
+                }
+
                 return false
             }
         })
+    }
+
+    // TODO ---> UPDATE SAMPLE REQUEST
+    $(".qty-input").on('change keydown paste input propertychange keyup', function(e) {
+        CalculateNewPriceData(e.target);
     });
 
     // select dropdown
     $(".qty-dropdown").on('change', function () {
-        quantity = this.value;
-        var items = $(this).parent().find(".discount-items-unique");
-
-        $(items).each(function (item, value) {
-
-            minQuantity = $(value).find(".minQuantity").html();
-            maxQuantity = $(value).find(".maxQuantity").html();
-            discPercent = $(value).find(".discPercent").html();
-            discPrice = $(value).find(".discPrice").html();
-
-            if (maxQuantity == undefined) {
-                maxQuantity = 2 ** 64
-            }
-
-            if (minQuantity <= quantity && quantity <= maxQuantity) {
-
-                var parentTr = $(this).parent().parent();
-                var setupFee = parseFloat(parentTr.find(".product-subtotal-setupfee").attr("data-id").replace("$", "").replace(",", ""));
-
-                parentTr.find(".product-unit-price").html("$" + discPrice);
-                parentTr.find(".product-subtotal").html("$" + ((discPrice * quantity) + setupFee).toFixed(2));
-                parentTr.find(".discount").html("You save: $" + (discPercent * quantity).toFixed(2));
-
-                var newFullAmount = 0;
-                $(".product-subtotal").each(function (item, value) {
-                    price = parseFloat($(value).html().replace("$", "").replace(",", ""));
-                    newFullAmount = newFullAmount + price;
-                });
-
-                $(".cart-total .order-subtotal .cart-total-right .value-summary").html("$" + newFullAmount.toFixed(2));
-
-                return false
-            }
-        })
+        CalculateNewPriceData(this);
     });
 
     // save changes quantity before next action
