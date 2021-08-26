@@ -27,18 +27,18 @@
         }
         @if (!Model.DisableBuyButton)
         {
-            <div class="add-to-cart-panel">
-                @Html.LabelFor(model => model.EnteredQuantity, new { @class = "qty-label" }, ":")
-                @if (Model.AllowedQuantities.Count > 0)
-                {
-                    @Html.DropDownListFor(model => model.EnteredQuantity, Model.AllowedQuantities, new { @class = "qty-dropdown" })
-                }
-                else
-                {
-                    @Html.TextBoxFor(model => model.EnteredQuantity, new { @class = "qty-input" })
+    <div class="add-to-cart-panel">
+        @Html.LabelFor(model => model.EnteredQuantity, new { @class = "qty-label" }, ":")
+        @if (Model.AllowedQuantities.Count > 0)
+        {
+            @Html.DropDownListFor(model => model.EnteredQuantity, Model.AllowedQuantities, new { @class = "qty-dropdown" })
+        }
+        else
+        {
+            @Html.TextBoxFor(model => model.EnteredQuantity, new { @class = "qty-input qty-input-add-cart d-none" })
 
-                    //when a customer clicks 'Enter' button we submit the "add to cart" button (if visible)
-                    <script type="text/javascript">
+            //when a customer clicks 'Enter' button we submit the "add to cart" button (if visible)
+            <script type="text/javascript">
                         $(document).ready(function () {
                             $("#@Html.FieldIdFor(model => model.EnteredQuantity)").keydown(function (event) {
                                 if (event.keyCode == 13) {
@@ -47,30 +47,30 @@
                                 }
                             });
                         });
-                    </script>
+            </script>
 
+        }
+        @{
+            var addToCartText = "";
+            if (Model.UpdatedShoppingCartItemId > 0 && Model.UpdateShoppingCartItemType.HasValue && Model.UpdateShoppingCartItemType.Value == ShoppingCartType.ShoppingCart)
+            {
+                addToCartText = T("ShoppingCart.AddToCart.Update").Text;
+            }
+            else
+            {
+                addToCartText = T("ShoppingCart.AddToCart").Text;
+                if (Model.IsRental)
+                {
+                    addToCartText = T("ShoppingCart.Rent").Text;
                 }
-                @{
-                    var addToCartText = "";
-                    if (Model.UpdatedShoppingCartItemId > 0 && Model.UpdateShoppingCartItemType.HasValue && Model.UpdateShoppingCartItemType.Value == ShoppingCartType.ShoppingCart)
-                    {
-                        addToCartText = T("ShoppingCart.AddToCart.Update").Text;
-                    }
-                    else
-                    {
-                        addToCartText = T("ShoppingCart.AddToCart").Text;
-                        if (Model.IsRental)
-                        {
-                            addToCartText = T("ShoppingCart.Rent").Text;
-                        }
-                        if (Model.AvailableForPreOrder)
-                        {
-                            addToCartText = T("ShoppingCart.PreOrder").Text;
-                        }
-                    }
-                    <input type="button" id="add-to-cart-button-@Model.ProductId" class="button-1 add-to-cart-button" value="@addToCartText" data-productid="@Model.ProductId" onclick="AjaxCart.addproducttocart_details('@Url.RouteUrl("AddProductToCart-Details", new { productId = Model.ProductId, shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart })', '#product-details-form'); return false;" />
+                if (Model.AvailableForPreOrder)
+                {
+                    addToCartText = T("ShoppingCart.PreOrder").Text;
                 }
-            </div>
+            }
+            <input type="button" id="add-to-cart-button-@Model.ProductId" class="button-1 add-to-cart-button" value="@addToCartText" data-productid="@Model.ProductId" onclick="AjaxCart.addproducttocart_details('@Url.RouteUrl("AddProductToCart-Details", new { productId = Model.ProductId, shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart })', '#product-details-form'); return false;" />
+        }
+    </div>
         }
         @Html.Widget("productdetails_add_info", Model.ProductId)
     </div>

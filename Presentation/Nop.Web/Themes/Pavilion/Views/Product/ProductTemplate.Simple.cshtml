@@ -83,6 +83,43 @@
     .padding-none {
         padding: 0px !important;
     }
+    .pr-12px {
+        padding-right: 12px;
+    }
+    .w-100 {
+        width: 100% !important;
+    }
+    .w-50 {
+        width: 50% !important;
+    }
+    .my-6px {
+        margin: 6px 0px;
+    }
+    .w-600 {
+        font-weight: 600;
+    }
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+    .qty-inputs {
+        padding: 0 8px;
+        text-align: left !important;
+        color: black !important;
+    }
+    .qty-inputs-readonly {
+        background: #f0f0f0;
+    }
+    .d-none {
+        display: none;
+    }
 </style>
 @Html.Widget("productdetails_after_breadcrumb", Model.Id)
 <div class="page product-details-page order-details-page">
@@ -211,7 +248,7 @@
                                         Model.DiscountRanges.ForEach(x => x.Amount = (Model.DiscountRanges.OrderBy(o => o.Amount).FirstOrDefault().Amount));
                                     }
 
-                                    <div class="table-price-product" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                                        <div class="table-price-product" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
 
                                         <table>
                                             <tr>
@@ -335,6 +372,74 @@
 
                             </div>
 
+                        </div>
+
+                        <div class="subtotal-price-section">
+                            <table class="w-100">
+                                <tr>
+                                    <td colspan="2">
+                                        <b><strong>Choose Your Quantity</strong></b>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="w-50">Quantity</td>
+                                    <td class="w-50">Price Each</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="w-50 pr-12px">
+                                        <input name="itemquantity@(Model.Id)" type="number" value="@(Model.AddToCart.EnteredQuantity)" 
+                                               class="qty-input w-100 qty-inputs qty-value" data-id="@(Model.AddToCart.EnteredQuantity)" />
+                                    </td>
+                                    <td class="w-50">
+                                        <input name="value@(Model.Id)" type="text" class="qty-input w-100 qty-inputs qty-inputs-readonly" readonly
+                                               value="$@(Math.Round(Model.DiscountRanges.FirstOrDefault(x => x.MinQty == Model.AddToCart.EnteredQuantity).Amount, 2))" 
+                                               data-id="@(Model.DiscountRanges.FirstOrDefault(x => x.MinQty == Model.AddToCart.EnteredQuantity).Amount)" />
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="w-50">
+                                        <div class="discount-section-per-item d-none">
+                                            @foreach (var disc in Model.DiscountRanges.OrderBy(x => x.MinQty))
+                                            {
+                                                <div class="discount-items-unique">
+                                                    <div class="minQuantity">@disc.MinQty</div>
+                                                    <div class="maxQuantity">@disc.MaxMiniQty</div>
+                                                    <div class="discPercent">@disc.Discount.Split('_')[1].Split('(')[0]</div>
+                                                    <div class="discPrice">@Math.Round(disc.Amount, 2)</div>
+                                                    <hr />
+                                                </div>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td class="w-50">
+
+                                        <table class="w-100 my-6px">
+                                            <tr>
+                                                <td class="w-50">Subtotal</td>
+                                                <td class="w-50 subtotal-price-value">
+                                                    $@(Math.Round(Model.DiscountRanges.FirstOrDefault(x => x.MinQty == Model.AddToCart.EnteredQuantity).Amount * Model.AddToCart.EnteredQuantity, 2))
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="w-50">Setup Charge</td>
+                                                <td class="w-50 setup-charge-value">$@Model.ProductPrice.SetupFee.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="w-50">Total</td>
+                                                <td class="w-50 w-600 total-value">
+                                                    $@(Math.Round((Model.DiscountRanges.FirstOrDefault(x => x.MinQty == Model.AddToCart.EnteredQuantity).Amount * Model.AddToCart.EnteredQuantity) + Model.ProductPrice.SetupFee, 2))
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
 
                         @if (Model.IsFreeShipping == true)
@@ -549,8 +654,59 @@
     }
 
     $(document).ready(function () {
-         $("html,body").animate({
+        $("html,body").animate({
             scrollTop: 0
-        }, 10)
+        }, 10);
+
+        initQuantity();
+
+        function initQuantity() {
+            $(".qty-value").each(function (item, value) {
+                oldQuantity = $(value).attr("data-id");
+                newValue = $(value).val();
+
+                if (oldQuantity != newValue) {
+                    $(value).val(oldQuantity);
+                }
+            })
+        }
+    });
+
+    function ConvertMoneyToFloat(value) {
+        return parseFloat(value.replace("$", "").replace(",", ""));
+    }
+
+    function CalculateNewPriceData($this) {
+        quantity = $this.value;
+        var items = $(".discount-items-unique");
+
+        $(items).each(function (item, value) {
+
+            minQuantity = $(value).find(".minQuantity").html();
+            maxQuantity = $(value).find(".maxQuantity").html();
+            discPercent = $(value).find(".discPercent").html();
+            discPrice = $(value).find(".discPrice").html();
+
+            if (maxQuantity == undefined) {
+                maxQuantity = 2 ** 64
+            }
+
+            if (minQuantity <= quantity && quantity <= maxQuantity) {
+
+                var setupFee = ConvertMoneyToFloat($(".setup-charge-value").html());
+
+                $(".qty-inputs-readonly").val("$" + discPrice);
+                $(".subtotal-price-value").html("$" + (discPrice * quantity).toFixed(2));
+                $(".total-value").html("$" + ((discPrice * quantity) + setupFee).toFixed(2));
+
+                $(".qty-input-add-cart").val(quantity);
+
+                return false
+            }
+        })
+    }
+
+    $(".qty-value").on('change keydown paste input propertychange keyup', function (e) {
+        CalculateNewPriceData(e.target);
     });
 </script>
