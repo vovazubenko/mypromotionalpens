@@ -231,7 +231,7 @@
                                             </div>
                                         }
                                     }
-                                    <span class="product-subtotal-setupfee">@T("ShoppingCart.SetupFee") @item.SetupFee</span>
+                                    <span class="product-subtotal-setupfee" data-id="@item.SetupFee">@T("ShoppingCart.SetupFee") @item.SetupFee</span>
                                 </td>
                                 @*<td class="product-picture">
                                         @Html.Partial("OrderPicture", item)
@@ -519,7 +519,7 @@
             });
         });
 
-    // TOTO ---> DOES IT SAVE NEW DATA - NOT. IT Does not save   Continue Shopping and Procees to checkout
+    // TODO ---> UPDATE TOTAL IN CHECKOUT
     // TODO ---> UPDATE SAMPLE REQUEST
     $(".qty-input").on('change keydown paste input propertychange keyup', function(e) {
 
@@ -540,8 +540,10 @@
             if (minQuantity <= quantity && quantity <= maxQuantity) {
 
                 var parentTr = $(e.target).parent().parent();
+                var setupFee = parseFloat(parentTr.find(".product-subtotal-setupfee").attr("data-id").replace("$", "").replace(",", ""));
+
                 parentTr.find(".product-unit-price").html("$" + discPrice);
-                parentTr.find(".product-subtotal").html("$" + (discPrice * quantity).toFixed(2));
+                parentTr.find(".product-subtotal").html("$" + ((discPrice * quantity) + setupFee).toFixed(2));
                 parentTr.find(".discount").html("You save: $" + (discPercent * quantity).toFixed(2));
 
                 var newFullAmount = 0;
@@ -576,8 +578,10 @@
             if (minQuantity <= quantity && quantity <= maxQuantity) {
 
                 var parentTr = $(this).parent().parent();
+                var setupFee = parseFloat(parentTr.find(".product-subtotal-setupfee").attr("data-id").replace("$", "").replace(",", ""));
+
                 parentTr.find(".product-unit-price").html("$" + discPrice);
-                parentTr.find(".product-subtotal").html("$" + (discPrice * quantity).toFixed(2));
+                parentTr.find(".product-subtotal").html("$" + ((discPrice * quantity) + setupFee).toFixed(2));
                 parentTr.find(".discount").html("You save: $" + (discPercent * quantity).toFixed(2));
 
                 var newFullAmount = 0;
@@ -593,8 +597,8 @@
         })
     });
 
-    // save cahnges quantity before next action - NOT FINISHED
-    $('.continue-shopping-button').one('click', function myFormSubmitCallback(evt) {
+    // save changes quantity before next action
+    $('.continue-shopping-button, .checkout-button').one('click', function myFormSubmitCallback(evt) {
         evt.stopPropagation();
         evt.preventDefault();
 
@@ -609,22 +613,21 @@
             data.push({ productId: productId, quantity: quantity });
         })
 
+        var $this = $(this);
+
         $.ajax({
-            url: "http://mypromotionalpenslocal.com/update-quantity-for-product",
-            type: "GET",
-            //contentType: "application/json; charset=utf-8",
+            url: "/update-quantity-for-product/",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
             dataType: "json",
-            //data: JSON.stringify(data),
+            data: JSON.stringify(data),
             success: function (r) {
-                console.log("success")
+                $this.trigger('click');
             },
             error: function (err) {
                 console.log("error   ", err)
             }
-
         })
-        //$(this).trigger('click');
-
     });
 
 

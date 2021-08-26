@@ -1627,21 +1627,28 @@ namespace Nop.Web.Controllers
             return RedirectToRoute("SampleRequestCheckout");
         }
 
-        //[ValidateInput(false)]
-        //[HttpGet, ActionName("update-quantity-for-product")]
-        ////public virtual ActionResult UpdateQuantityForProduct([System.Web.Http.FromUri] List<ProductCartQuantityModel> data)
-        //public virtual ActionResult UpdateQuantityForProduct()
-        //{
-        //    if (!_permissionService.Authorize(StandardPermissionProvider.EnableShoppingCart))
-        //        return RedirectToRoute("HomePage");
+        [HttpPost, ActionName("UpdateQuantityForProduct")]
+        public virtual ActionResult UpdateQuantityForProduct(List<ProductCartQuantityModel> data)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.EnableShoppingCart))
+                return RedirectToRoute("HomePage");
 
-        //    var cart = _workContext.CurrentCustomer.ShoppingCartItems
-        //        .Where(sci => sci.ShoppingCartType == ShoppingCartType.ShoppingCart)
-        //        .LimitPerStore(_storeContext.CurrentStore.Id)
-        //        .ToList();
+            var cart = _workContext.CurrentCustomer.ShoppingCartItems
+                .Where(sci => sci.ShoppingCartType == ShoppingCartType.ShoppingCart)
+                .LimitPerStore(_storeContext.CurrentStore.Id)
+                .ToList();
 
-        //    return Json(new { success = true });
-        //}
+            var _shoppingcartrespository = EngineContext.Current.Resolve<IRepository<ShoppingCartItem>>();
+            cart.ForEach(x =>
+            {
+                int? qty = data.FirstOrDefault(y => y.ProductId == x.ProductId)?.Quantity;
+                if (qty.HasValue) x.Quantity = qty.Value;
+
+                _shoppingcartrespository.Update(x);
+            });
+
+            return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+        }
 
 
         [ValidateInput(false)]

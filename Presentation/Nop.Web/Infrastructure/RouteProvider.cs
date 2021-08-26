@@ -56,6 +56,13 @@ namespace Nop.Web.Infrastructure
                             new[] { "Nop.Web.Controllers" });
 
 
+            // Update Qty before saving 
+
+            routes.MapLocalizedRoute("update-quantity-for-product",
+                            "update-quantity-for-product/",
+                            new { controller = "ShoppingCart", action = "UpdateQuantityForProduct" },
+                            new[] { "Nop.Web.Controllers" });
+
             // Sample Request form
 
             routes.MapLocalizedRoute("SampleCart",
