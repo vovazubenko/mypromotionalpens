@@ -57,6 +57,19 @@
 
     var _workContext = EngineContext.Current.Resolve<IWorkContext>();
     var CurrentCustomer = _workContext.CurrentCustomer;
+
+    int enteredQuantity;
+    int enteredQuantityFromCart = Model.AddToCart.EnteredQuantity;
+    var minQtyExists = Model.DiscountRanges.Count(x => x.MinQty == enteredQuantityFromCart);
+
+    if (minQtyExists >= 1)
+    {
+        enteredQuantity = enteredQuantityFromCart;
+    }
+    else
+    {
+        enteredQuantity = Model.DiscountRanges.Min(x => x.MinQty).Value;
+    }
 }
 <!--product breadcrumb-->
 @section Breadcrumb
@@ -393,13 +406,13 @@
 
                                 <tr>
                                     <td class="w-50 pr-12px">
-                                        <input name="itemquantity@(Model.Id)" type="number" value="@(Model.AddToCart.EnteredQuantity)" 
-                                               class="qty-input w-100 qty-inputs qty-value" data-id="@(Model.AddToCart.EnteredQuantity)" />
+                                        <input name="itemquantity@(Model.Id)" type="number" value="@enteredQuantity" 
+                                               class="qty-input w-100 qty-inputs qty-value" data-id="@enteredQuantity" />
                                     </td>
                                     <td class="w-50">
                                         <input name="value@(Model.Id)" type="text" class="qty-input w-100 qty-inputs qty-inputs-readonly" readonly
-                                               value="$@(Math.Round(Model.DiscountRanges.FirstOrDefault(x => x.MinQty == Model.AddToCart.EnteredQuantity).Amount, 2))" 
-                                               data-id="@(Model.DiscountRanges.FirstOrDefault(x => x.MinQty == Model.AddToCart.EnteredQuantity).Amount)" />
+                                               value="$@(Math.Round(Model.DiscountRanges.FirstOrDefault(x => x.MinQty == enteredQuantity).Amount, 2))" 
+                                               data-id="@(Model.DiscountRanges.FirstOrDefault(x => x.MinQty == enteredQuantity).Amount)" />
                                     </td>
                                 </tr>
 
@@ -423,7 +436,7 @@
                                             <tr>
                                                 <td class="w-50">Subtotal</td>
                                                 <td class="w-50 subtotal-price-value">
-                                                    $@(Math.Round(Model.DiscountRanges.FirstOrDefault(x => x.MinQty == Model.AddToCart.EnteredQuantity).Amount * Model.AddToCart.EnteredQuantity, 2))
+                                                    $@(Math.Round(Model.DiscountRanges.FirstOrDefault(x => x.MinQty == enteredQuantity).Amount * enteredQuantity, 2))
                                                 </td>
                                             </tr>
 
@@ -435,7 +448,7 @@
                                             <tr>
                                                 <td class="w-50">Total</td>
                                                 <td class="w-50 w-600 total-value">
-                                                    $@(Math.Round((Model.DiscountRanges.FirstOrDefault(x => x.MinQty == Model.AddToCart.EnteredQuantity).Amount * Model.AddToCart.EnteredQuantity) + Model.ProductPrice.SetupFee, 2))
+                                                    $@(Math.Round((Model.DiscountRanges.FirstOrDefault(x => x.MinQty == enteredQuantity).Amount * enteredQuantity) + Model.ProductPrice.SetupFee, 2))
                                                 </td>
                                             </tr>
                                         </table>
