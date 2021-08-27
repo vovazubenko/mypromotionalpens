@@ -877,14 +877,43 @@ namespace Nop.Services.Shipping
                 //add this scrm's options to the result
                 if (srcmShippingOptions != null)
                 {
-                    foreach (var so in srcmShippingOptions)
+                    foreach (var so in srcmShippingOptions.OrderBy(x => x.Rate))
                     {
                         //set system name if not set yet
                         if (String.IsNullOrEmpty(so.ShippingRateComputationMethodSystemName))
                             so.ShippingRateComputationMethodSystemName = srcm.PluginDescriptor.SystemName;
                         if (_shoppingCartSettings.RoundPricesDuringCalculation)
                             so.Rate = RoundingHelper.RoundPrice(so.Rate);
-                        result.ShippingOptions.Add(so);
+
+                        if (so.Name.ToLower() == "free shipping" && result.ShippingOptions.Count > 2)
+                        {
+                            result.ShippingOptions.Insert(1, so);
+                        } 
+                        else
+                        {
+                            result.ShippingOptions.Add(so);
+                        }
+                    }
+
+                    if (srcmShippingOptions.Count(x => x.Name.ToLower() == "ups ground") == 1)
+                    {
+                        var upsGround = result.ShippingOptions.FirstOrDefault(x => x.Name.ToLower().Contains("ups ground"));
+                        var ups3DaySelect = result.ShippingOptions.FirstOrDefault(x => x.Name.ToLower().Contains("3 day select"));
+                        var ups2DayAir = result.ShippingOptions.FirstOrDefault(x => x.Name.ToLower().Contains("2nd day air"));
+                        var upsNextDayAirSaver = result.ShippingOptions.FirstOrDefault(x => x.Name.ToLower().Contains("day air saver"));
+                        var upsNextDayAir = result.ShippingOptions.FirstOrDefault(x => x.Name.ToLower() == "ups next day air");
+                        var upsNextDayAirEarly = result.ShippingOptions.FirstOrDefault(x => x.Name.ToLower().Contains("day air early"));
+                        var freeShipping = result.ShippingOptions.FirstOrDefault(x => x.Name.ToLower().Contains("free shipping"));
+
+                        result.ShippingOptions = new List<ShippingOption>();
+
+                        if (upsGround != null) result.ShippingOptions.Add(upsGround);
+                        if (freeShipping != null) result.ShippingOptions.Add(freeShipping);
+                        if (ups3DaySelect != null) result.ShippingOptions.Add(ups3DaySelect);
+                        if (ups2DayAir != null) result.ShippingOptions.Add(ups2DayAir);
+                        if (upsNextDayAirSaver != null) result.ShippingOptions.Add(upsNextDayAirSaver);
+                        if (upsNextDayAir != null) result.ShippingOptions.Add(upsNextDayAir);
+                        if (upsNextDayAirEarly != null) result.ShippingOptions.Add(upsNextDayAirEarly);
                     }
                 }
             }
