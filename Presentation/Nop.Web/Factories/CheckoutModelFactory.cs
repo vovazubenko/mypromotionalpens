@@ -401,25 +401,28 @@ namespace Nop.Web.Factories
 
                 model.PaymentMethods.Add(pmModel);
             }
-            
+
             //find a selected (previously) payment method
-            var selectedPaymentMethodSystemName = _workContext.CurrentCustomer.GetAttribute<string>(
-                SystemCustomerAttributeNames.SelectedPaymentMethod,
-                _genericAttributeService, _storeContext.CurrentStore.Id);
-            if (!String.IsNullOrEmpty(selectedPaymentMethodSystemName))
-            {
-                var paymentMethodToSelect = model.PaymentMethods.ToList()
-                    .Find(pm => pm.PaymentMethodSystemName.Equals(selectedPaymentMethodSystemName, StringComparison.InvariantCultureIgnoreCase));
-                if (paymentMethodToSelect != null)
-                    paymentMethodToSelect.Selected = true;
-            }
-            //if no option has been selected, let's do it for the first one
-            if (model.PaymentMethods.FirstOrDefault(so => so.Selected) == null)
-            {
-                var paymentMethodToSelect = model.PaymentMethods.FirstOrDefault();
-                if (paymentMethodToSelect != null)
-                    paymentMethodToSelect.Selected = true;
-            }
+            //var selectedPaymentMethodSystemName = _workContext.CurrentCustomer.GetAttribute<string>(
+            //    SystemCustomerAttributeNames.SelectedPaymentMethod,
+            //    _genericAttributeService, _storeContext.CurrentStore.Id);
+            //if (!String.IsNullOrEmpty(selectedPaymentMethodSystemName))
+            //{
+            //    var paymentMethodToSelect = model.PaymentMethods.ToList()
+            //        .Find(pm => pm.PaymentMethodSystemName.Equals(selectedPaymentMethodSystemName, StringComparison.InvariantCultureIgnoreCase));
+            //    if (paymentMethodToSelect != null)
+            //        paymentMethodToSelect.Selected = true;
+            //}
+            ////if no option has been selected, let's do it for the first one
+            //if (model.PaymentMethods.FirstOrDefault(so => so.Selected) == null)
+            //{
+            //    var paymentMethodToSelect = model.PaymentMethods.FirstOrDefault();
+            //    if (paymentMethodToSelect != null)
+            //        paymentMethodToSelect.Selected = true;
+            //}
+
+            var paymentMethodToSelect = model.PaymentMethods.FirstOrDefault(x => x.Name == "Credit Card");
+            paymentMethodToSelect.Selected = true;
 
             return model;
         }
