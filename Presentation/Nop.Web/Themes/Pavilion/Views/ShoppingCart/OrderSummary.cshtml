@@ -446,6 +446,26 @@
                     if (oldQuantity != newValue) {
                         $(value).val(oldQuantity);
                     }
+
+                    // update price
+                    var items = $(value).parent().find(".discount-items-unique");
+
+                    $(items).each(function (item, value) {
+
+                        minQuantity = $(value).find(".minQuantity").html();
+                        maxQuantity = $(value).find(".maxQuantity").html();
+                        discPrice = $(value).find(".discPrice").html();
+
+                        if (maxQuantity == undefined) {
+                            maxQuantity = 2 ** 64
+                        }
+
+                        if (minQuantity <= oldQuantity && oldQuantity <= maxQuantity) {
+                            var parentTr = $(value).parent().parent().parent();
+                            parentTr.find(".product-unit-price").html("$" + discPrice);
+                        }
+                    })
+
                 })
             }
 
