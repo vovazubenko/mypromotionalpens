@@ -689,11 +689,11 @@
             maxQuantity = $(value).find(".maxQuantity").html();
             discPrice = $(value).find(".discPrice").html();
 
-            if (maxQuantity == undefined) {
+            if (!maxQuantity) {
                 maxQuantity = 2 ** 64
             }
 
-            if (minQuantity <= quantity && quantity <= maxQuantity) {
+            if (parseInt(minQuantity) <= parseInt(quantity) && parseInt(quantity) <= parseInt(maxQuantity)) {
 
                 var setupFee = ConvertMoneyToFloat($(".setup-charge-value").html());
 
@@ -708,7 +708,7 @@
         })
     }
 
-    $(".qty-value").on('change keydown paste input propertychange keyup', function (e) {
+    $(".qty-value").on('input', function (e) {
         CalculateNewPriceData(e.target);
     });
 </script>
