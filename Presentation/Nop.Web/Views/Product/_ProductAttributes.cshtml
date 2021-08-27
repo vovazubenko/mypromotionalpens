@@ -24,13 +24,7 @@
     @*<div class="attributes product-details-attributes" style="display:none;">*@
     @*<div class="attributes" style="display:none;">*@
     <div class="attributes">
-        <a class="cust-button">
-            <span>@T("Product.Details.CustomizeProduct")</span>
-            <span class="spcustomtarrow">
-                @*<img style="display:none;" src="@string.Format("/Themes/{0}/Content/img/up-arrow.png", themeName)" class="customarrowimgu" />*@
-                <img src="@string.Format("/Themes/{0}/Content/img/down-arrow.png", themeName)" class="customarrowimgd" />
-            </span>
-        </a>
+        <h3 class="customize-title">Customize Your Product</h3>
         <dl style="padding-top:10px;">
             @foreach (var attribute in Model)
             {
