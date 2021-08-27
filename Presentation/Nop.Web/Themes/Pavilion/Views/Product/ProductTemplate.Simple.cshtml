@@ -411,7 +411,6 @@
                                                 <div class="discount-items-unique">
                                                     <div class="minQuantity">@disc.MinQty</div>
                                                     <div class="maxQuantity">@disc.MaxMiniQty</div>
-                                                    <div class="discPercent">@disc.Discount.Split('_')[1].Split('(')[0]</div>
                                                     <div class="discPrice">@Math.Round(disc.Amount, 2)</div>
                                                     <hr />
                                                 </div>
@@ -688,7 +687,6 @@
 
             minQuantity = $(value).find(".minQuantity").html();
             maxQuantity = $(value).find(".maxQuantity").html();
-            discPercent = $(value).find(".discPercent").html();
             discPrice = $(value).find(".discPrice").html();
 
             if (maxQuantity == undefined) {
