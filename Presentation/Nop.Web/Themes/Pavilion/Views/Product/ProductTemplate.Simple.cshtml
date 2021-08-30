@@ -61,6 +61,7 @@
     int enteredQuantity;
     int enteredQuantityFromCart = Model.AddToCart.EnteredQuantity;
     var minQtyExists = Model.DiscountRanges.Count(x => x.MinQty == enteredQuantityFromCart);
+    var minQty = Model.DiscountRanges.Min(x => x.MinQty).Value;
 
     if (minQtyExists >= 1)
     {
@@ -68,7 +69,7 @@
     }
     else
     {
-        enteredQuantity = Model.DiscountRanges.Min(x => x.MinQty).Value;
+        enteredQuantity = minQty;
     }
 }
 <!--product breadcrumb-->
@@ -279,7 +280,7 @@
                                                 var counter = 0;
 
                                                 <tr style="background-color:#f4f4f4; font-size:13px">
-                                                    <td align="center">
+                                                    <td align="center" class="min-qty-for-product" data-id="@minQty">
                                                         Quantity Range
                                                     </td>
                                                     @foreach (var a in Model.DiscountRanges)
@@ -695,6 +696,12 @@
     function CalculateNewPriceData($this) {
         quantity = $this.value;
         var items = $(".discount-items-unique");
+        var minQty = $(".min-qty-for-product").attr("data-id");
+
+        if (parseInt(quantity) < parseInt(minQty)) {
+            quantity = minQty;
+            $($this).val(quantity);
+        }
 
         $(items).each(function (item, value) {
 
