@@ -26,13 +26,15 @@
             </div>
             @*hidden microdata info*@
             decimal ratingValue = ratingPercent / (decimal)20;
+            <span itemprop="worstRating" style="display: none;">0.0</span>
+            <span itemprop="bestRating" style="display: none;">5.0</span>
             <span itemprop="ratingValue" style="display: none;">@ratingValue.ToString("0.0", new CultureInfo("en-US"))</span>
             <span itemprop="reviewCount" style="display: none;">@Model.TotalReviews</span>
         }
         else
         {
             <div class="product-no-reviews">
-                <a href="@Url.RouteUrl("ProductReviews", new { productId = Model.ProductId })">@T("Reviews.Overview.First")</a>
+                <a href="@Url.RouteUrl("ProductReviews", new { productId = Model.ProductId })">@T("Reviews.Overview.First") --1111-1-1-1-1</a>
             </div>
         }
     </div>
