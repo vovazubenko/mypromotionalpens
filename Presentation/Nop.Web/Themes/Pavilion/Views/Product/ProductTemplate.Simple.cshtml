@@ -138,6 +138,12 @@
         color: black;
         margin-top: 12px;
     }
+    .relative-position {
+        position: relative !important;
+    }
+    .albw {
+        position: inherit !important;
+    }
 </style>
 @Html.Widget("productdetails_after_breadcrumb", Model.Id)
 <div class="page product-details-page order-details-page">
@@ -431,9 +437,15 @@
                                             }
                                         </div>
                                     </td>
-                                    <td class="w-50">
-
+                                    <td class="w-50 relative-position">
                                         <table class="w-100 my-6px">
+                                            <thead>
+                                                <tr>
+                                                    <td colspan="2">
+                                                        <div class="ajax-loading-block-window albw" style="display: none"></div>
+                                                    </td>
+                                                </tr>
+                                            </thead>
                                             <tr>
                                                 <td class="w-50">Subtotal</td>
                                                 <td class="w-50 subtotal-price-value">
@@ -693,21 +705,18 @@
         return parseFloat(value.replace("$", "").replace(",", ""));
     }
 
-    function CalculateNewPriceData($this) {
-        quantity = $this.value;
+    function CalculateNewPriceData(quantity) {
         var items = $(".discount-items-unique");
-        var minQty = $(".min-qty-for-product").attr("data-id");
-
-        if (parseInt(quantity) < parseInt(minQty)) {
-            quantity = minQty;
-            $($this).val(quantity);
-        }
+        var priceInRange = false;
+        var largestQuantities = [];
 
         $(items).each(function (item, value) {
 
             minQuantity = $(value).find(".minQuantity").html();
             maxQuantity = $(value).find(".maxQuantity").html();
             discPrice = $(value).find(".discPrice").html();
+
+            largestQuantities.push(parseInt(maxQuantity));
 
             if (!maxQuantity) {
                 maxQuantity = 2 ** 64
@@ -723,12 +732,60 @@
 
                 $(".qty-input-add-cart").val(quantity);
 
-                return false
+                priceInRange = true;
+                return false;
             }
-        })
+        });
+
+        if (!priceInRange) {
+            filteredArray = largestQuantities.filter(n => n < quantity);
+            filteredArray.sort(function (a, b) { return b - a });
+
+            if (filteredArray.length > 0) {
+                closestMinimumQuantity = filteredArray[0];
+            } else {
+                closestMinimumQuantity = $(".min-qty-for-product").attr("data-id");
+            }
+
+            $(".qty-value").val(closestMinimumQuantity);
+
+            CalculateNewPriceData(closestMinimumQuantity);
+        };
+
+        return false;
     }
 
     $(".qty-value").on('input', function (e) {
-        CalculateNewPriceData(e.target);
+        quantity = e.target.value;
+        var minQty = $(".min-qty-for-product").attr("data-id");
+
+        displaySpinnerTrigger = $(".albw").css("display") == "block";
+        if (displaySpinnerTrigger) return;
+
+        if (parseInt(quantity) < parseInt(minQty)) {
+
+            $(".albw").show();
+            $(".subtotal-price-value").html('');
+            $(".total-value").html('');
+
+            setTimeout(function () {
+                newQuantityAfterTime = $(".qty-value").val();
+
+                if (parseInt(newQuantityAfterTime) > parseInt(minQty)) {
+                    quantity = newQuantityAfterTime;
+                } else {
+                    quantity = minQty;
+                }
+
+                $(e.target).val(quantity);
+
+                CalculateNewPriceData(quantity);
+                $(".albw").hide();
+            }, 5 * 1000);
+        } else {
+            CalculateNewPriceData(quantity);
+            $(".albw").hide();
+        }
+
     });
 </script>
