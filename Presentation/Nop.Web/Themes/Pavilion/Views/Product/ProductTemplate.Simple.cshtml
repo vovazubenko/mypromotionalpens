@@ -755,18 +755,25 @@
         return false;
     }
 
-    $(".qty-value").on('input', function (e) {
+    $(".qty-value").on('input change', function (e) {
+
         quantity = e.target.value;
         var minQty = $(".min-qty-for-product").attr("data-id");
 
         displaySpinnerTrigger = $(".albw").css("display") == "block";
-        if (displaySpinnerTrigger) return;
+        onChangeEventType = e.type == 'change';
+
+        if (displaySpinnerTrigger && !onChangeEventType) return;
 
         if (parseInt(quantity) < parseInt(minQty)) {
 
             $(".albw").show();
             $(".subtotal-price-value").html('');
             $(".total-value").html('');
+
+            delayTimeOut = 5 * 1000;
+
+            if (onChangeEventType) delayTimeOut = 1;
 
             setTimeout(function () {
                 newQuantityAfterTime = $(".qty-value").val();
@@ -781,7 +788,7 @@
 
                 CalculateNewPriceData(quantity);
                 $(".albw").hide();
-            }, 5 * 1000);
+            }, delayTimeOut);
         } else {
             CalculateNewPriceData(quantity);
             $(".albw").hide();
