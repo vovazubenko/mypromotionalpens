@@ -57,20 +57,6 @@
 
     var _workContext = EngineContext.Current.Resolve<IWorkContext>();
     var CurrentCustomer = _workContext.CurrentCustomer;
-
-    int enteredQuantity;
-    int enteredQuantityFromCart = Model.AddToCart.EnteredQuantity;
-    var minQtyExists = Model.DiscountRanges.Count(x => x.MinQty == enteredQuantityFromCart);
-    var minQty = Model.DiscountRanges.Min(x => x.MinQty).Value;
-
-    if (minQtyExists >= 1)
-    {
-        enteredQuantity = enteredQuantityFromCart;
-    }
-    else
-    {
-        enteredQuantity = minQty;
-    }
 }
 <!--product breadcrumb-->
 @section Breadcrumb
@@ -83,6 +69,7 @@
         height: 45px !important;
         min-width: 45px !important;
     }
+
     .productbutton-button .button-1 {
         color: #18509d !important;
         background: none !important;
@@ -94,55 +81,9 @@
         padding: 8px !important;
         text-decoration: underline;
     }
+
     .padding-none {
         padding: 0px !important;
-    }
-    .pr-12px {
-        padding-right: 12px;
-    }
-    .w-100 {
-        width: 100% !important;
-    }
-    .w-50 {
-        width: 50% !important;
-    }
-    .my-6px {
-        margin: 6px 0px;
-    }
-    .w-600 {
-        font-weight: 600;
-    }
-    /* Chrome, Safari, Edge, Opera */
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-
-    /* Firefox */
-    input[type=number] {
-        -moz-appearance: textfield;
-    }
-    .qty-inputs {
-        padding: 0 8px;
-        text-align: left !important;
-        color: black !important;
-    }
-    .qty-inputs-readonly {
-        background: #f0f0f0;
-    }
-    .d-none {
-        display: none;
-    }
-    .customize-title {
-        color: black;
-        margin-top: 12px;
-    }
-    .relative-position {
-        position: relative !important;
-    }
-    .albw {
-        position: inherit !important;
     }
 </style>
 @Html.Widget("productdetails_after_breadcrumb", Model.Id)
@@ -156,7 +97,7 @@
         </div>
     }
     <div class="page-body">
-        
+
         @Html.Widget("productdetails_top", Model.Id)
         @using (Html.BeginRouteForm("Product", "ProductDetails", FormMethod.Post, new { id = "product-details-form" }))
         {
@@ -252,16 +193,16 @@
                                 </div>
 
                                 <div class="overview-buttons" style="float:right; padding: 0px 0px;">
-                                        @Html.Widget("productdetails_inside_overview_buttons_before", Model.Id)
-                                        @{
-                                            var dataDictAddToWishlist = new ViewDataDictionary();
-                                            dataDictAddToWishlist.TemplateInfo.HtmlFieldPrefix = string.Format("addtocart_{0}", Model.Id);
-                                            @Html.Partial("_AddToWishlist", Model.AddToCart, dataDictAddToWishlist)
-                                        }
-                                        @Html.Partial("_CompareProductsButton", Model)
-                                        @Html.Partial("_ProductEmailAFriendButton", Model)
-                                        @Html.Widget("productdetails_inside_overview_buttons_after", Model.Id)
-                                    </div>
+                                    @Html.Widget("productdetails_inside_overview_buttons_before", Model.Id)
+                                    @{
+                                        var dataDictAddToWishlist = new ViewDataDictionary();
+                                        dataDictAddToWishlist.TemplateInfo.HtmlFieldPrefix = string.Format("addtocart_{0}", Model.Id);
+                                        @Html.Partial("_AddToWishlist", Model.AddToCart, dataDictAddToWishlist)
+                                    }
+                                    @Html.Partial("_CompareProductsButton", Model)
+                                    @Html.Partial("_ProductEmailAFriendButton", Model)
+                                    @Html.Widget("productdetails_inside_overview_buttons_after", Model.Id)
+                                </div>
                             </div>
                             <div class="table-price-product-right" style="padding-top:10px;">
                                 @if (Model.DiscountRanges.Count > 0)
@@ -272,7 +213,7 @@
                                         Model.DiscountRanges.ForEach(x => x.Amount = (Model.DiscountRanges.OrderBy(o => o.Amount).FirstOrDefault().Amount));
                                     }
 
-                                        <div class="table-price-product" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                                    <div class="table-price-product" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
 
                                         <table>
                                             <tr>
@@ -286,7 +227,7 @@
                                                 var counter = 0;
 
                                                 <tr style="background-color:#f4f4f4; font-size:13px">
-                                                    <td align="center" class="min-qty-for-product" data-id="@minQty">
+                                                    <td align="center">
                                                         Quantity Range
                                                     </td>
                                                     @foreach (var a in Model.DiscountRanges)
@@ -398,93 +339,21 @@
 
                         </div>
 
-                        <div class="subtotal-price-section">
-                            <table class="w-100">
-                                <tr>
-                                    <td colspan="2">
-                                        <b><strong>Choose Your Quantity</strong></b>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td class="w-50">Quantity</td>
-                                    <td class="w-50">Price Each</td>
-                                </tr>
-
-                                <tr>
-                                    <td class="w-50 pr-12px">
-                                        <input name="itemquantity@(Model.Id)" type="number" value="@enteredQuantity" 
-                                               class="qty-input w-100 qty-inputs qty-value" data-id="@enteredQuantity" />
-                                    </td>
-                                    <td class="w-50">
-                                        <input name="value@(Model.Id)" type="text" class="qty-input w-100 qty-inputs qty-inputs-readonly" readonly
-                                               value="$@(Math.Round(Model.DiscountRanges.FirstOrDefault(x => x.MinQty == enteredQuantity).Amount, 2))" 
-                                               data-id="@(Model.DiscountRanges.FirstOrDefault(x => x.MinQty == enteredQuantity).Amount)" />
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td class="w-50">
-                                        <div class="discount-section-per-item d-none">
-                                            @foreach (var disc in Model.DiscountRanges.OrderBy(x => x.MinQty))
-                                            {
-                                                <div class="discount-items-unique">
-                                                    <div class="minQuantity">@disc.MinQty</div>
-                                                    <div class="maxQuantity">@disc.MaxMiniQty</div>
-                                                    <div class="discPrice">@Math.Round(disc.Amount, 2)</div>
-                                                    <hr />
-                                                </div>
-                                            }
-                                        </div>
-                                    </td>
-                                    <td class="w-50 relative-position">
-                                        <table class="w-100 my-6px">
-                                            <thead>
-                                                <tr>
-                                                    <td colspan="2">
-                                                        <div class="ajax-loading-block-window albw" style="display: none"></div>
-                                                    </td>
-                                                </tr>
-                                            </thead>
-                                            <tr>
-                                                <td class="w-50">Subtotal</td>
-                                                <td class="w-50 subtotal-price-value">
-                                                    $@(Math.Round(Model.DiscountRanges.FirstOrDefault(x => x.MinQty == enteredQuantity).Amount * enteredQuantity, 2))
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="w-50">Setup Charge</td>
-                                                <td class="w-50 setup-charge-value">$@Model.ProductPrice.SetupFee.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)</td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="w-50">Total</td>
-                                                <td class="w-50 w-600 total-value">
-                                                    $@(Math.Round((Model.DiscountRanges.FirstOrDefault(x => x.MinQty == enteredQuantity).Amount * enteredQuantity) + Model.ProductPrice.SetupFee, 2))
-                                                </td>
-                                            </tr>
-                                        </table>
-
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-
                         @if (Model.IsFreeShipping == true)
                         {
                             if (!string.IsNullOrEmpty(Model.FullDescription))
                             {
                                 <div class="desc" style="float: right;">
                                     <div style="font-weight: 700;"></div>
-                                    <b><strong>Description</strong></b> 
+                                    <b><strong>Description</strong></b>
                                     <div class="show-description">@Html.Raw(GetDescription(Model.FullDescription))</div>
                                 </div>
                             }
                             @Html.Action("TopicBlock", "Topic", new { systemName = "freeshipping-detail" })
                         }
                         else
-                        { if (!string.IsNullOrEmpty(Model.FullDescription))
+                        {
+                            if (!string.IsNullOrEmpty(Model.FullDescription))
                             {
                                 <div class="desc">
                                     <div style="font-weight: 700;"></div><b><strong>Description</strong></b>
@@ -502,11 +371,11 @@
                             @Html.Partial("_RentalInfo", Model, dataDictRental)
                         }
                         @*@if (!String.IsNullOrEmpty(Model.ShortDescription))
-        {
-            <div class="short-description">
-                @Html.Raw(Model.ShortDescription)
-            </div>
-        }*@
+                            {
+                                <div class="short-description">
+                                    @Html.Raw(Model.ShortDescription)
+                                </div>
+                            }*@
                         <!--SKU, MAN, GTIN, vendor-->
                         <!--sample download-->
                         @Html.Partial("_DownloadSample", Model)
@@ -516,12 +385,12 @@
                         {
                             <div class="customise-buy">
                                 @*<a class="cust-button">
-                    <span>Click Here To Start Customizing</span>
-                    <span class="spcustomtarrow">
-                        <img style="display:none;" src="@string.Format("/Themes/{0}/Content/img/up-arrow.png", themeName)" class="customarrowimgu" />
-                        <img src="@string.Format("/Themes/{0}/Content/img/down-arrow.png", themeName)" class="customarrowimgd" />
-                    </span>
-                </a>*@
+                                        <span>Click Here To Start Customizing</span>
+                                        <span class="spcustomtarrow">
+                                            <img style="display:none;" src="@string.Format("/Themes/{0}/Content/img/up-arrow.png", themeName)" class="customarrowimgu" />
+                                            <img src="@string.Format("/Themes/{0}/Content/img/down-arrow.png", themeName)" class="customarrowimgd" />
+                                        </span>
+                                    </a>*@
 
                                 @{
                                     var dataDictAttributes = new ViewDataDictionary();
@@ -556,13 +425,13 @@
                                 </div>
 
                                 @*<div class="productbutton-button">
-                    <ul>
-                        <li><a class="button-1" onclick="AjaxCart.addproducttocart_details('@Url.RouteUrl("AddProductToCart-Details", new { productId = Model.Id, shoppingCartTypeId = (int)ShoppingCartType.SampleCart, quantity = 1 })', '#product-details-form');return false;">Sample Request</a></li>
-                        <li><a class="button-1" href="@Url.RouteUrl("virtual-proof-request")">Proof Request</a></li>
-                        <li><a class="button-1" href="@Url.RouteUrl("quote-request")">Quote Request</a></li>
-                    </ul>
+                                        <ul>
+                                            <li><a class="button-1" onclick="AjaxCart.addproducttocart_details('@Url.RouteUrl("AddProductToCart-Details", new { productId = Model.Id, shoppingCartTypeId = (int)ShoppingCartType.SampleCart, quantity = 1 })', '#product-details-form');return false;">Sample Request</a></li>
+                                            <li><a class="button-1" href="@Url.RouteUrl("virtual-proof-request")">Proof Request</a></li>
+                                            <li><a class="button-1" href="@Url.RouteUrl("quote-request")">Quote Request</a></li>
+                                        </ul>
 
-                </div>*@
+                                    </div>*@
                             </div>
                         }
                         <!--gift card-->
@@ -663,7 +532,7 @@
     }
 
 
-    
+
 
 }
 <script>
@@ -683,116 +552,8 @@
     }
 
     $(document).ready(function () {
-        $("html,body").animate({
+         $("html,body").animate({
             scrollTop: 0
-        }, 10);
-
-        initQuantity();
-
-        function initQuantity() {
-            $(".qty-value").each(function (item, value) {
-                oldQuantity = $(value).attr("data-id");
-                newValue = $(value).val();
-
-                if (oldQuantity != newValue) {
-                    $(value).val(oldQuantity);
-                }
-            })
-        }
-    });
-
-    function ConvertMoneyToFloat(value) {
-        return parseFloat(value.replace("$", "").replace(",", ""));
-    }
-
-    function CalculateNewPriceData(quantity) {
-        var items = $(".discount-items-unique");
-        var priceInRange = false;
-        var largestQuantities = [];
-
-        $(items).each(function (item, value) {
-
-            minQuantity = $(value).find(".minQuantity").html();
-            maxQuantity = $(value).find(".maxQuantity").html();
-            discPrice = $(value).find(".discPrice").html();
-
-            largestQuantities.push(parseInt(maxQuantity));
-
-            if (!maxQuantity) {
-                maxQuantity = 2 ** 64
-            }
-
-            if (parseInt(minQuantity) <= parseInt(quantity) && parseInt(quantity) <= parseInt(maxQuantity)) {
-
-                var setupFee = ConvertMoneyToFloat($(".setup-charge-value").html());
-
-                $(".qty-inputs-readonly").val("$" + discPrice);
-                $(".subtotal-price-value").html("$" + (discPrice * quantity).toFixed(2));
-                $(".total-value").html("$" + ((discPrice * quantity) + setupFee).toFixed(2));
-
-                $(".qty-input-add-cart").val(quantity);
-
-                priceInRange = true;
-                return false;
-            }
-        });
-
-        if (!priceInRange) {
-            filteredArray = largestQuantities.filter(n => n < quantity);
-            filteredArray.sort(function (a, b) { return b - a });
-
-            if (filteredArray.length > 0) {
-                closestMinimumQuantity = filteredArray[0];
-            } else {
-                closestMinimumQuantity = $(".min-qty-for-product").attr("data-id");
-            }
-
-            $(".qty-value").val(closestMinimumQuantity);
-
-            CalculateNewPriceData(closestMinimumQuantity);
-        };
-
-        return false;
-    }
-
-    $(".qty-value").on('input change', function (e) {
-
-        quantity = e.target.value;
-        var minQty = $(".min-qty-for-product").attr("data-id");
-
-        displaySpinnerTrigger = $(".albw").css("display") == "block";
-        onChangeEventType = e.type == 'change';
-
-        if (displaySpinnerTrigger && !onChangeEventType) return;
-
-        if (parseInt(quantity) < parseInt(minQty)) {
-
-            $(".albw").show();
-            $(".subtotal-price-value").html('');
-            $(".total-value").html('');
-
-            delayTimeOut = 5 * 1000;
-
-            if (onChangeEventType) delayTimeOut = 1;
-
-            setTimeout(function () {
-                newQuantityAfterTime = $(".qty-value").val();
-
-                if (parseInt(newQuantityAfterTime) > parseInt(minQty)) {
-                    quantity = newQuantityAfterTime;
-                } else {
-                    quantity = minQty;
-                }
-
-                $(e.target).val(quantity);
-
-                CalculateNewPriceData(quantity);
-                $(".albw").hide();
-            }, delayTimeOut);
-        } else {
-            CalculateNewPriceData(quantity);
-            $(".albw").hide();
-        }
-
+        }, 10)
     });
 </script>
