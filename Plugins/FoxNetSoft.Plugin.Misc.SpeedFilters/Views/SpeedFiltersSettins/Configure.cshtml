@@ -740,7 +740,7 @@
                         @Html.NopLabelFor(model => model.SpecificFooterContent1)
                     </div>
                     <div class="col-md-9">
-                        @Html.EditorFor(model => model.SpecificFooterContent1, "RichEditor")
+                        @Html.TextAreaFor(model => model.SpecificFooterContent1, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.SpecificFooterContent1)
                     </div>
                 </div>
@@ -760,7 +760,7 @@
                         @Html.NopLabelFor(model => model.SpecificFooterContent2)
                     </div>
                     <div class="col-md-9">
-                        @Html.EditorFor(model => model.SpecificFooterContent2, "RichEditor")
+                        @Html.TextAreaFor(model => model.SpecificFooterContent2, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.SpecificFooterContent2)
                     </div>
                 </div>
@@ -780,7 +780,7 @@
                         @Html.NopLabelFor(model => model.SpecificFooterContent3)
                     </div>
                     <div class="col-md-9">
-                        @Html.EditorFor(model => model.SpecificFooterContent3, "RichEditor")
+                        @Html.TextAreaFor(model => model.SpecificFooterContent3, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.SpecificFooterContent3)
                     </div>
                 </div>
@@ -812,11 +812,11 @@
                             $('#SpecificHeaderCopy').val(response.HeaderCopy);
                             $('#SpecificHeaderTitle').val(response.HeaderTitle);
                             $('#SpecificFooterTitle1').val(response.FooterTitle1);
-                            tinymce.get("SpecificFooterContent1").setContent(response.FooterContent1 != null? response.FooterContent1:"");
+                            $('#SpecificFooterContent1').val(response.FooterContent1);
                             $('#SpecificFooterTitle2').val(response.FooterTitle2);
-                            tinymce.get("SpecificFooterContent2").setContent(response.FooterContent2 != null ? response.FooterContent2 : "");
+                            $('#SpecificFooterContent2').val(response.FooterContent2);
                             $('#SpecificFooterTitle3').val(response.FooterTitle3);
-                            tinymce.get("SpecificFooterContent3").setContent(response.FooterContent3 != null ? response.FooterContent3 : "");
+                            $('#SpecificFooterContent3').val(response.FooterContent3);
                         }
                         else {
                             $("#SpecificCategorySettingId").val(0);
@@ -829,11 +829,11 @@
                             $('#SpecificHeaderCopy').val('');
                             $('#SpecificHeaderTitle').val('');
                             $('#SpecificFooterTitle1').val('');
-                            tinymce.get("SpecificFooterContent1").setContent('');
+                            $('#SpecificFooterContent1').val('');
                             $('#SpecificFooterTitle2').val('');
-                            tinymce.get("SpecificFooterContent2").setContent('');
+                            $('#SpecificFooterContent2').val('');
                             $('#SpecificFooterTitle3').val('');
-                            tinymce.get("SpecificFooterContent3").setContent('');
+                            $('#SpecificFooterContent3').val('');
                         }
                     }
                 })
