@@ -460,7 +460,7 @@
                             maxQuantity = 2 ** 64
                         }
 
-                        if (minQuantity <= oldQuantity && oldQuantity <= maxQuantity) {
+                        if (parseInt(minQuantity) <= parseInt(oldQuantity) && parseInt(oldQuantity) <= parseInt(maxQuantity)) {
                             var parentTr = $(value).parent().parent().parent();
                             parentTr.find(".product-unit-price").html("$" + discPrice);
                         }
@@ -546,6 +546,9 @@
     function CalculateNewPriceData($this) {
         quantity = $this.value;
         var items = $($this).parent().find(".discount-items-unique");
+        var priceInRange = false;
+        var largestQuantities = [];
+        var smallestQuantities = [];
 
         $(items).each(function (item, value) {
 
@@ -554,7 +557,10 @@
             discPercent = $(value).find(".discPercent").html();
             discPrice = $(value).find(".discPrice").html();
 
-            if (maxQuantity == undefined) {
+            largestQuantities.push(parseInt(maxQuantity));
+            smallestQuantities.push(parseInt(minQuantity));
+
+            if (!maxQuantity) {
                 maxQuantity = 2 ** 64
             }
 
@@ -583,9 +589,27 @@
                     $(".cart-total .order-total .cart-total-right .value-summary strong").html("$" + (subtotal + shipping + tax).toFixed(2));
                 }
 
-                return false
+                priceInRange = true;
+                return false;
             }
-        })
+        });
+
+        if (!priceInRange) {
+
+            filteredArray = largestQuantities.filter(n => n < quantity);
+            filteredArray.sort(function (a, b) { return b - a });
+            smallestQuantities.sort(function (a, b) { return a - b });
+
+            if (filteredArray.length > 0) {
+                closestMinimumQuantity = filteredArray[0];
+            } else {
+                closestMinimumQuantity = smallestQuantities[0];
+            };
+
+            $this.value = closestMinimumQuantity;
+
+            CalculateNewPriceData($this);
+        };
     }
 
     $(".qty-input").on('change keydown paste input propertychange keyup', function(e) {
