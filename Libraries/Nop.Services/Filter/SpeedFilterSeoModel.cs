@@ -14,6 +14,7 @@ namespace Nop.Services.Filter
         public string MetaDescription { get; set; }
         public string MetaKeyWord { get; set; }
         public string HTag { get; set; }
+        public string H2Tag { get; set; }
         public string HeaderCopy { get; set; }
         public string HeaderTitle { get; set; }
         public string FooterContent1 { get; set; }

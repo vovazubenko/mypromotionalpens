@@ -261,6 +261,7 @@ var AjaxSmartFilter = {
 
                 $("#SpeedFilterHeadrTitle h2").html('').html(response.metaModel.HeaderTitle);
                 $("#SpeedFilterHTag h1").html('').html(response.metaModel.HTag);
+                $("#SpeedFilterH2Tag h2").html('').html(response.metaModel.H2Tag);
 
             }
 

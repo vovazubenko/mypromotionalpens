@@ -647,6 +647,7 @@ namespace FoxNetSoft.Plugin.Misc.SpeedFilters.Models
                 model.HeaderCopy = specificCategorySetting.HeaderCopy;
                 model.HeaderTitle = specificCategorySetting.HeaderTitle;
                 model.HTag = specificCategorySetting.H1Tag;
+                model.H2Tag = specificCategorySetting.H2Tag;
                 model.KeyWord= specificCategorySetting.CustomKeyword;
                 model.MetaDescription = specificCategorySetting.MetaDescription;
                 model.MetaKeyWord = specificCategorySetting.MetaKeyword;
@@ -685,6 +686,10 @@ namespace FoxNetSoft.Plugin.Misc.SpeedFilters.Models
                     .Replace(string.IsNullOrEmpty(_metaReplacements[to_replace]) ? "" + to_replace : to_replace, _metaReplacements[to_replace]);
 
                 model.HTag = string.IsNullOrEmpty(model.HTag) ? "" : model.HTag
+                    .Replace(string.IsNullOrEmpty(_metaReplacements[to_replace]) ? " " + to_replace : to_replace, _metaReplacements[to_replace])
+                    .Replace(string.IsNullOrEmpty(_metaReplacements[to_replace]) ? "" + to_replace : to_replace, _metaReplacements[to_replace]);
+
+                model.H2Tag = string.IsNullOrEmpty(model.H2Tag) ? "" : model.H2Tag
                     .Replace(string.IsNullOrEmpty(_metaReplacements[to_replace]) ? " " + to_replace : to_replace, _metaReplacements[to_replace])
                     .Replace(string.IsNullOrEmpty(_metaReplacements[to_replace]) ? "" + to_replace : to_replace, _metaReplacements[to_replace]);
 

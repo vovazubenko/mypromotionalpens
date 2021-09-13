@@ -44,6 +44,7 @@ namespace Nop.Web.Models.Catalog
         public string HeaderCopy { get; set; }
         public string HeaderTitle { get; set; }
         public string H1Tag { get; set; }
+        public string H2Tag { get; set; }
         public string CanonicalUrl { get; set; }
         public string CustomKeyword{ get; set; }
         #region Nested Classes

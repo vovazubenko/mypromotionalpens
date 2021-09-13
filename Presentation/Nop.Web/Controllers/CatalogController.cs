@@ -179,6 +179,7 @@ namespace Nop.Web.Controllers
                 model.HeaderCopy = !string.IsNullOrEmpty(data.HeaderCopy) ? data.HeaderCopy : "";
                 model.HeaderTitle = !string.IsNullOrEmpty(data.HeaderTitle) ? data.HeaderTitle : "";
                 model.H1Tag = !string.IsNullOrEmpty(data.HTag) ? data.HTag : "";
+                model.H2Tag = !string.IsNullOrEmpty(data.H2Tag) ? data.H2Tag : "";
                 model.CustomKeyword = !string.IsNullOrEmpty(data.KeyWord) ? data.KeyWord : "";
 
                 model.FooterContent1 = !string.IsNullOrEmpty(data.FooterContent1) ? data.FooterContent1 : "";
