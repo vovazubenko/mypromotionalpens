@@ -120,7 +120,7 @@
                                             var editCartItemUrl = Url.RouteUrl("Product", new { SeName = item.ProductSeName });
                                             editCartItemUrl = webHelper.ModifyQueryString(editCartItemUrl, "updatecartitemid=" + item.Id, null);
                                             <div class="edit-item">
-                                                <a href="@editCartItemUrl">@T("Common.Edit")</a>
+                                                <a data-url="@editCartItemUrl" class="edit-item-button">@T("Common.Edit")</a>
                                             </div>
                                         }
                                         <div class="edit-item">
@@ -558,7 +558,7 @@
                 maxQuantity = 2 ** 64
             }
 
-            if (minQuantity <= quantity && quantity <= maxQuantity) {
+            if (parseInt(minQuantity) <= parseInt(quantity) && parseInt(quantity) <= parseInt(maxQuantity)) {
 
                 var parentTr = $($this).parent().parent();
                 var setupFee = ConvertMoneyToFloat(parentTr.find(".product-subtotal-setupfee").attr("data-id"));
@@ -598,20 +598,11 @@
     });
 
     // save changes quantity before next action
-    $('.continue-shopping-button, .checkout-button').one('click', function myFormSubmitCallback(evt) {
+    $('.continue-shopping-button, .checkout-button').one('click', function(evt) {
         evt.stopPropagation();
         evt.preventDefault();
 
-        var data = [];
-
-        $(".cart-item-row").each(function (item, value) {
-            quantityInput = $(value).find('.qty-input').val();
-            quantitySelect = $(value).find('.qty-dropdown').val();
-            quantity = quantityInput !== undefined ? quantityInput : quantitySelect;
-            productId = $(value).find('.product-name').attr("data-id");
-
-            data.push({ productId: productId, quantity: quantity });
-        })
+        var data = GetUpdatedQuantityForCart();
 
         var $this = $(this);
 
@@ -630,6 +621,44 @@
         })
     });
 
+    // edit button
+    $('.edit-item-button').one('click', function (evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+
+        var redirectUrl = $(evt.target).attr("data-url");
+
+        var data = GetUpdatedQuantityForCart();
+
+        $.ajax({
+            url: "/update-quantity-for-product/",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(data),
+            success: function (r) {
+                $(location).attr('href', redirectUrl);
+            },
+            error: function (err) {
+                console.log("error   ", err)
+            }
+        })
+    });
+
+    function GetUpdatedQuantityForCart() {
+        var data = [];
+
+        $(".cart-item-row").each(function (item, value) {
+            quantityInput = $(value).find('.qty-input').val();
+            quantitySelect = $(value).find('.qty-dropdown').val();
+            quantity = quantityInput !== undefined ? quantityInput : quantitySelect;
+            productId = $(value).find('.product-name').attr("data-id");
+
+            data.push({ productId: productId, quantity: quantity });
+        });
+
+        return data;
+    }
 
 </script>
 

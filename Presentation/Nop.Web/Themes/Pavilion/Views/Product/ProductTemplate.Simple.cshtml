@@ -62,15 +62,27 @@
     int enteredQuantityFromCart = Model.AddToCart.EnteredQuantity;
     var minQtyExists = Model.DiscountRanges.Count(x => x.MinQty == enteredQuantityFromCart);
     var minQty = Model.DiscountRanges.Min(x => x.MinQty).Value;
+    var subTotalPrice = Model.DiscountRanges.FirstOrDefault(x => x.MinQty == minQty).Amount;
 
     if (minQtyExists >= 1)
     {
         enteredQuantity = enteredQuantityFromCart;
+        subTotalPrice = Model.DiscountRanges.FirstOrDefault(x => x.MinQty == enteredQuantity).Amount;
+    }
+    else if (enteredQuantityFromCart > minQty)
+    {
+        enteredQuantity = enteredQuantityFromCart;
+        subTotalPrice = Model.DiscountRanges
+            .Where(x => x.MinQty <= enteredQuantityFromCart)
+            .OrderByDescending(x => x.MinQty)
+            .FirstOrDefault()
+            .Amount;
     }
     else
     {
         enteredQuantity = minQty;
     }
+
 }
 <!--product breadcrumb-->
 @section Breadcrumb
@@ -413,13 +425,19 @@
 
                                 <tr>
                                     <td class="w-50 pr-12px">
-                                        <input name="itemquantity@(Model.Id)" type="number" value="@enteredQuantity" 
-                                               class="qty-input w-100 qty-inputs qty-value" data-id="@enteredQuantity" />
+                                        <input name="itemquantity@(Model.Id)" type="number" 
+                                               value="@enteredQuantity" 
+                                               class="qty-input w-100 qty-inputs qty-value" 
+                                               data-id="@enteredQuantity" 
+                                        />
                                     </td>
                                     <td class="w-50">
-                                        <input name="value@(Model.Id)" type="text" class="qty-input w-100 qty-inputs qty-inputs-readonly" readonly
-                                               value="$@(Math.Round(Model.DiscountRanges.FirstOrDefault(x => x.MinQty == enteredQuantity).Amount, 2))" 
-                                               data-id="@(Model.DiscountRanges.FirstOrDefault(x => x.MinQty == enteredQuantity).Amount)" />
+                                        <input name="value@(Model.Id)" 
+                                               type="text" 
+                                               class="qty-input w-100 qty-inputs qty-inputs-readonly" 
+                                               readonly
+                                               value="$@(Math.Round(subTotalPrice, 2))" 
+                                               data-id="@(subTotalPrice)" />
                                     </td>
                                 </tr>
 
@@ -449,7 +467,7 @@
                                             <tr>
                                                 <td class="w-50">Subtotal</td>
                                                 <td class="w-50 subtotal-price-value">
-                                                    $@(Math.Round(Model.DiscountRanges.FirstOrDefault(x => x.MinQty == enteredQuantity).Amount * enteredQuantity, 2))
+                                                    $@(Math.Round(subTotalPrice * enteredQuantity, 2))
                                                 </td>
                                             </tr>
 
@@ -461,7 +479,7 @@
                                             <tr>
                                                 <td class="w-50">Total</td>
                                                 <td class="w-50 w-600 total-value">
-                                                    $@(Math.Round((Model.DiscountRanges.FirstOrDefault(x => x.MinQty == enteredQuantity).Amount * enteredQuantity) + Model.ProductPrice.SetupFee, 2))
+                                                    $@(Math.Round((subTotalPrice * enteredQuantity) + Model.ProductPrice.SetupFee, 2))
                                                 </td>
                                             </tr>
                                         </table>
