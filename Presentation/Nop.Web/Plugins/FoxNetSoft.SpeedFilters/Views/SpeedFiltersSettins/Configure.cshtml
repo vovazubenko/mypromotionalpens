@@ -802,9 +802,6 @@
                     data: postData,
                     success: function (response) {
                         if (response != null) {
-
-                            console.log("response   ", response)
-
                             $("#SpecificCategorySettingId").val(response.Id);
                             $('#SpecificCustomKeyword').val(response.CustomKeyword);
                             $('#SpecificMetaTitle').val(response.MetaTitle);
@@ -832,11 +829,11 @@
                             $('#SpecificHeaderCopy').val('');
                             $('#SpecificHeaderTitle').val('');
                             $('#SpecificFooterTitle1').val('');
-                            tinymce.get("SpecificFooterContent1").setContent('');
+                            $('#SpecificFooterContent1').val('');
                             $('#SpecificFooterTitle2').val('');
-                            tinymce.get("SpecificFooterContent2").setContent('');
+                            $('#SpecificFooterContent2').val('');
                             $('#SpecificFooterTitle3').val('');
-                            tinymce.get("SpecificFooterContent3").setContent('');
+                            $('#SpecificFooterContent3').val('');
                         }
                     }
                 })
