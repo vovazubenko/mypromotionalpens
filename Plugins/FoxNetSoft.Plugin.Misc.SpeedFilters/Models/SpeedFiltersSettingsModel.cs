@@ -202,6 +202,9 @@ namespace FoxNetSoft.Plugin.Misc.SpeedFilters.Models
         [NopResourceDisplayName("FoxNetSoft.Plugin.Misc.SpeedFilters.HTag")]
         public string SpecificHTag { get; set; }
 
+        [NopResourceDisplayName("FoxNetSoft.Plugin.Misc.SpeedFilters.H2Tag")]
+        public string SpecificH2Tag { get; set; }
+
         [NopResourceDisplayName("FoxNetSoft.Plugin.Misc.SpeedFilters.HeaderCopy")]
         public string SpecificHeaderCopy { get; set; }
 

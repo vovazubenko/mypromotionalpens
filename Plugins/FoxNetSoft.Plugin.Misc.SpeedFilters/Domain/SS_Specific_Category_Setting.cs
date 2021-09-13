@@ -15,6 +15,7 @@ namespace FoxNetSoft.Plugin.Misc.SpeedFilters.Domain
         public string MetaDescription { get; set; }
         public string MetaKeyword { get; set; }
         public string H1Tag { get; set; }
+        public string H2Tag { get; set; }
         public string HeaderCopy { get; set; }
         public string HeaderTitle { get; set; }
         public string FooterTitle1 { get; set; }

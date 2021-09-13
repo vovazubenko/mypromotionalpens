@@ -84,16 +84,23 @@ var AjaxSmartFilter = {
             return;
         }
 
-        this.setLoadWaiting(true);
-        $.ajax({
-            cache: false,
-            url: controller_url,
-            data: { "page_id": page_id, "filterstring": filterstring, "urlparam": urlparam },
-            type: 'POST',
-            success: this.success_desktop,
-            complete: this.resetLoadWaiting,
-            error: this.ajaxFailure
-        });
+        if (urlparam.includes("pagenumber")) {
+            var newParams = urlparam.replace("pagenumber", "pageNumber").replace("orderby", "orderBy");
+            var newUrl = window.location.href + newParams;
+            window.location.href = newUrl;
+        }
+        else {
+            this.setLoadWaiting(true);
+            $.ajax({
+                cache: false,
+                url: controller_url,
+                data: { "page_id": page_id, "filterstring": filterstring, "urlparam": urlparam },
+                type: 'POST',
+                success: this.success_desktop,
+                complete: this.resetLoadWaiting,
+                error: this.ajaxFailure
+            });
+        }
     },
 
     success_desktop: function (response) {

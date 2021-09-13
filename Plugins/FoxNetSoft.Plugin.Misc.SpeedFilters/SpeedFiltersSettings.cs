@@ -114,6 +114,7 @@ namespace FoxNetSoft.Plugin.Misc.SpeedFilters
         public string SpecificMetaDescription { get; set; }
         public string SpecificMetaKeyWord { get; set; }
         public string SpecificHTag { get; set; }
+        public string SpecificH2Tag { get; set; }
         public string SpecificHeaderCopy { get; set; }
         public string OptimizedCategory { get; set; }
         public string GlobalHeaderTitle { get; set; }

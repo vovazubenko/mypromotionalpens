@@ -239,6 +239,7 @@ namespace FoxNetSoft.Plugin.Misc.SpeedFilters.Controllers
             model.SpecificMetaDescription = specificCategory.MetaDescription;
             model.SpecificMetaKeyWord = specificCategory.MetaKeyword;
             model.SpecificHTag = specificCategory.H1Tag;
+            model.SpecificH2Tag = specificCategory.H2Tag;
             model.SpecificHeaderCopy = specificCategory.HeaderCopy;
             model.SpecificHeaderTitle = specificCategory.HeaderTitle;
             model.SpecificFooterTitle1 = specificCategory.FooterTitle1;
@@ -723,6 +724,7 @@ namespace FoxNetSoft.Plugin.Misc.SpeedFilters.Controllers
                 specificCategory.MetaDescription = model.SpecificMetaDescription;
                 specificCategory.MetaKeyword = model.SpecificMetaKeyWord;
                 specificCategory.H1Tag = model.SpecificHTag;
+                specificCategory.H2Tag = model.SpecificH2Tag;
                 specificCategory.HeaderCopy = model.SpecificHeaderCopy;
                 specificCategory.HeaderTitle = model.SpecificHeaderTitle;
                 specificCategory.FooterTitle1 = model.SpecificFooterTitle1;
@@ -744,6 +746,7 @@ namespace FoxNetSoft.Plugin.Misc.SpeedFilters.Controllers
                     MetaDescription = model.SpecificMetaDescription,
                     MetaKeyword = model.SpecificMetaKeyWord,
                     H1Tag = model.SpecificHTag,
+                    H2Tag = model.SpecificH2Tag,
                     HeaderCopy = model.SpecificHeaderCopy,
                     HeaderTitle = model.SpecificHeaderTitle,
                     FooterTitle1 = model.SpecificFooterTitle1,

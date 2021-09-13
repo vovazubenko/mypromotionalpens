@@ -641,8 +641,8 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 @*<p>
-                        <b>@T("FoxNetSoft.Plugin.Misc.SpeedFilters.SpecificCategorySetting")</b>
-                    </p>*@
+            <b>@T("FoxNetSoft.Plugin.Misc.SpeedFilters.SpecificCategorySetting")</b>
+        </p>*@
                 @Html.HiddenFor(model => model.SpecificCategorySettingId)
                 <div class="form-group">
                     <div class="col-md-3">
@@ -696,6 +696,15 @@
                     <div class="col-md-9">
                         @Html.TextBoxFor(model => model.SpecificHTag, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.SpecificHTag)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.NopLabelFor(model => model.SpecificH2Tag)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.SpecificH2Tag, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SpecificH2Tag)
                     </div>
                 </div>
                 <div class="form-group">

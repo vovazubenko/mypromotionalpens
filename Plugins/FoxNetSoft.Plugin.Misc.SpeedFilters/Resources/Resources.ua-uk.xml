@@ -440,6 +440,9 @@
   <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.HTag">
     <Value>H1 Tag</Value>
   </LocaleResource>
+  <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.H2Tag">
+    <Value>H2 Tag</Value>
+  </LocaleResource>
   <LocaleResource Name="FoxNetSoft.Plugin.Misc.SpeedFilters.HeaderCopy">
     <Value>Header Copy</Value>
   </LocaleResource>
