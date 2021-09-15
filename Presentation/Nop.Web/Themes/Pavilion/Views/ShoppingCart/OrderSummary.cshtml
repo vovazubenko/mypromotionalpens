@@ -181,7 +181,7 @@
                                 </td>
                                 <td class="quantity">
                                     @*<label class="td-title">@T("ShoppingCart.Quantity"):</label>*@
-                                    @if (Model.IsEditable)
+                                    @*@if (Model.IsEditable)
                                     {
                                         if (item.AllowedQuantities.Count > 0)
                                         {
@@ -201,7 +201,9 @@
                                     else
                                     {
                                         <span class="product-quantity">@item.Quantity</span>
-                                    }
+                                    }*@
+
+                                    <span class="product-quantity qty-input" data-id="@(item.Quantity)">@item.Quantity</span>
 
                                     <div class="discount-section-per-item" style="display: none;">
                                         @foreach(var disc in item.DiscountRanges.OrderBy(x => x.MinQty))
@@ -612,14 +614,14 @@
         };
     }
 
-    $(".qty-input").on('change keydown paste input propertychange keyup', function(e) {
-        CalculateNewPriceData(e.target);
-    });
+    //$(".qty-input").on('change keydown paste input propertychange keyup', function(e) {
+    //    CalculateNewPriceData(e.target);
+    //});
 
-    // select dropdown
-    $(".qty-dropdown").on('change', function () {
-        CalculateNewPriceData(this);
-    });
+    //// select dropdown
+    //$(".qty-dropdown").on('change', function () {
+    //    CalculateNewPriceData(this);
+    //});
 
     // save changes quantity before next action
     $('.continue-shopping-button, .checkout-button').one('click', function(evt) {
