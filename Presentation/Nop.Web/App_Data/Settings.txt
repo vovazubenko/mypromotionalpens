@@ -1,2 +1,2 @@
 DataProvider: sqlserver
-DataConnectionString: Data Source=GFL-2104\SQLEXPRESS;Initial Catalog=Promotionalpen;Integrated Security=True;Persist Security Info=False
+DataConnectionString: Data Source=prod-promotional-pens.cq4xznojduyj.us-east-2.rds.amazonaws.com;Initial Catalog=PromotionalPens;Integrated Security=False;Persist Security Info=False;User ID=admin;Password=aIdO0KFilaDdPgQZwiTT
