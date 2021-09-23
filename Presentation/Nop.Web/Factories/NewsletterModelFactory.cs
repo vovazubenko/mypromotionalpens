@@ -1,5 +1,6 @@
 ﻿using Nop.Core.Domain.Customers;
 using Nop.Services.Localization;
+using Nop.Web.Framework.Security.Captcha;
 using Nop.Web.Models.Newsletter;
 
 namespace Nop.Web.Factories
@@ -13,16 +14,19 @@ namespace Nop.Web.Factories
 
         private readonly ILocalizationService _localizationService;
         private readonly CustomerSettings _customerSettings;
+        private readonly CaptchaSettings _captchaSettings;
 
         #endregion
 
         #region Ctor
 
         public NewsletterModelFactory(ILocalizationService localizationService,
-            CustomerSettings customerSettings)
+            CustomerSettings customerSettings,
+            CaptchaSettings captchaSettings)
         {
             this._localizationService = localizationService;
             this._customerSettings = customerSettings;
+            this._captchaSettings = captchaSettings;
         }
 
         #endregion
@@ -37,7 +41,8 @@ namespace Nop.Web.Factories
         {
             var model = new NewsletterBoxModel()
             {
-                AllowToUnsubscribe = _customerSettings.NewsletterBlockAllowToUnsubscribe
+                AllowToUnsubscribe = _customerSettings.NewsletterBlockAllowToUnsubscribe,
+                RecaptchaPublicKey = _captchaSettings.ReCaptchaPublicKey
             };
             return model;
         }
