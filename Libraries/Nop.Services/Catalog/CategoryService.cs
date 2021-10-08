@@ -93,6 +93,7 @@ namespace Nop.Services.Catalog
         private readonly CommonSettings _commonSettings;
         private readonly CatalogSettings _catalogSettings;
         private readonly IRepository<CategoryBanner> _categoryBannerRepository;
+        private readonly IRepository<CategoryTemplate> _categoryTemplateRepository;
         #endregion
 
         #region Ctor
@@ -115,6 +116,7 @@ namespace Nop.Services.Catalog
         /// <param name="aclService">ACL service</param>
         /// <param name="commonSettings">Common settings</param>
         /// <param name="catalogSettings">Catalog settings</param>
+        /// <param name="categoryTemplateRepository">Category template repository</param>
         public CategoryService(ICacheManager cacheManager,
             IRepository<Category> categoryRepository,
             IRepository<ProductCategory> productCategoryRepository,
@@ -129,7 +131,8 @@ namespace Nop.Services.Catalog
             IStoreMappingService storeMappingService,
             IAclService aclService,
             CommonSettings commonSettings,
-            CatalogSettings catalogSettings)
+            CatalogSettings catalogSettings,
+            IRepository<CategoryTemplate> categoryTemplateRepository)
         {
             this._cacheManager = cacheManager;
             this._categoryRepository = categoryRepository;
@@ -147,6 +150,7 @@ namespace Nop.Services.Catalog
             this._commonSettings = commonSettings;
             this._catalogSettings = catalogSettings;
             this._categoryBannerRepository = EngineContext.Current.Resolve<IRepository<CategoryBanner>>();
+            this._categoryTemplateRepository = categoryTemplateRepository;
         }
 
         #endregion
@@ -832,6 +836,19 @@ namespace Nop.Services.Catalog
 
             //event notification
             _eventPublisher.EntityDeleted(categoryBanner);
+        }
+
+        /// <summary>
+        /// Gets a category template
+        /// </summary>
+        /// <param name="categoryTemplateId">Category template identifier</param>
+        /// <returns>Category template</returns>
+        public virtual CategoryTemplate GetCategoryTemplateById(int categoryTemplateId)
+        {
+            if (categoryTemplateId == 0)
+                return null;
+
+            return _categoryTemplateRepository.GetById(categoryTemplateId);
         }
 
         #endregion

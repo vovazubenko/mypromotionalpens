@@ -136,5 +136,12 @@ namespace Nop.Services.Catalog
         CategoryBanner GetCategoryBannerById(int categoryBannerId);
         void UpdateCategoryBanner(CategoryBanner categoryBanner);
         void DeleteCategoryBanner(CategoryBanner categoryBanner);
+
+        /// <summary>
+        /// Gets a category template
+        /// </summary>
+        /// <param name="categoryTemplateId">Category template identifier</param>
+        /// <returns>Category template</returns>
+        CategoryTemplate GetCategoryTemplateById(int categoryTemplateId);
     }
 }

@@ -1606,6 +1606,7 @@
     <Content Include="Plugins\Payments.AuthorizeNet\Views\PaymentInfo.cshtml" />
     <Content Include="Plugins\Payments.AuthorizeNet\web.config" />
     <Content Include="Content\Images\Screen Printing Process.pdf" />
+    <Content Include="Plugins\SevenSpikes.Nop.Plugins.AjaxFilters\Views\Catalog7Spikes\CategoryTemplate.ProductsInGridOrLinesNewest.cshtml" />
     <None Include="Properties\PublishProfiles\MyPromotionalPens.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\fineuploader\iframe.xss.response-4.2.2.js" />
@@ -2208,6 +2209,7 @@
     <Content Include="Themes\Pavilion\Views\Product\_ProductSampleRequestForm.cshtml" />
     <Content Include="Themes\Pavilion\Views\Product\_ProductQuoteRequestForm.cshtml" />
     <Content Include="Themes\Pavilion\Views\Shared\_HomePageProductBox.cshtml" />
+    <Content Include="Themes\Pavilion\Views\Catalog\CategoryTemplate.ProductsInGridOrLinesNewest.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Plugins\bin\" />

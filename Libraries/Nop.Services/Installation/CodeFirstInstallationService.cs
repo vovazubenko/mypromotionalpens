@@ -11950,6 +11950,12 @@ namespace Nop.Services.Installation
                                            ViewPath = "CategoryTemplate.ProductsInGridOrLines",
                                            DisplayOrder = 1
                                        },
+                                   new CategoryTemplate
+                                       {
+                                           Name = "Products in Grid or Lines Newest",
+                                           ViewPath = "CategoryTemplate.ProductsInGridOrLinesNewest",
+                                           DisplayOrder = 2
+                                       },
                                };
             _categoryTemplateRepository.Insert(categoryTemplates);
         }

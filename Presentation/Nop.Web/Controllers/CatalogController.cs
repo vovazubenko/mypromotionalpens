@@ -218,9 +218,14 @@ namespace Nop.Web.Controllers
 
             model.CanonicalUrl = canonicalUrl;
             //model
-           
 
             var templateViewPath = "CategoryTemplate.ProductsInGridOrLines";// _catalogModelFactory.PrepareCategoryTemplateViewPath(category.CategoryTemplateId);
+
+            CategoryTemplate categoryTemplateModel = _categoryService.GetCategoryTemplateById(category.CategoryTemplateId);
+
+            if (categoryTemplateModel != null)
+                templateViewPath = categoryTemplateModel.ViewPath;
+
             return View(templateViewPath, model);
         }
 
