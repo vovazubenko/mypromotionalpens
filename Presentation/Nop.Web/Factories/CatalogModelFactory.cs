@@ -517,8 +517,46 @@ namespace Nop.Web.Factories
                 .ToList()
             );
 
+            // display 2 level of subcategories
+            foreach (var categoryModel in model.SubCategories)
+            {
+                var arrayOfSubCategories = _categoryService.GetAllCategoriesByParentCategoryId(categoryModel.Id);
 
+                if(arrayOfSubCategories.Count > 0)
+                {
+                    List<CategoryModel.SubCategoryModel> data = new List<CategoryModel.SubCategoryModel>();
 
+                    arrayOfSubCategories.ToList().ForEach(x =>
+                    {
+                        var subCatModel = new CategoryModel.SubCategoryModel
+                        {
+                            Id = x.Id,
+                            Name = x.GetLocalized(y => y.Name),
+                            SeName = x.GetSeName(),
+                            Description = x.GetLocalized(y => y.Description)
+                        };
+
+                        //prepare picture model
+                        var categoryPictureCacheKey = string.Format(ModelCacheEventConsumer.CATEGORY_PICTURE_MODEL_KEY, x.Id, pictureSize, true, _workContext.WorkingLanguage.Id, _webHelper.IsCurrentConnectionSecured(), _storeContext.CurrentStore.Id);
+                        subCatModel.PictureModel = _cacheManager.Get(categoryPictureCacheKey, () =>
+                        {
+                            var picture = _pictureService.GetPictureById(x.PictureId);
+                            var pictureModel = new PictureModel
+                            {
+                                FullSizeImageUrl = _pictureService.GetPictureUrl(picture),
+                                ImageUrl = _pictureService.GetPictureUrl(picture, pictureSize),
+                                Title = string.Format(_localizationService.GetResource("Media.Category.ImageLinkTitleFormat"), subCatModel.Name),
+                                AlternateText = string.Format(_localizationService.GetResource("Media.Category.ImageAlternateTextFormat"), subCatModel.Name)
+                            };
+                            return pictureModel;
+                        });
+
+                        data.Add(subCatModel);
+                    });
+
+                    categoryModel.SubCategories = data;
+                }
+            }
 
             //featured products
             if (!_catalogSettings.IgnoreFeaturedProducts)

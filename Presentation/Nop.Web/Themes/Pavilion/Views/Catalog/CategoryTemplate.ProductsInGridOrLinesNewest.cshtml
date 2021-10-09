@@ -122,8 +122,15 @@
             @foreach (var subcategories in Model.SubCategories.OrderBy(x => x.Name))
             {
                 <li>
-                    <a class="" style="color:#0072bc;padding-left: 15px;font-size: 15px;" href="@Url.RouteUrl("Category", new {SeName = subcategories.SeName})" filter-block="subcategory" filter-option-id="@subcategories.Id">@subcategories.Name</a>
+                    <a class="" style="color:#0072bc;font-size: 15px;" href="@Url.RouteUrl("Category", new {SeName = subcategories.SeName})" filter-block="subcategory" filter-option-id="@subcategories.Id">@subcategories.Name</a>
                 </li>
+
+                foreach (var subSubCategories in subcategories.SubCategories.OrderBy(x => x.Name))
+                {
+                    <li>
+                        <a class="" style="padding-left: 15px;font-size: 15px;" href="@Url.RouteUrl("Category", new {SeName = subSubCategories.SeName})" filter-block="subsubcategory" filter-option-id="@subSubCategories.Id">@subSubCategories.Name</a>
+                    </li>
+                }
             }
         </ul>
     </div>
