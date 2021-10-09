@@ -60,7 +60,7 @@
                 }
             </ul>
         </div>
-        @*@Html.Widget("categorydetails_after_breadcrumb", Model.Id)*@
+        @Html.Widget("categorydetails_after_breadcrumb", Model.Id)
     }
 }
 @if (Model.bannerid > 0)
@@ -81,7 +81,56 @@
     .sub-category-item {
         border: none !important
     }
+
+    .category-section-newest-sublist {
+        column-count: 4;
+        column-gap: 10px;
+    }
+
+    .category-section-newest-block {
+        padding: 4px 15px 4px 0px;
+        margin-bottom: 10px;
+    }
+
+    .category-section-newest-subcategory {
+        font-size: 24px;
+        font-weight: 500;
+    }
+
+    .category-section-newest-sublist-2level {
+        padding: 0 0 5px;
+    }
 </style>
+
+<div class="category-section-newest">
+    <ul class="category-section-newest-sublist">
+        @foreach (var subcategories in Model.SubCategories.OrderBy(x => x.Name))
+        {
+            <li class="category-section-newest-block">
+                <a class="category-section-newest-subcategory"
+                   href="@Url.RouteUrl("Category", new {SeName = subcategories.SeName})"
+                   filter-block="subcategory" filter-option-id="@subcategories.Id">
+                    @subcategories.Name
+                </a>
+
+                @foreach (var subSubCategories in subcategories.SubCategories.OrderBy(x => x.Name))
+                {
+                    <ul class="category-section-newest-sublist-2level">
+                        <li>
+                            <a class="category-section-newest-2level-sucategory"
+                               href="@Url.RouteUrl("Category", new {SeName = subSubCategories.SeName})"
+                               filter-block="subsubcategory" filter-option-id="@subSubCategories.Id">
+                                @subSubCategories.Name
+                            </a>
+                        </li>
+                    </ul>
+                }
+
+            </li>
+        }
+    </ul>
+</div>
+
 <h3>category-page2 Newwest</h3>
 <div class="page category-page">
     @if (Model.CategoryBannerModels.Where(x => x.BannerNumber == 0).Any())
@@ -115,25 +164,6 @@
     <div class="speed-filter-header-title" id="SpeedFilterHeadrTitle"><h2 style="font-size: 20px;font-weight:700;color: #0072bc;text-align:left;">@Model.HeaderTitle</h2></div>
     <div class="speed-filter-h2tag" id="SpeedFilterH2Tag"><h2 style="font-size: 20px;font-weight:700;color: #0072bc;text-align:left;">@Model.H2Tag</h2></div>
     <div class="speed-filter-header-copy" id="SpeedFilterHeadrCopy">@Model.HeaderCopy</div>
-
-
-    <div class="sublist-wrap">
-        <ul class="sublist">
-            @foreach (var subcategories in Model.SubCategories.OrderBy(x => x.Name))
-            {
-                <li>
-                    <a class="" style="color:#0072bc;font-size: 15px;" href="@Url.RouteUrl("Category", new {SeName = subcategories.SeName})" filter-block="subcategory" filter-option-id="@subcategories.Id">@subcategories.Name</a>
-                </li>
-
-                foreach (var subSubCategories in subcategories.SubCategories.OrderBy(x => x.Name))
-                {
-                    <li>
-                        <a class="" style="padding-left: 15px;font-size: 15px;" href="@Url.RouteUrl("Category", new {SeName = subSubCategories.SeName})" filter-block="subsubcategory" filter-option-id="@subSubCategories.Id">@subSubCategories.Name</a>
-                    </li>
-                }
-            }
-        </ul>
-    </div>
 </div>
 <div class="page-title">
     <h2>@Model.Name</h2>
