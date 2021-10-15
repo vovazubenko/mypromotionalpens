@@ -54,10 +54,20 @@
 
 @helper TabInfo()
 {
-    <script type="text/javascript">
+<script type="text/javascript">
         $(document).ready(function () {
             $("#@Html.FieldIdFor(model => model.AllowCustomersToSelectPageSize)").click(togglePageSize);
             togglePageSize();
+
+
+            var categoryTemplateId = "@Html.FieldIdFor(model => model.CategoryTemplateId)";
+            var selectElement = document.getElementById(categoryTemplateId);
+            var selectedValue = parseInt($(selectElement).val());
+
+            $(selectElement).on('change', function (event) {
+                toggleControllSection(event.target.value)
+            });
+            toggleControllSection(selectedValue);
         });
 
         function togglePageSize() {
@@ -68,8 +78,19 @@
                 $('#pnlPageSize').show();
                 $('#pnlPageSizeOptions').hide();
             }
-        }
-    </script>
+        };
+
+        function toggleControllSection(eventValue) {
+            if (eventValue == 1) {
+                $(".control-data-label-for-newest-template").hide();
+            };
+
+            if (eventValue == 2) {
+                $(".control-data-label-for-newest-template").show();
+            }
+        };
+
+</script>
 
     <div class="panel-group">   
         <div class="panel panel-default">
@@ -138,27 +159,29 @@
                     </div>
                 </div>
 
-                <hr />
-                <div class="form-group">
-                    <div class="col-md-3">
-                        @Html.NopLabelFor(model => model.ControlData)
+                <div class="control-data-label-for-newest-template">
+                    <hr />
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.NopLabelFor(model => model.ControlData)
+                        </div>
+                        <div class="col-md-9">
+                            @Html.NopEditorFor(model => model.ControlData)
+                            @Html.ValidationMessageFor(model => model.ControlData)
+                        </div>
                     </div>
-                    <div class="col-md-9">
-                        @Html.NopEditorFor(model => model.ControlData)
-                        @Html.ValidationMessageFor(model => model.ControlData)
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    <div class="col-md-3">
-                        @Html.NopLabelFor(model => model.ControlPictureId)
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.NopLabelFor(model => model.ControlPictureId)
+                        </div>
+                        <div class="col-md-9">
+                            @Html.NopEditorFor(model => model.ControlPictureId)
+                            @Html.ValidationMessageFor(model => model.ControlPictureId)
+                        </div>
                     </div>
-                    <div class="col-md-9">
-                        @Html.NopEditorFor(model => model.ControlPictureId)
-                        @Html.ValidationMessageFor(model => model.ControlPictureId)
-                    </div>
+                    <hr />
                 </div>
-                <hr />
 
                 <div class="form-group">
                     <div class="col-md-3">
