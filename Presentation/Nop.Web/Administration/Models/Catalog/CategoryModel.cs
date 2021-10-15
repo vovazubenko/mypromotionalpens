@@ -67,6 +67,14 @@ namespace Nop.Admin.Models.Catalog
         [NopResourceDisplayName("Admin.Catalog.Categories.Fields.Picture")]
         public int PictureId { get; set; }
 
+        [UIHint("Picture")]
+        [NopResourceDisplayName("Admin.Catalog.Categories.Fields.ControlPicture")]
+        public int ControlPictureId { get; set; }
+
+        [NopResourceDisplayName("Admin.Catalog.Categories.Fields.ControlData")]
+        [AllowHtml]
+        public string ControlData { get; set; }
+
         [NopResourceDisplayName("Admin.Catalog.Categories.Fields.PageSize")]
         public int PageSize { get; set; }
 

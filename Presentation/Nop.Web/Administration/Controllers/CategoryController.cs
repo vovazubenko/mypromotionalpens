@@ -533,6 +533,7 @@ namespace Nop.Admin.Controllers
             if (ModelState.IsValid)
             {
                 int prevPictureId = category.PictureId;
+                int prevControlPictureId = category.ControlPictureId;
                 int prevBannerId = Convert.ToInt32(category.bannerid);
                 var categoryBanners = _categoryService.GetCategoryBannerByCategoryId(category.Id);
                 var prevCategoryBanner1 = categoryBanners.Where(x => x.BannerNumber == 1).FirstOrDefault();
@@ -570,6 +571,14 @@ namespace Nop.Admin.Controllers
                     var prevPicture = _pictureService.GetPictureById(prevPictureId);
                     if (prevPicture != null)
                         _pictureService.DeletePicture(prevPicture);
+                }
+
+                //delete an old control picture (if deleted or updated)
+                if (prevControlPictureId > 0 && prevControlPictureId != category.ControlPictureId)
+                {
+                    var prevControlPicture = _pictureService.GetPictureById(prevControlPictureId);
+                    if (prevControlPicture != null)
+                        _pictureService.DeletePicture(prevControlPicture);
                 }
 
                 //delete an old picture (if deleted or updated)
