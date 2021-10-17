@@ -6,6 +6,5 @@ namespace Nop.Web.Models.Newsletter
     {
         public string NewsletterEmail { get; set; }
         public bool AllowToUnsubscribe { get; set; }
-        public string RecaptchaPublicKey { get; set; }
     }
 }
