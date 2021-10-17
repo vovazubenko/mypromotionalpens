@@ -40,6 +40,8 @@ namespace Nop.Web.Models.Catalog
         
         public int pictureid { get; set; }
         public int bannerid { get; set; }
+        public int ControlPictureId { get; set; }
+        public string ControlData { get; set; }
 
         public string HeaderCopy { get; set; }
         public string HeaderTitle { get; set; }

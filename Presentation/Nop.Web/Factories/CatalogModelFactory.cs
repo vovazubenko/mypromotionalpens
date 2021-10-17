@@ -408,6 +408,8 @@ namespace Nop.Web.Factories
                 SeName = category.GetSeName(),
                 pictureid=category.PictureId,
                 bannerid=Convert.ToInt32(category.bannerid),
+                ControlPictureId=category.ControlPictureId,
+                ControlData = category.GetLocalized(x => x.ControlData),
                 //FooterTitle1=category.FooterTitle1,
                 //FooterContent1= category.FooterContent1,
                 //FooterTitle2 = category.FooterTitle2,
