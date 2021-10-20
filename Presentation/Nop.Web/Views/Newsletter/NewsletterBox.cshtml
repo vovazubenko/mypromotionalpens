@@ -8,6 +8,17 @@
         <div class="newsletter-email">
             @Html.TextBoxFor(x => x.NewsletterEmail, new { id = "newsletter-email", @class = "newsletter-subscribe-text", placeholder = T("Newsletter.Email.Placeholder") })
             <input type="button" value="@T(Model.AllowToUnsubscribe ? "Newsletter.Options.Send" : "Newsletter.Options.Subscribe")" id="newsletter-subscribe-button" class="button-1 newsletter-subscribe-button" />
+            
+            <div class="captcha-box" style="margin: 0 5px;">
+                <script type="text/javascript">
+                    var onloadCallback = function () {
+                        grecaptcha.render('recaptcha', { 'sitekey': '@Model.RecaptchaPublicKey', 'theme': 'light' });
+                    };
+                </script>
+                <script async="" defer="" src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&amp;render=explicit"></script>
+                <div id="recaptcha" style="float:left;"></div>
+            </div>
+
             @if (Model.AllowToUnsubscribe)
             {
                 <div class="options">
@@ -32,9 +43,11 @@
         function newsletter_subscribe(subscribe) {
             var subscribeProgress = $("#subscribe-loading-progress");
             subscribeProgress.show();
+
             var postData = {
                 subscribe: subscribe,
-                email: $("#newsletter-email").val()
+                email: $("#newsletter-email").val(),
+                token: grecaptcha.getResponse()
             };
             $.ajax({
                 cache: false,
@@ -48,7 +61,7 @@
                         $('#newsletter-subscribe-block').hide();
                         $('#newsletter-result-block').show();
                     } else {
-                        $('#newsletter-result-block').fadeIn("slow").delay(2000).fadeOut("slow");
+                        $('#newsletter-result-block').fadeIn("slow").delay(4000).fadeOut("slow");
                     }
                 },
                 error: function(xhr, ajaxOptions, thrownError) {
