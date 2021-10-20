@@ -251,12 +251,6 @@
                                             @item.Name
                                         </a>
                                     </h2>
-                                    @*<div class="picture">
-                                            <a href="@Url.RouteUrl("Category", new {SeName = item.SeName})" title="@item.PictureModel.Title">
-                                                <img alt="@item.PictureModel.AlternateText" src="@item.PictureModel.ImageUrl" title="@item.PictureModel.Title" />
-                                            </a>
-                                        </div>
-                                        @Html.Widget("subcategories_itembox_end", item.Id)*@
                                 </div>
                             </div>
                         }
@@ -288,49 +282,11 @@
             @Html.Partial("_CatalogSelectors", Model.PagingFilteringContext, new ViewDataDictionary())
         }
         @Html.Widget("categorydetails_before_filters", Model.Id)
-        @*<div class="product-filters">
-                @if (Model.PagingFilteringContext.PriceRangeFilter.Enabled)
-                {
-                    @Html.Partial("_FilterPriceBox", Model.PagingFilteringContext.PriceRangeFilter, new ViewDataDictionary())
-                }
-                @if (Model.PagingFilteringContext.SpecificationFilter.Enabled)
-                {
-                    @Html.Partial("_FilterSpecsBox", Model.PagingFilteringContext.SpecificationFilter, new ViewDataDictionary())
-                }
-            </div>*@
+
         @Html.Widget("categorydetails_before_product_list", Model.Id)
 
-        @if (Model.Products.Count > 0)
-        {
-            <div class="@(Model.PagingFilteringContext.ViewMode == "list" ? "product-list" : "product-grid")">
-                <div class="item-grid">
-                    @foreach (var product in Model.Products)
-                    {
-                        <div class="item-box">
-                            @Html.Partial("_ProductBox", product)
-                        </div>
-                    }
-                </div>
-            </div>
-        }
-        @{
-            var pager = Html.Pager(Model.PagingFilteringContext).QueryParam("pagenumber");
-        }
-        @if (!pager.IsEmpty())
-        {
-            <div class="pager">
-                @pager
-            </div>
-        }
         @Html.Widget("categorydetails_bottom", Model.Id)
     </div>
-
-    @section AsidePageTitle
-    {
-        <div class="page-title">
-            <h2>@Model.Name</h2>
-        </div>
-    }
 
     <div class="category-page-footer-content-main">
         @{
@@ -382,15 +338,26 @@
                 }
             }
         });
+
+        setTimeout(function () { CleanCategoryDomElements(); }, 500);
+        setTimeout(function () { CleanCategoryDomElements(); }, 1000);
+        setTimeout(function () { CleanCategoryDomElements(); }, 1500);
+        setTimeout(function () { CleanCategoryDomElements(); }, 2000);
+        setTimeout(function () { CleanCategoryDomElements(); }, 2500);
+        setTimeout(function () { CleanCategoryDomElements(); }, 3000);
+        setTimeout(function () { CleanCategoryDomElements(); }, 3500);
+        setTimeout(function () { CleanCategoryDomElements(); }, 4000);
+        setTimeout(function () { CleanCategoryDomElements(); }, 5000);
     });
+
+    function CleanCategoryDomElements() {
+        $(".center-2").remove();
+        $(".side-2").remove();
+        $(".page-title").remove();
+        $(".pager").remove();
+    };
 
     var seoSection = $("#category-seo-section").html();
     $("#category-seo-section").remove();
     $("#category-newest-template-seo-section").html(seoSection);
-
-    $(window).load(function () {
-        $('html, body').animate({
-            scrollTop: $('.category-page').offset().top
-        }, 'slow');
-    });
 </script>
