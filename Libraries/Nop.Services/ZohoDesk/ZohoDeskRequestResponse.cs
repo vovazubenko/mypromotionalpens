@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -155,5 +156,11 @@ namespace Nop.Services.ZohoDesk
         public string attachmentCount { get; set; }
         public string category { get; set; }
         public string status { get; set; }
+    }
+
+    public class GenerateAccessTokenResponse
+    {
+        [JsonProperty("access_token")]
+        public string AccessToken { get; set; }
     }
 }

@@ -13,6 +13,10 @@ using System;
 using System.Text;
 using System.Linq;
 using Nop.Core.Domain.ZohoDesk;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Nop.Core.Caching;
+using Nop.Core.Infrastructure;
 
 namespace Nop.Services.ZohoDesk
 {
@@ -28,6 +32,7 @@ namespace Nop.Services.ZohoDesk
         private readonly IRepository<StateProvince> _stateProvinceRepository;
         private readonly IRepository<ZohoTicket> _zohoTicketRepository;
         private readonly IRepository<ZohoContact> _zohoContactRepository;
+        private readonly ICacheManager _cacheManager;
         #endregion
 
         #region Fields
@@ -38,13 +43,20 @@ namespace Nop.Services.ZohoDesk
         public static string ZohoDeskAccountId = "";
         public static string ZohoDeskZohodeskapiurl = "";
         public static string ZohoDeskzohoEmailAddress = "";
+        private static string ZohoRefreshToken = "1000.be770432aa85b6b12b012e47d58c9ead.d4b641a7cf88c8de77cfa3ed526ed668";
+        private static string ZohoClientID = "1000.9J5PQQS5STEQLFVWYW5Y0HKBTLXAJJ";
+        private static string ZohoClientSecret = "3046ddd18e8e4a2d605da5ebc6545d3812f9369dec";
+        private static string ZohoScope = "Desk.tickets.ALL,Desk.contacts.READ,Desk.contacts.CREATE,Desk.contacts.UPDATE,Desk.contacts.DELETE";
+        private static string ZohoRedirectUri = "https://www.mypromotionalpens.com";
+        private static string ZohoAccessTokenCacheKey = "zoho_access_token";
+
         #endregion
 
         #region ctor
         public ZohoDeskApi(ZohoDeskSettings zohoDeskSettings, ILogger logger, ILocalizationService localizationService,
             IWorkContext workContext, IRepository<Country> countryRepository, IRepository<StateProvince> stateProvinceRepository
             , IRepository<ZohoTicket> zohoTicketRepository, IRepository<ZohoContact> zohoContactRepository
-            , IRepository<Customer> customerRepository
+            , IRepository<Customer> customerRepository, ICacheManager cacheManager
             )
         {
             this._zohoDeskSettings = zohoDeskSettings;
@@ -56,6 +68,7 @@ namespace Nop.Services.ZohoDesk
             this._zohoTicketRepository = zohoTicketRepository;
             this._zohoContactRepository = zohoContactRepository;
             this._customerRepository = customerRepository;
+            this._cacheManager = EngineContext.Current.ContainerManager.Resolve<ICacheManager>("nop_cache_static"); ;
             ZohoDeskAuthorizationId = zohoDeskSettings.ZohoDeskAuthorizationId;
             ZohoDeskOrganizationId = zohoDeskSettings.ZohoDeskOrganizationId;
             ZohodeskDepartmentId = zohoDeskSettings.ZohodeskDepartmentId;
@@ -69,17 +82,18 @@ namespace Nop.Services.ZohoDesk
 
         #region Methods
         #region Contact
-        
+
         public ResponseZohoContact CreateNewContact(string email, string name)
         {
             ResponseZohoContact contactResponse = new ResponseZohoContact();
             var contact = GetNewContactdata(email, name);
             try
             {
+                string accessToken = GenerateAccessToken();
                 contact.accountId = ZohoDeskAccountId;
                 var data = JsonConvert.SerializeObject(contact);
                 var request = HttpWebRequest.Create(ZohoDeskZohodeskapiurl + "contacts");
-                request.Headers.Add("Authorization", "Zoho-authtoken " + ZohoDeskAuthorizationId);
+                request.Headers.Add("Authorization", "Bearer " + accessToken);
                 request.Headers.Add("orgId:" + ZohoDeskOrganizationId);
                 request.Method = "POST";
                 request.ContentType = "application/json";
@@ -138,7 +152,7 @@ namespace Nop.Services.ZohoDesk
                     contact.lastName =string.IsNullOrEmpty(Convert.ToString(customer.GetAttribute<string>(SystemCustomerAttributeNames.LastName)))? email : customer.GetAttribute<string>(SystemCustomerAttributeNames.LastName);
 
                     contact.mobile = customer.GetAttribute<string>(SystemCustomerAttributeNames.Phone) == null ? customer.BillingAddress == null ? " " : customer.BillingAddress.PhoneNumber : customer.GetAttribute<string>(SystemCustomerAttributeNames.Phone);
-                    
+
                     contact.ownerId = "";
 
                     contact.phone = customer.GetAttribute<string>(SystemCustomerAttributeNames.Phone) == null ? customer.BillingAddress == null ? " " : customer.BillingAddress.PhoneNumber : customer.GetAttribute<string>(SystemCustomerAttributeNames.Phone);
@@ -184,10 +198,10 @@ namespace Nop.Services.ZohoDesk
             var contact = GetNewContactdata(email, name);
             try
             {
-                
+                string accessToken = GenerateAccessToken();
                 var data = JsonConvert.SerializeObject(contact);
                 var request = HttpWebRequest.Create(ZohoDeskZohodeskapiurl + "contacts/"+zohoContactId);
-                request.Headers.Add("Authorization", "Zoho-authtoken " + ZohoDeskAuthorizationId);
+                request.Headers.Add("Authorization", "Bearer " + accessToken);
                 request.Headers.Add("orgId:" + ZohoDeskOrganizationId);
                 request.Method = "PUT";
                 request.ContentType = "application/json";
@@ -225,7 +239,7 @@ namespace Nop.Services.ZohoDesk
             var contact = GetZohoContactByEmail(email);
             try
             {
-                
+
                 if (contact == null)
                 {
                     //create new contact
@@ -234,16 +248,17 @@ namespace Nop.Services.ZohoDesk
                         return "";
                     //insert data to zoho contact
                     contact = new ZohoContact();
-                        contact.zohoContactEmail = zohocontact.email;
-                        contact.zohoContactId = zohocontact.id;
-                        contact.CreateDate = DateTime.Now;
-                        _zohoContactRepository.Insert(contact);
+                    contact.zohoContactEmail = zohocontact.email;
+                    contact.zohoContactId = zohocontact.id;
+                    contact.CreateDate = DateTime.Now;
+                    _zohoContactRepository.Insert(contact);
                 }
                 var ticketData = GetCreateTicketData(contact.zohoContactId, description, email, subject, phone);
                 if (!string.IsNullOrEmpty(ticketData))
                 {
+                    string accessToken = GenerateAccessToken();
                     var request = HttpWebRequest.Create(ZohoDeskZohodeskapiurl + "tickets");
-                    request.Headers.Add("Authorization", "Zoho-authtoken " + ZohoDeskAuthorizationId);
+                    request.Headers.Add("Authorization", "Bearer " + accessToken);
                     request.Headers.Add("orgId:" + ZohoDeskOrganizationId);
                     request.Method = "POST";
                     request.ContentType = "application/json";
@@ -309,6 +324,45 @@ namespace Nop.Services.ZohoDesk
         }
         #endregion
 
+        private string GenerateAccessToken()
+        {
+            var accessToken = this._cacheManager.Get<string>(ZohoAccessTokenCacheKey);
+            if (!string.IsNullOrWhiteSpace(accessToken))
+            {
+                return accessToken;
+            }
+
+            var generateTokenUrl = "https://accounts.zoho.com/oauth/v2/token";
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "multipart/form-data");
+                var formContent = new MultipartFormDataContent
+            {
+                 { new StringContent(ZohoRefreshToken),"refresh_token" },
+                 { new StringContent(ZohoClientID),"client_id" },
+                 { new StringContent(ZohoClientSecret),"client_secret" },
+                 { new StringContent(ZohoScope),"scope" },
+                 { new StringContent(ZohoRedirectUri),"redirect_uri" },
+                 { new StringContent("refresh_token"),"grant_type" }
+            };
+
+                var response = client.PostAsync(generateTokenUrl, formContent).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseString = response.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<GenerateAccessTokenResponse>(responseString);
+                    if (result != null)
+                    {
+                        accessToken = result.AccessToken;
+                        this._cacheManager.Set(ZohoAccessTokenCacheKey, accessToken, 55);
+                    }
+                }
+
+                return accessToken;
+            }
+        }
         #endregion
 
     }
