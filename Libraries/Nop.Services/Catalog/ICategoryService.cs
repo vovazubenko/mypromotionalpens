@@ -143,5 +143,23 @@ namespace Nop.Services.Catalog
         /// <param name="categoryTemplateId">Category template identifier</param>
         /// <returns>Category template</returns>
         CategoryTemplate GetCategoryTemplateById(int categoryTemplateId);
+
+        /// <summary>
+        /// Gets a list of parent and root categories
+        /// </summary>
+        /// <returns>The list of parent and root categories</returns>
+        IEnumerable<int> GetRootAndParentCategoriesIds();
+
+        /// <summary>
+        /// Gets a list of parent categories
+        /// </summary>
+        /// <returns>The list of parent categories</returns>
+        IEnumerable<int> GetParentCategoriesIds();
+
+        /// <summary>
+        /// Gets a list of root categories
+        /// </summary>
+        /// <returns>The list of root categories</returns>
+        IEnumerable<int> GetRootCategoriesIds();
     }
 }

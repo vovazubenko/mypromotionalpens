@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using Nop.Admin.Enums;
 using Nop.Admin.Extensions;
 using Nop.Admin.Helpers;
 using Nop.Admin.Models.Catalog;
@@ -378,6 +379,10 @@ namespace Nop.Admin.Controllers
 
             if (ModelState.IsValid)
             {
+                // TODO ---> UPDATE CATEGORY TEMPLATE FOR ROOT AND PARENT CATEGORIES ---> CHECK BY PARENT CATEGORY
+                int categoryTemplateId = GetCategoryTemplateFromParentCategory(model);
+                model.CategoryTemplateId = categoryTemplateId;
+
                 var category = model.ToEntity();
                 category.CreatedOnUtc = DateTime.UtcNow;
                 category.UpdatedOnUtc = DateTime.UtcNow;
@@ -532,6 +537,10 @@ namespace Nop.Admin.Controllers
 
             if (ModelState.IsValid)
             {
+                // TODO ---> UPDATE CATEGORY TEMPLATE FOR ROOT AND PARENT CATEGORIES ---> CHECK BY PARENT CATEGORY
+                int categoryTemplateId = GetCategoryTemplateFromParentCategory(model);
+                model.CategoryTemplateId = categoryTemplateId;
+
                 int prevPictureId = category.PictureId;
                 int prevControlPictureId = category.ControlPictureId;
                 int prevBannerId = Convert.ToInt32(category.bannerid);
@@ -1120,5 +1129,38 @@ namespace Nop.Admin.Controllers
             return new NullJsonResult();
         }
         #endregion
+
+        private int GetCategoryTemplateFromParentCategory(CategoryModel model)
+        {
+            IEnumerable<int> rootAndParentCategories = _categoryService.GetRootAndParentCategoriesIds();
+            IEnumerable<int> rootCategories = _categoryService.GetRootCategoriesIds();
+            IEnumerable<int> parentCategories = _categoryService.GetParentCategoriesIds();
+
+            if (model.CategoryTemplateId == (int)CategoryTemplateEnum.ParentAndRootCategoryTemplate)
+            {
+                if (rootCategories.Contains(model.ParentCategoryId) || model.ParentCategoryId == 0)
+                {
+                    return (int)CategoryTemplateEnum.ParentAndRootCategoryTemplate;
+                }
+                else if (parentCategories.Contains(model.ParentCategoryId))
+                {
+                    return (int)CategoryTemplateEnum.ChildCategoryTemplate;
+                }
+                else if (!rootAndParentCategories.Contains(model.ParentCategoryId))
+                {
+                    return (int)CategoryTemplateEnum.ChildCategoryTemplate;
+                }
+            }
+
+            if (model.CategoryTemplateId == (int)CategoryTemplateEnum.ChildCategoryTemplate)
+            {
+                if (rootCategories.Contains(model.ParentCategoryId) || model.ParentCategoryId == 0)
+                {
+                    return (int)CategoryTemplateEnum.ParentAndRootCategoryTemplate;
+                }
+            }
+
+            return model.CategoryTemplateId;
+        }
     }
 }

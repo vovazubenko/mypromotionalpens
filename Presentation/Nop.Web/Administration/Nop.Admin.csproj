@@ -214,6 +214,7 @@
     <Compile Include="Controllers\PictureController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\QueuedEmailController.cs" />
+    <Compile Include="Enums\CategoryTemplate.cs" />
     <Compile Include="Extensions\AttributeParserHelper.cs" />
     <Compile Include="Extensions\GlobalExtentions.cs" />
     <Compile Include="Helpers\SelectListHelper.cs" />

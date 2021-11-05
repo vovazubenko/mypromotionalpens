@@ -851,6 +851,52 @@ namespace Nop.Services.Catalog
             return _categoryTemplateRepository.GetById(categoryTemplateId);
         }
 
+        /// <summary>
+        /// Gets a list of parent and root categories
+        /// </summary>
+        /// <returns>The list of parent and root categories</returns>
+        public virtual IEnumerable<int> GetRootAndParentCategoriesIds()
+        {
+            int[] rootCategories = this.GetRootCategoriesIds().ToArray();
+            int[] parentCategories = this.GetParentCategoriesIds().ToArray();
+
+            IEnumerable<int> resultCategories = rootCategories.Concat(parentCategories).ToArray();
+
+            return resultCategories;
+        }
+
+        /// <summary>
+        /// Gets a list of parent categories
+        /// </summary>
+        /// <returns>The list of parent categories</returns>
+        public virtual IEnumerable<int> GetParentCategoriesIds()
+        {
+            var query = _categoryRepository.Table;
+
+            int[] rootCategories = this.GetRootCategoriesIds().ToArray(); ;
+
+            int[] parentCategories = query.Where(x => rootCategories.Contains(x.ParentCategoryId))
+                .Select(x => x.Id)
+                .ToArray();
+
+            return parentCategories;
+        }
+
+        /// <summary>
+        /// Gets a list of root categories
+        /// </summary>
+        /// <returns>The list of root categories</returns>
+        public virtual IEnumerable<int> GetRootCategoriesIds()
+        {
+            var query = _categoryRepository.Table;
+
+            int[] rootCategories = query.Where(x => x.ParentCategoryId == 0)
+                .Select(x => x.Id)
+                .ToArray();
+
+            return rootCategories;
+        }
+
         #endregion
     }
 }
