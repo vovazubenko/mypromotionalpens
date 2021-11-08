@@ -380,8 +380,8 @@ namespace Nop.Admin.Controllers
             if (ModelState.IsValid)
             {
                 // TODO ---> UPDATE CATEGORY TEMPLATE FOR ROOT AND PARENT CATEGORIES ---> CHECK BY PARENT CATEGORY
-                int categoryTemplateId = GetCategoryTemplateFromParentCategory(model);
-                model.CategoryTemplateId = categoryTemplateId;
+                //int categoryTemplateId = GetCategoryTemplateFromParentCategory(model);
+                //model.CategoryTemplateId = categoryTemplateId;
 
                 var category = model.ToEntity();
                 category.CreatedOnUtc = DateTime.UtcNow;
@@ -538,8 +538,8 @@ namespace Nop.Admin.Controllers
             if (ModelState.IsValid)
             {
                 // TODO ---> UPDATE CATEGORY TEMPLATE FOR ROOT AND PARENT CATEGORIES ---> CHECK BY PARENT CATEGORY
-                int categoryTemplateId = GetCategoryTemplateFromParentCategory(model);
-                model.CategoryTemplateId = categoryTemplateId;
+                //int categoryTemplateId = GetCategoryTemplateFromParentCategory(model);
+                //model.CategoryTemplateId = categoryTemplateId;
 
                 int prevPictureId = category.PictureId;
                 int prevControlPictureId = category.ControlPictureId;
