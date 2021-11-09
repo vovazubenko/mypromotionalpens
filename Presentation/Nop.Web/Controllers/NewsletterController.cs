@@ -9,6 +9,7 @@ using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Messages;
 using Nop.Services.Localization;
 using Nop.Services.Messages;
+using Nop.Web.Extensions;
 using Nop.Web.Factories;
 using Nop.Web.Framework;
 using Nop.Web.Framework.Security.Captcha;
@@ -70,6 +71,10 @@ namespace Nop.Web.Controllers
             if (!recaptchaResult)
             {
                 result = _localizationService.GetResource("Common.WrongCaptchaV2");
+            }
+            if (ValidationRulesForNewCustomer.ValidationRulesForNewCustomerByEmail(email))
+            {
+                result = _localizationService.GetResource("Newsletter.Email.Wrong");
             }
             else if (!CommonHelper.IsValidEmail(email))
             {
