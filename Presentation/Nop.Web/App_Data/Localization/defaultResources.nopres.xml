@@ -14796,6 +14796,12 @@
   <LocaleResource Name="Newsletter.Email.Wrong">
     <Value>Enter valid email</Value>
   </LocaleResource>
+  <LocaleResource Name="Newsletter.Company.Wrong">
+    <Value>Enter valid company</Value>
+  </LocaleResource>
+  <LocaleResource Name="Newsletter.FullName.Wrong">
+    <Value>Enter valid full name</Value>
+  </LocaleResource>
   <LocaleResource Name="Newsletter.Options.Send">
     <Value>Send</Value>
   </LocaleResource>

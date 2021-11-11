@@ -614,6 +614,23 @@ namespace Nop.Web.Controllers
                 ModelState.AddModelError("", _captchaSettings.GetWrongCaptchaMessage(_localizationService));
             }
 
+            // Validation Rules for customer
+            if (ValidationRulesForNewCustomer.ValidationRulesForNewCustomerByEmail(model.Email))
+            {
+                ModelState.AddModelError("", _localizationService.GetResource("Newsletter.Email.Wrong"));
+            }
+
+            if (ValidationRulesForNewCustomer.ValidationRulesForNewCustomerByCompanyName(model.Company))
+            {
+                ModelState.AddModelError("", _localizationService.GetResource("Newsletter.Company.Wrong"));
+            }
+
+            string fullName = model.FirstName + ' ' + model.LastName;
+            if (ValidationRulesForNewCustomer.ValidationRulesForNewCustomerByFullName(fullName))
+            {
+                ModelState.AddModelError("", _localizationService.GetResource("Newsletter.FullName.Wrong"));
+            }
+
             if (ModelState.IsValid)
             {
                 if (_customerSettings.UsernamesEnabled && model.Username != null)
