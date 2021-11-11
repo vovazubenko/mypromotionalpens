@@ -1,12 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Mvc;
+using Newtonsoft.Json;
 using Nop.Core;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Messages;
 using Nop.Services.Localization;
 using Nop.Services.Messages;
+using Nop.Web.Extensions;
 using Nop.Web.Factories;
 using Nop.Web.Framework;
+using Nop.Web.Framework.Security.Captcha;
 
 namespace Nop.Web.Controllers
 {
@@ -20,6 +26,7 @@ namespace Nop.Web.Controllers
         private readonly IStoreContext _storeContext;
 
         private readonly CustomerSettings _customerSettings;
+        private readonly CaptchaSettings _captchaSettings;
 
         public NewsletterController(INewsletterModelFactory newsletterModelFactory,
             ILocalizationService localizationService,
@@ -27,7 +34,8 @@ namespace Nop.Web.Controllers
             INewsLetterSubscriptionService newsLetterSubscriptionService,
             IWorkflowMessageService workflowMessageService,
             IStoreContext storeContext,
-            CustomerSettings customerSettings)
+            CustomerSettings customerSettings,
+            CaptchaSettings captchaSettings)
         {
             this._newsletterModelFactory = newsletterModelFactory;
             this._localizationService = localizationService;
@@ -36,6 +44,7 @@ namespace Nop.Web.Controllers
             this._workflowMessageService = workflowMessageService;
             this._storeContext = storeContext;
             this._customerSettings = customerSettings;
+            this._captchaSettings = captchaSettings;
         }
 
         [ChildActionOnly]
@@ -52,12 +61,22 @@ namespace Nop.Web.Controllers
         [StoreClosed(true)]
         [HttpPost]
         [ValidateInput(false)]
-        public virtual ActionResult SubscribeNewsletter(string email, bool subscribe)
+        public virtual ActionResult SubscribeNewsletter(string email, bool subscribe, string token)
         {
             string result;
             bool success = false;
 
-            if (!CommonHelper.IsValidEmail(email))
+            var recaptchaResult = Task.Run(() => IsCaptchaValid(token)).Result;
+
+            if (!recaptchaResult)
+            {
+                result = _localizationService.GetResource("Common.WrongCaptchaV2");
+            }
+            if (ValidationRulesForNewCustomer.ValidationRulesForNewCustomerByEmail(email))
+            {
+                result = _localizationService.GetResource("Newsletter.Email.Wrong");
+            }
+            else if (!CommonHelper.IsValidEmail(email))
             {
                 result = _localizationService.GetResource("Newsletter.Email.Wrong");
             }
@@ -132,6 +151,50 @@ namespace Nop.Web.Controllers
 
             var model = _newsletterModelFactory.PrepareSubscriptionActivationModel(active);
             return View(model);
+        }
+
+        public class CaptchaResponseViewModel
+        {
+            public bool Success { get; set; }
+
+            [JsonProperty(PropertyName = "error-codes")]
+            public IEnumerable<string> ErrorCodes { get; set; }
+
+            [JsonProperty(PropertyName = "challenge_ts")]
+            public DateTime ChallengeTime { get; set; }
+
+            public string HostName { get; set; }
+            public double Score { get; set; }
+            public string Action { get; set; }
+        }
+
+        private async Task<bool> IsCaptchaValid(string response)
+        {
+            try
+            {
+                var secret = _captchaSettings.ReCaptchaPrivateKey;
+
+                using (var client = new HttpClient())
+                {
+                    var values = new Dictionary<string, string>
+                    {
+                        {"secret", secret},
+                        {"response", response},
+                        {"remoteip", Request.UserHostAddress}
+                    };
+
+                    var content = new FormUrlEncodedContent(values);
+                    var verify = await client.PostAsync("https://www.google.com/recaptcha/api/siteverify", content);
+                    var captchaResponseJson = await verify.Content.ReadAsStringAsync();
+                    var captchaResult = JsonConvert.DeserializeObject<CaptchaResponseViewModel>(captchaResponseJson);
+
+                    return captchaResult.Success;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }
