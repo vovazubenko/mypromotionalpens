@@ -138,6 +138,10 @@
             display: flex;
             align-items: center;
         }
+
+        .mb-96 {
+            margin-bottom: 96px;
+        }
     </style>
 
     <div id="category-seo-section">
@@ -152,11 +156,11 @@
 
 
     <div id="@(Model.ControlPictureId + "image")" class="uploaded-image">
-        <img src="@(pictureService.GetPictureUrl(Model.ControlPictureId, 0, true))" class="control-picture-img" />
+        <img src="@(pictureService.GetPictureUrl(Model.ControlPictureId, 0, false))" class="control-picture-img" />
     </div>
 
 
-    <div class="category-section-newest">
+    <div class="category-section-newest mb-96">
         <ul class="category-section-newest-sublist">
             @foreach (var subcategories in Model.SubCategories.OrderBy(x => x.Name))
             {
