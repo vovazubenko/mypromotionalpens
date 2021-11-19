@@ -72,7 +72,7 @@ namespace Nop.Web.Controllers
             {
                 result = _localizationService.GetResource("Common.WrongCaptchaV2");
             }
-            if (ValidationRulesForNewCustomer.ValidationRulesForNewCustomerByEmail(email))
+            else if (ValidationRulesForNewCustomer.ValidationRulesForNewCustomerByEmail(email))
             {
                 result = _localizationService.GetResource("Newsletter.Email.Wrong");
             }

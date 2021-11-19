@@ -1014,6 +1014,42 @@ label, label + * {
 	overflow: hidden; 
 	line-height: 28px; 
 }
+
+.newsletter-email {
+	display: flex;
+}
+
+.newsletter-title {
+	vertical-align: top !important;
+	margin-top: 12px !important;
+}
+
+@media all and (max-width: 1280px) {
+	.newsletter {
+		width: min-content;
+	}
+
+	.newsletter-email .newsletter-subscribe-text {
+		margin-left: 0px!important;
+	}
+}
+
+@media all and (max-width: 1000px) {
+	.newsletter {
+		width: auto;
+	}
+
+	.newsletter-email {
+		justify-content: center;
+	}
+}
+
+@media all and (max-width: 700px) {
+	.newsletter-email {
+		display: inline-block;
+	}
+}
+
 /*.newsletter-validation .please-wait {
 	display: none !important; 
 }*/

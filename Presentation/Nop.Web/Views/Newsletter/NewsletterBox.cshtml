@@ -1,14 +1,12 @@
 ﻿@model NewsletterBoxModel
 @using Nop.Web.Models.Newsletter;
 <div class="newsletter">
-    <div class="title">
+    <div class="title newsletter-title">
         <strong>@T("Newsletter.Title")</strong>
     </div>
     <div class="newsletter-subscribe" id="newsletter-subscribe-block">
         <div class="newsletter-email">
             @Html.TextBoxFor(x => x.NewsletterEmail, new { id = "newsletter-email", @class = "newsletter-subscribe-text", placeholder = T("Newsletter.Email.Placeholder") })
-            <input type="button" value="@T(Model.AllowToUnsubscribe ? "Newsletter.Options.Send" : "Newsletter.Options.Subscribe")" id="newsletter-subscribe-button" class="button-1 newsletter-subscribe-button" />
-            
             <div class="captcha-box" style="margin: 0 5px;">
                 <script type="text/javascript">
                     var onloadCallback = function () {
@@ -18,6 +16,7 @@
                 <script async="" defer="" src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&amp;render=explicit"></script>
                 <div id="recaptcha" style="float:left;"></div>
             </div>
+            <input type="button" value="@T(Model.AllowToUnsubscribe ? "Newsletter.Options.Send" : "Newsletter.Options.Subscribe")" id="newsletter-subscribe-button" class="button-1 newsletter-subscribe-button" />
 
             @if (Model.AllowToUnsubscribe)
             {
