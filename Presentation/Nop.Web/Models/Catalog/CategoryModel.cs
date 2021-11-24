@@ -79,5 +79,35 @@ namespace Nop.Web.Models.Catalog
         public string FooterTitle3 { get; set; }
         public string FooterContent3 { get; set; }
         public IList<Tuple<string, string>> FooterContent { get; set; }
+
+        public int AmountOfSubCategoriesForCssStyles()
+        {
+            int result = 0;
+            int amountOfSubCategories = 0;
+            int amountOfSubSubCategories = 0;
+
+            if (this.SubCategories.Count > 0)
+            {
+                amountOfSubCategories += this.SubCategories.Count;
+
+                foreach(var item in this.SubCategories)
+                {
+                    amountOfSubSubCategories += item.SubCategories.Count;
+
+                    // PENS - we have a lot of subcategories.
+                    if (item.Id == 24) amountOfSubSubCategories += 100;
+                }
+            }
+
+            result = amountOfSubCategories + amountOfSubSubCategories;
+
+            // For Technology category
+            if (amountOfSubCategories > amountOfSubSubCategories && result <= 20)
+            {
+                result += amountOfSubCategories;
+            }
+
+            return result;
+        }
     }
 }

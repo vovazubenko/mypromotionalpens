@@ -1628,6 +1628,7 @@
     <None Include="Scripts\_references.js" />
     <Content Include="Sql\09_11_2020.sql" />
     <Content Include="Sql\09_29_2020.sql" />
+    <Content Include="Styles\CategoryStyles.css" />
     <Content Include="Themes\DefaultClean\Content\css\ie8.css" />
     <Content Include="Themes\DefaultClean\Content\css\styles.css" />
     <Content Include="Themes\DefaultClean\Content\css\styles.rtl.css" />

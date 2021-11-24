@@ -26,6 +26,16 @@
 
     var pictureService = EngineContext.Current.Resolve<Nop.Services.Media.IPictureService>();
 
+    int amountOfAllCategories = Model.AmountOfSubCategoriesForCssStyles();
+
+    string categoryClassName = "category-section-newest-sublist-vh-50";
+
+    if (amountOfAllCategories < 20) { categoryClassName = "category-section-newest-sublist-vh-20"; }
+    else if (amountOfAllCategories < 30) { categoryClassName = "category-section-newest-sublist-vh-40"; }
+    else if (amountOfAllCategories < 35) { categoryClassName = "category-section-newest-sublist-vh-40"; }
+    else if (amountOfAllCategories < 50) { categoryClassName = "category-section-newest-sublist-vh-50"; }
+    else if (amountOfAllCategories < 80) { categoryClassName = "category-section-newest-sublist-vh-100"; }
+    else if (amountOfAllCategories > 80) { categoryClassName = "category-section-newest-sublist-vh-120"; };
 }
 @using Nop.Core.Domain.Common;
 @using Nop.Core.Domain.Seo;
@@ -76,77 +86,12 @@
             </div>
         </div>
     }
-    <style>
-        .sub-category-grid .item-box {
-            margin-bottom: .4% !important
-        }
 
-        .sub-category-item {
-            border: none !important
-        }
-
-        .category-section-newest-sublist {
-            column-count: 4;
-            column-gap: 10px;
-        }
-
-        .category-section-newest-block {
-            padding: 4px 15px 4px 0px;
-            margin-bottom: 10px;
-        }
-
-        .category-section-newest-subcategory {
-            font-size: 24px;
-            font-weight: 500;
-        }
-
-        .category-section-newest-sublist-2level {
-            padding: 0 0 5px;
-        }
-
-        .control-picture-img {
-            width: 100%;
-            max-height: 350px !important;
-        }
-
-        .font-size-25 {
-            font-size: 25px;
-        }
-
-        .font-size-20 {
-            font-size: 20px;
-        }
-
-        .text-alugn-left {
-            text-align: left;
-        }
-
-        .tags-color {
-            color: #0072bc;
-        }
-
-        .font-weight-700 {
-            font-weight: 700;
-        }
-
-        #category-seo-section {
-            display: grid;
-            grid-template-columns: 50% 50%;
-        }
-
-        #category-seo-section__controll-data {
-            display: flex;
-            align-items: center;
-        }
-
-        .mb-96 {
-            margin-bottom: 96px;
-        }
-    </style>
+    <link href="~/Styles/CategoryStyles.css" rel="stylesheet" />
 
     <div id="category-seo-section">
         <div id="category-seo-section__tags">
-            <div class="speed-filter-htag" id="SpeedFilterHTag"><h1 class="font-size-25 text-alugn-left">@Model.H1Tag</h1></div>
+            <div class="speed-filter-htag" id="SpeedFilterHTag"><h1 class="font-size-25 text-align-left">@Model.H1Tag</h1></div>
         </div>
 
         <div id="category-seo-section__controll-data">
@@ -161,7 +106,7 @@
 
 
     <div class="category-section-newest mb-96">
-        <ul class="category-section-newest-sublist">
+        <ul class="category-section-newest-sublist @(categoryClassName)">
             @foreach (var subcategories in Model.SubCategories.OrderBy(x => x.Name))
             {
                 <li class="category-section-newest-block">
@@ -217,8 +162,8 @@
         }
 
 
-        <div class="speed-filter-header-title" id="SpeedFilterHeadrTitle"><h2 class="font-size-20 text-alugn-left font-weight-700">@Model.HeaderTitle</h2></div>
-        <div class="speed-filter-h2tag" id="SpeedFilterH2Tag"><h2 class="font-size-20 text-alugn-left font-weight-700">@Model.H2Tag</h2></div>
+        <div class="speed-filter-header-title" id="SpeedFilterHeadrTitle"><h2 class="font-size-20 text-align-left font-weight-700">@Model.HeaderTitle</h2></div>
+        <div class="speed-filter-h2tag" id="SpeedFilterH2Tag"><h2 class="font-size-20 text-align-left font-weight-700">@Model.H2Tag</h2></div>
         <div class="speed-filter-header-copy" id="SpeedFilterHeadrCopy">@Model.HeaderCopy</div>
     </div>
     <div class="page-title">
