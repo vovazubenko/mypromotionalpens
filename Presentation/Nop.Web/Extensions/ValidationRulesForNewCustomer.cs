@@ -104,10 +104,13 @@ namespace Nop.Web.Extensions
         private static bool DoesCompanyInBlackList(string companyName)
         {
             bool result = false;
-            IEnumerable<string> blockedCompanies = new string[] { "google" };
 
-            if (blockedCompanies.Contains(companyName.ToLower())) result = true;
+            if(!string.IsNullOrWhiteSpace(companyName))
+            { 
+                IEnumerable<string> blockedCompanies = new string[] { "google" };
 
+                if (blockedCompanies.Contains(companyName.ToLower())) result = true;
+            }
             return result;
         }
 
