@@ -186,7 +186,8 @@ namespace Nop.Web.Factories
                 })
                 .OrderBy(x => x.Value);
             if (command.OrderBy == null)
-                command.OrderBy = allDisabled ? 0 : activeOptions.First().Key;
+                //command.OrderBy = allDisabled ? 0 : activeOptions.First().Key;
+                command.OrderBy = (int)ProductSortingEnum.PriceAsc;
 
             if (pagingFilteringModel.AllowProductSorting)
             {

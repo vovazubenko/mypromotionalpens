@@ -6,6 +6,9 @@
 @using Nop.Core.Infrastructure
 @using SevenSpikes.Nop.Core.Helpers
 @using SevenSpikes.Nop.Plugins.AjaxFilters.Models
+@using Newtonsoft.Json;
+@using System.Collections.Generic;
+@using Nop.Core.Domain.Catalog;
 
 @model NopAjaxFiltersModel
 
@@ -21,7 +24,7 @@
         Html.AddScriptParts("~/Administration/Scripts/kendo/2014.1.318/kendo.userevents.min.js");
         Html.AddScriptParts("~/Administration/Scripts/kendo/2014.1.318/kendo.draganddrop.min.js");
         Html.AddScriptParts("~/Administration/Scripts/kendo/2014.1.318/kendo.window.min.js");
-        
+
         Html.AddScriptParts("~/Plugins/SevenSpikes.Nop.Plugins.AjaxFilters/Scripts/jquery.json-2.2.min.js");
         Html.AddScriptParts("~/Plugins/SevenSpikes.Nop.Plugins.AjaxFilters/Scripts/jquery.address-1.5.min.js");
         Html.AddScriptParts("~/Plugins/SevenSpikes.Core/Scripts/SevenSpikesExtensions.min.js");
@@ -105,6 +108,24 @@
     {
         numberOfReturnedProductsSelector = "false";
     }
+
+    if (!string.IsNullOrWhiteSpace(Model.AvailableSortOptionsJson))
+    {
+        List<SortingOptions> deserializedAvailableSortOptions = JsonConvert.DeserializeObject<List<SortingOptions>>(Model.AvailableSortOptionsJson);
+
+        foreach(SortingOptions item in deserializedAvailableSortOptions)
+        {
+            item.Selected = false;
+
+            if (item.Value == (int)ProductSortingEnum.PriceAsc)
+            {
+                item.Selected = true;
+            }
+        }
+        string serializedAvailableSortOptions = JsonConvert.SerializeObject(deserializedAvailableSortOptions);
+
+        Model.AvailableSortOptionsJson = serializedAvailableSortOptions;
+    }
 }
 
 <div class="nopAjaxFilters7Spikes"
@@ -115,7 +136,7 @@
      data-searchkeyword="@Model.SearchQueryStringParameters.Keyword"
      data-searchcategoryid="@Model.SearchQueryStringParameters.SearchCategoryId"
      data-searchmanufacturerid="@Model.SearchQueryStringParameters.SearchManufacturerId"
-     data-searchvendorid ="@Model.SearchQueryStringParameters.SearchVendorId"
+     data-searchvendorid="@Model.SearchQueryStringParameters.SearchVendorId"
      data-searchpricefrom="@Model.SearchQueryStringParameters.PriceFrom"
      data-searchpriceto="@Model.SearchQueryStringParameters.PriceTo"
      data-searchincludesubcategories="@Model.SearchQueryStringParameters.IncludeSubcategories"
