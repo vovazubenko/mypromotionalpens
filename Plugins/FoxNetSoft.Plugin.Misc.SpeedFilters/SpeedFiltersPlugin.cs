@@ -376,7 +376,9 @@ namespace FoxNetSoft.Plugin.Misc.SpeedFilters
         }
 
         public bool CategoryFilterEnabled() {
-            if (_speedFiltersSettings.EnableSpeedFilters == false)
+            if (_speedFiltersSettings.EnableFiltersForCategory || _speedFiltersSettings.EnableSpeedFilters)
+                return true;
+            else if (_speedFiltersSettings.EnableSpeedFilters == false)
                 return false;
             else if (_speedFiltersSettings.EnableFiltersForCategory == false)
                 return false;
