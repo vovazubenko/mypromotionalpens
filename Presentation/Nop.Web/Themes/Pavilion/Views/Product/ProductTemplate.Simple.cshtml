@@ -716,7 +716,46 @@
                     $(value).val(oldQuantity);
                 }
             })
-        }
+        };
+
+        openModal();
+
+        function openModal() {
+            var url = window.location.href;
+            var pathParameter = '#redirectquery=';
+            var quoteVariable = 'quote';
+            var sampleVariable = 'sample';
+            var artProofVariable = 'artproof';
+            var quoteBtn = $("#btn-Quote-request");
+            var sampleBtn = $("#btn-sample-request");
+            var artProofBtn = $("#btn-proof-request");
+            var urlArray = url.split(pathParameter);
+
+            if (urlArray.length > 1) {
+                var currentVariable = urlArray[1];
+                var timeDelay = 500;
+                var timeDelayPlus = timeDelay + 100;
+                var resultEl;
+
+                if (currentVariable == quoteVariable) {
+                    resultEl = quoteBtn;
+                } else if (currentVariable == sampleVariable) {
+                    resultEl = sampleBtn;
+                } else if (currentVariable == artProofVariable) {
+                    resultEl = artProofBtn;
+                };
+
+                if (resultEl !== undefined) {
+                    $("html,body").animate({ scrollTop: resultEl.offset().top - 200 }, timeDelay);
+
+                    setTimeout(function () {
+                        resultEl.click();
+                    }, timeDelayPlus);
+
+                    history.pushState({}, null, urlArray[0]);
+                };
+            };
+        };
     });
 
     function ConvertMoneyToFloat(value) {

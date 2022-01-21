@@ -188,11 +188,11 @@
     $("#btn-sample-request").click(function () {
         var currentCustomer = '@CurrentCustomer';
         if (currentCustomer == '') {
-            window.location.href = '@Url.Action("login","customer",new { returnUrl = Url.RouteUrl("Product", new { SeName = Model.SeName }) })';
+            window.location.href = '@Url.Action("login","customer",new { returnUrl = Url.RouteUrl("Product", new { SeName = Model.SeName }, this.Request.Url.Scheme) + "#redirectquery=sample" })';
         }
         else{
             if ('@CurrentCustomer.IsGuest()'.toLowerCase() == 'true') {
-                window.location.href = '@Url.Action("login","customer",new { returnUrl = Url.RouteUrl("Product", new { SeName = Model.SeName }) })';
+                window.location.href = '@Url.Action("login","customer",new { returnUrl = Url.RouteUrl("Product", new { SeName = Model.SeName }, this.Request.Url.Scheme) + "#redirectquery=sample" })';
             }
             else {
                 $("#dialog").dialog({
