@@ -119,7 +119,6 @@
     <Compile Include="Domain\ASI\ASI_SuppliersUpdateStatus.cs" />
     <Compile Include="Domain\Blogs\Events.cs" />
     <Compile Include="Domain\Catalog\CategoryBanner.cs" />
-    <Compile Include="Domain\Catalog\SortingOptions.cs" />
     <Compile Include="Domain\Common\DisplayDefaultMenuItemSettings.cs" />
     <Compile Include="Domain\Catalog\ProductEditorSettings.cs" />
     <Compile Include="Domain\Catalog\Events.cs" />

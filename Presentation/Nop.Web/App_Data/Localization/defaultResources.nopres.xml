@@ -13873,7 +13873,7 @@
     <Value>Track inventory by product attributes</Value>
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Catalog.ProductSortingEnum.CreatedOn">
-    <Value>Created on</Value>
+    <Value>New Products</Value>
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Catalog.ProductSortingEnum.NameAsc">
     <Value>Name: A to Z</Value>
@@ -13882,7 +13882,7 @@
     <Value>Name: Z to A</Value>
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Catalog.ProductSortingEnum.Position">
-    <Value>Position</Value>
+    <Value>Most Popular</Value>
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Catalog.ProductSortingEnum.PriceAsc">
     <Value>Price: Low to High</Value>

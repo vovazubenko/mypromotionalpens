@@ -108,24 +108,6 @@
     {
         numberOfReturnedProductsSelector = "false";
     }
-
-    if (!string.IsNullOrWhiteSpace(Model.AvailableSortOptionsJson))
-    {
-        List<SortingOptions> deserializedAvailableSortOptions = JsonConvert.DeserializeObject<List<SortingOptions>>(Model.AvailableSortOptionsJson);
-
-        foreach(SortingOptions item in deserializedAvailableSortOptions)
-        {
-            item.Selected = false;
-
-            if (item.Value == (int)ProductSortingEnum.PriceAsc)
-            {
-                item.Selected = true;
-            }
-        }
-        string serializedAvailableSortOptions = JsonConvert.SerializeObject(deserializedAvailableSortOptions);
-
-        Model.AvailableSortOptionsJson = serializedAvailableSortOptions;
-    }
 }
 
 <div class="nopAjaxFilters7Spikes"
