@@ -83,6 +83,11 @@
                 </a>
             </li>
         }
+        @if (Model.IsAuthenticated)
+        {
+            <li><a href="@Url.RouteUrl("CompareProducts")" class="acc_order">@T("MenuItem.CompareProducts")</a></li>
+            <li><a href="@Url.RouteUrl("RecentlyViewedProducts")" class="acc_order">@T("MenuItem.ViewedProducts")</a></li>
+        }
         <li><a href="/help" class="help_icon">@T("Account.Help")</a></li>
         @*@if (Model.ShoppingCartEnabled)
         {

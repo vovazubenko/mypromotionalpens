@@ -16659,4 +16659,10 @@
   <LocaleResource Name="Wishlist.YourWishlistURL">
     <Value>Your wishlist URL for sharing</Value>
   </LocaleResource>
+  <LocaleResource Name="MenuItem.ViewedProducts">
+    <Value>Viewed Products</Value>
+  </LocaleResource>
+  <LocaleResource Name="MenuItem.CompareProducts">
+    <Value>Compare Products</Value>
+  </LocaleResource>
 </Language>
