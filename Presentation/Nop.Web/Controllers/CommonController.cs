@@ -134,17 +134,6 @@ namespace Nop.Web.Controllers
             return PartialView(model);
         }
 
-
-        [HttpGet, ActionName("get-logo-picture-url")]
-
-        public virtual ActionResult GetLogoPictureUrl()
-        {
-            var model = _commonModelFactory.PrepareLogoModel();
-            string pictUrl = model.LogoPath;
-
-            return Json(new { success = true, imageUrl = pictUrl }, JsonRequestBehavior.AllowGet);
-        }
-
         //language
         [ChildActionOnly]
         public virtual ActionResult LanguageSelector()

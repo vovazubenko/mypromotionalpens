@@ -35,6 +35,15 @@ namespace Nop.Web.Controllers
             return PartialView(model);
         }
 
+        [HttpGet, ActionName("widgets-by-zone-for-logo")]
+        public virtual ActionResult WidgetsByZoneForLogo()
+        {
+            var model = _widgetModelFactory.GetRenderWidgetModels("pavilion_theme_logo", null);
+            var data = PartialView("WidgetsByZone", model);
+
+            return data;
+        }
+
         #endregion
     }
 }

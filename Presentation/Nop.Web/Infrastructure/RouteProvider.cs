@@ -783,9 +783,9 @@ namespace Nop.Web.Infrastructure
                             new { controller = "Common", action = "PageNotFound" },
                             new[] { "Nop.Web.Controllers" });
 
-            routes.MapLocalizedRoute("get-logo-picture-url",
-                            "get-logo-picture-url/",
-                            new { controller = "Common", action = "GetLogoPictureUrl" },
+            routes.MapRoute("widgets-by-zone-for-logo",
+                            "widgets-by-zone-for-logo/",
+                            new { controller = "Widget", action = "WidgetsByZoneForLogo" },
                             new[] { "Nop.Web.Controllers" });
         }
 

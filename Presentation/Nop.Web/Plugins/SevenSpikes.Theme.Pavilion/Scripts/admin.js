@@ -86,24 +86,21 @@
 
         function GetLogoImageUrl() {
             var logo = $("#logo-image img");
-            var logoSrcLength = logo.attr("src").length;
 
-            if (logoSrcLength == 0) {
-                $.ajax({
-                    url: "/common/get-logo-picture-url/",
-                    type: "GET",
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function (data) {
-                        $(logo[0])
-                            .attr("src", data.imageUrl)
-                            .css({"max-width":"100px"});
-                    },
-                    error: function (data) {
-                        console.log("data ", data);
+            $.ajax({
+                url: "/widget/widgets-by-zone-for-logo/",
+                type: "GET",
+                dataType: "html",
+                success: function (data) {
+                    if (data.length > 10) {
+                        logo.remove();
+                        $("#logo-image .uploaded-image").prepend(data);
                     }
-                });
-            }
+                },
+                error: function (data) {
+                    console.log("data ", data);
+                }
+            });
         };
     });
 })(jQuery, CustomPreset);
