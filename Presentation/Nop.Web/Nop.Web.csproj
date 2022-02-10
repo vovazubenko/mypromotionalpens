@@ -644,6 +644,7 @@
     <Content Include="Content\samples\p_attribute_print_1.jpg" />
     <Content Include="Content\samples\p_attribute_print_2.jpg" />
     <Content Include="Customers_ZXQ4XRZ7VV.xml" />
+    <Content Include="DeploySqlScripts\February_2022.sql" />
     <Content Include="Plugins\DiscountRules.CustomerRoles\Description.txt" />
     <Content Include="Plugins\DiscountRules.CustomerRoles\logo.jpg" />
     <Content Include="Plugins\DiscountRules.CustomerRoles\Nop.Plugin.DiscountRules.CustomerRoles.dll" />

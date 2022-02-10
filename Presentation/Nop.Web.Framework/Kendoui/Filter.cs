@@ -104,11 +104,11 @@ namespace Nop.Web.Framework.Kendoui
             //we ignore case
             if (comparison == "Contains")
             {
-                return String.Format("{0}.IndexOf(@{1}, System.StringComparison.InvariantCultureIgnoreCase) >= 0", Field, index);
+                return String.Format("{0}.IndexOf(@{1}) >= 0", Field, index, System.StringComparison.InvariantCultureIgnoreCase);
             }
             if (comparison == "DoesNotContain")
             {
-                return String.Format("{0}.IndexOf(@{1}, System.StringComparison.InvariantCultureIgnoreCase) < 0", Field, index);
+                return String.Format("{0}.IndexOf(@{1}) < 0", Field, index, System.StringComparison.InvariantCultureIgnoreCase);
             }
             if (comparison == "=" && Value is String)
             {
@@ -118,7 +118,7 @@ namespace Nop.Web.Framework.Kendoui
             }
             if (comparison == "StartsWith" || comparison == "EndsWith" || comparison == "Equals")
             {
-                return String.Format("{0}.{1}(@{2}, System.StringComparison.InvariantCultureIgnoreCase)", Field, comparison, index);
+                return String.Format("{0}.{1}(@{2})", Field, comparison, index, System.StringComparison.InvariantCultureIgnoreCase);
             }
 
             return String.Format("{0} {1} @{2}", Field, comparison, index);
