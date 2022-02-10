@@ -81,6 +81,9 @@ namespace Nop.Admin.Controllers
                     case ".tif":
                         contentType = MimeTypes.ImageTiff;
                         break;
+                    case "image/svg+xml":
+                        contentType = MimeTypes.ImageSVG;
+                        break;
                     default:
                         break;
                 }
@@ -89,9 +92,12 @@ namespace Nop.Admin.Controllers
             var picture = _pictureService.InsertPicture(fileBinary, contentType, null);
             //when returning JSON the mime-type must be set to text/plain
             //otherwise some browsers will pop-up a "Save As" dialog.
-            return Json(new { success = true, pictureId = picture.Id,
-                imageUrl = _pictureService.GetPictureUrl(picture, 100) },
-                MimeTypes.TextPlain);
+
+            var pictUrl = (picture.MimeType == MimeTypes.ImageSVG || picture.MimeType == Constant.ImageSVG)
+                ? _pictureService.GetPictureUrl(picture.Id, showDefaultPicture: false)
+                : _pictureService.GetPictureUrl(picture, 100);
+
+            return Json(new { success = true, pictureId = picture.Id, imageUrl = pictUrl }, MimeTypes.TextPlain);
         }
     }
 }

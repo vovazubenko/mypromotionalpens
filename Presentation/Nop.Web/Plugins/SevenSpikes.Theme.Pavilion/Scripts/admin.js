@@ -4,6 +4,8 @@
         var logoImageId = pavilionSettings.attr('data-logoImageId');
         var presetFieldId = pavilionSettings.attr('data-presetfieldId');
 
+        GetLogoImageUrl();
+
         function logoOverrideChanged() {
             if ($(logoImageId).length === 0) {
                 return;
@@ -81,5 +83,27 @@
                 that.css('border-bottom-color', '#' + that.text());
             }
         });
+
+        function GetLogoImageUrl() {
+            var logo = $("#logo-image img");
+            var logoSrcLength = logo.attr("src").length;
+
+            if (logoSrcLength == 0) {
+                $.ajax({
+                    url: "/common/get-logo-picture-url/",
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $(logo[0])
+                            .attr("src", data.imageUrl)
+                            .css({"max-width":"100px"});
+                    },
+                    error: function (data) {
+                        console.log("data ", data);
+                    }
+                });
+            }
+        };
     });
 })(jQuery, CustomPreset);

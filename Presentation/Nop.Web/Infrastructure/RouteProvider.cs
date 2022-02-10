@@ -782,6 +782,11 @@ namespace Nop.Web.Infrastructure
                             "page-not-found",
                             new { controller = "Common", action = "PageNotFound" },
                             new[] { "Nop.Web.Controllers" });
+
+            routes.MapLocalizedRoute("get-logo-picture-url",
+                            "get-logo-picture-url/",
+                            new { controller = "Common", action = "GetLogoPictureUrl" },
+                            new[] { "Nop.Web.Controllers" });
         }
 
         public int Priority

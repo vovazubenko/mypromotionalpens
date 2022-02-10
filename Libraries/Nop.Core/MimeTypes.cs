@@ -39,6 +39,8 @@
 
         public const string ImageTiff = "image/tiff";
 
+        public const string ImageSVG = "image/svg+xml";
+
         #endregion image/*
 
 

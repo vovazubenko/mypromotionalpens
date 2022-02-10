@@ -687,13 +687,13 @@ namespace Nop.Services.Media
 
             seoFilename = CommonHelper.EnsureMaximumLength(seoFilename, 100);
 
-            if (validateBinary)
+            if (validateBinary && mimeType != MimeTypes.ImageSVG)
                 pictureBinary = ValidatePicture(pictureBinary, mimeType);
 
             var picture = new Picture
             {
                 PictureBinary = this.StoreInDb ? pictureBinary : new byte[0],
-                MimeType = mimeType,
+                MimeType = mimeType == MimeTypes.ImageSVG ? Constant.ImageSVG : mimeType,
                 SeoFilename = seoFilename,
                 AltAttribute = altAttribute,
                 TitleAttribute = titleAttribute,

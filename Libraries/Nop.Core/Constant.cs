@@ -25,5 +25,7 @@ namespace Nop.Core
             }
             return value.ToString();
         }
+
+        public const string ImageSVG = "svg";
     }
 }

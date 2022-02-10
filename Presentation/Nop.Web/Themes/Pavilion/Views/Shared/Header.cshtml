@@ -87,6 +87,20 @@
                 font-weight: bold;
             }
         }
+
+        .header-logo .header-logo-img-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .header-logo .header-logo-img-section a,
+        .header-logo .header-logo-img-section a img {
+            flex-shrink: 0;
+            min-width: 100%;
+            min-height: 100%;
+        }
     </style>
 }
 <div class="header">
@@ -143,7 +157,9 @@
 
         <div class="center">
             <div class="header-logo">
-                @Html.Action("Logo", "Common")
+                <div class="header-logo-img-section">
+                    @Html.Action("Logo", "Common")
+                </div>
             </div>
             <div class="search-box store-search-box header-search @if (!showCategoriesInSideMenu){<text>full-width</text>}">
                 @Html.Action("SearchBox", "Catalog")
