@@ -74,6 +74,12 @@
     <input id="add-to-cart-details" type="hidden" data-productid="@productDetails.Id"
            data-url="@Url.RouteUrl("AddProductToCart-Details", new { productId = productDetails.Id, shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart })" />
     
+    <style>
+        .header-logo a {
+            max-width: 175px !important;
+        }
+    </style>
+
     <div class="product-essential" style="border:none;">
         @using (Html.BeginRouteForm("Product", new { SeName = Model.SeName }, FormMethod.Post, new { id = "product-details-form" }))
         {
