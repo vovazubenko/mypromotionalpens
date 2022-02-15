@@ -33,7 +33,7 @@
             if (Model.Settings.ShowCaption)
             {
                 <a href="@link">
-                    <img src="@pictureUrl" data-thumb="@pictureUrl" alt="@alt" title="@text" />
+                    <img src="@pictureUrl" alt="@alt" title="@text" />
                 </a>
             }
             else
@@ -44,13 +44,13 @@
                 }
 
                 <a href="@link" title="@text">
-                    <img src="@pictureUrl" data-thumb="@pictureUrl" alt="@alt" />
+                    <img src="@pictureUrl" alt="@alt" />
                 </a>
             }
         }
         else
         {
-            <img src="@pictureUrl" data-thumb="@pictureUrl" alt="@alt" title="@text" />
+            <img src="@pictureUrl" alt="@alt" title="@text" />
         }
     }
 }
@@ -159,9 +159,7 @@
                 Model.SliderImages = randomStartSlideModels;
             }
 
-            <div id="@Model.SliderHtmlElementId" class="nivoSlider">
-                @RenderSingleSliderImageLine(Model.SliderImages[0])
-            </div>
+            <div id="@Model.SliderHtmlElementId" class="nivoSlider"></div>
         }
     </div>
 
