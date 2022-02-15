@@ -250,38 +250,31 @@
 
 <script>
     $(document).ready(function () {
-    var loop = true;
-    if (@Model.CategoryBannerModels.Where(x => x.BannerNumber == 0).Count()== 1)
-    {
-        loop = false;
-    }
-    $('.category-owl-carousel').owlCarousel({
-        loop: loop,
-        margin: 10,
-        dots: true,
-        autoplay: true,
-        autoPlaySpeed: 10000,
-        autoPlayTimeout: 10000,
-        nav: loop,
-        navText: ['<span class="fas fa-chevron-left"></span>', '<span class="fas fa-chevron-right"></span>'],
-        responsive: {
-            0: {
-                items: 1
-            },
-            600: {
-                items: 1
-            },
-            1000: {
-                items: 1
-            }
+        var loop = true;
+        if (@Model.CategoryBannerModels.Where(x => x.BannerNumber == 0).Count()== 1)
+        {
+            loop = false;
         }
-    });
-
-    });
-
-    $(window).load(function () {
-        $('html, body').animate({
-            scrollTop: $('.category-page').offset().top
-        }, 'slow');
+        $('.category-owl-carousel').owlCarousel({
+            loop: loop,
+            margin: 10,
+            dots: true,
+            autoplay: true,
+            autoPlaySpeed: 10000,
+            autoPlayTimeout: 10000,
+            nav: loop,
+            navText: ['<span class="fas fa-chevron-left"></span>', '<span class="fas fa-chevron-right"></span>'],
+            responsive: {
+                0: {
+                    items: 1
+                },
+                600: {
+                    items: 1
+                },
+                1000: {
+                    items: 1
+                }
+            }
+        });
     });
 </script>
