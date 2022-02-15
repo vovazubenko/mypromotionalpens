@@ -660,3 +660,54 @@ BEGIN
 	DEALLOCATE @MyCursor;
 END;
 
+
+-- Updated 2/15/2022 to remove "Personalized" data
+DECLARE @MyCursor CURSOR,
+		@redirectFromUrl nvarchar(128), 
+		@redirectToUrl nvarchar(128),
+		@cleanedRedirectFromUrl nvarchar(128), 
+		@cleanedRedirectToUrl nvarchar(128),
+		@url nvarchar(128) = 'mypromotionalpens.com/',
+		@urlWithCustom nvarchar(128) = 'mypromotionalpens.com/Custom';
+
+BEGIN
+	SET @MyCursor = CURSOR 
+	FOR select [Redirect_From_URL],[Redirect_To_URL] from [categories_redirect_from];    
+
+	OPEN @MyCursor 
+	FETCH NEXT FROM @MyCursor 
+	INTO @redirectFromUrl, @redirectToUrl
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+
+		/*  insert here!!!  */
+		set @cleanedRedirectFromUrl = 'Personalized'+REPLACE(@redirectFromUrl, @urlWithCustom, '');
+		set @cleanedRedirectToUrl = REPLACE(@redirectToUrl, @url, '/');
+
+		if ((select count(*) from [dbo].[CustomRedirect] where [Alias] = @cleanedRedirectFromUrl) > 0)
+		begin
+			/* update URL link */
+			update [dbo].[CustomRedirect]
+			set [RedirectTo] = @cleanedRedirectToUrl
+			where [Alias] = @cleanedRedirectFromUrl; 
+		end
+		else
+		begin
+			/* create new URL link */
+			insert into [dbo].[CustomRedirect]
+			values (@cleanedRedirectFromUrl, @cleanedRedirectToUrl, 1, 1);
+		end
+
+		FETCH NEXT FROM @MyCursor 
+		INTO @redirectFromUrl, @redirectToUrl 
+	END; 
+
+	CLOSE @MyCursor ;
+	DEALLOCATE @MyCursor;
+END;
+
+insert into [dbo].[CustomRedirect]
+values ('Personalized_pens', 'pens', 1, 1);
+
+
