@@ -26,34 +26,6 @@
         AjaxCart.init(false, '.header-links .cart-qty', '.header-links .wishlist-qty', '#flyout-cart');
     </script>
     <div class="overlayOffCanvas"></div>
-    <div class="responsive-nav-wrapper-parent">
-        <div class="responsive-nav-wrapper">
-            <div class="menu-title">
-                <span>@T("SevenSpikes.Themes.Common.MenuTitle")</span>
-            </div>
-            <div class="header-menu">
-                @*@Html.Action("TopMenu", "Catalog")*@
-            </div>
-            <div class="shopping-cart-link">
-                <span>@T("ShoppingCart")</span>
-            </div>
-			@*<div class="filters-button-new">
-                <span>@T("SevenSpikes.Themes.Common.Filters")</span>
-            </div>*@
-            <div class="filters-button">
-                <span>@T("SevenSpikes.Themes.Common.Filters")</span>
-            </div>
-            <div class="personal-button" id="header-links-opener">
-                <span>@T("SevenSpikes.Themes.Common.Personal")</span>
-            </div>
-            <div class="preferences-button" id="header-selectors-opener">
-                <span>@T("SevenSpikes.Themes.Pavilion.Header.Preferences")</span>
-            </div>
-            <div class="search-wrap">
-                <span>@T("Search")</span>
-            </div>
-        </div>
-    </div>
     <div class="master-wrapper-content">
         @Html.Widget("content_before")
         @Html.Widget("pavilion_color_squares")

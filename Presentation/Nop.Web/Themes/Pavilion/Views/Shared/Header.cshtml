@@ -90,7 +90,7 @@
 
         .header-logo .header-logo-img-section {
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             overflow: hidden;
         }
@@ -98,7 +98,6 @@
         .header-logo .header-logo-img-section a,
         .header-logo .header-logo-img-section a img {
             flex-shrink: 0;
-            min-width: 100%;
             min-height: 100%;
         }
     </style>
@@ -250,6 +249,37 @@
     //});
 
 </script>
+
+<div class="responsive-nav-wrapper-parent menu-is-here">
+    <div class="responsive-nav-wrapper">
+        <div class="menu-title">
+            <span>@T("SevenSpikes.Themes.Common.MenuTitle")</span>
+        </div>
+        <div class="header-menu">
+            @*@Html.Action("TopMenu", "Catalog")*@
+        </div>
+        <div class="shopping-cart-link">
+            <span>@T("ShoppingCart")</span>
+        </div>
+        @*<div class="filters-button-new">
+                <span>@T("SevenSpikes.Themes.Common.Filters")</span>
+            </div>*@
+        <div class="filters-button">
+            <span>@T("SevenSpikes.Themes.Common.Filters")</span>
+        </div>
+        <div class="personal-button" id="header-links-opener">
+            <span>@T("SevenSpikes.Themes.Common.Personal")</span>
+        </div>
+        <div class="preferences-button" id="header-selectors-opener">
+            <span>@T("SevenSpikes.Themes.Pavilion.Header.Preferences")</span>
+        </div>
+        <div class="search-wrap">
+            <span>@T("Search")</span>
+        </div>
+    </div>
+</div>
+
+
 @if (isHomePage)
 {
     var homePageSliderCss = isHomeSliderFullWidth ? "slider-fullwidth" : "slider-right-column";

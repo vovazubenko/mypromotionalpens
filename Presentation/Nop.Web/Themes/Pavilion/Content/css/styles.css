@@ -8706,3 +8706,89 @@ font-size: 16px;
 .item-box .buttons-upper1 input[type="button"]:hover {
     background-color: #940808;
 }
+
+
+
+@media (max-width: 480px) {
+    .admin-header-links {
+        position: initial !important;
+    }
+
+    .admin-header-links * {
+        display: flex !important;
+        justify-content: center  !important;
+    }
+
+    .header,
+    .header-logo .header-logo-img-section a img {
+        max-height: 40px !important;
+    }
+
+    .admin-header-links ~ .responsive-nav-wrapper-parent {
+        top: 140px !important;
+    }
+
+    .admin-header-links * {
+        margin-bottom: 0px !important;
+    }
+
+    .header .header-middle .center {
+        display: grid !important;
+        grid-template-columns: 50% 50% !important;
+        padding: 0px 20px;
+        margin-top: 10px;
+    }
+
+    .header .header-middle .center .header-logo,
+    .header .header-middle .center .header-right-sidebar {
+        width: 100% !important;
+        position: inherit !important;
+    }
+
+    .header .header-middle .center .header-right-sidebar {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: end !important;
+    }
+
+    .header-right-sidebar span.administration {
+        display: flex !important;
+        justify-content: end !important;
+    }
+
+    .header-right-sidebar span.administration {
+        padding-bottom: 0px !important;
+        margin-bottom: -4px !important;
+    }
+
+    .responsive-nav-wrapper-parent {
+        position: inherit !important;
+        margin-top: 6px !important;
+    }
+
+    .admin-header-links ~ .two-columns-area {
+        margin: 0px !important;
+    }
+
+    .home-page-body .master-wrapper-content {
+        padding-top: 0px !important;
+    }
+
+    .home-page .topic-block-title {
+        padding-top: 5px !important;
+    }
+
+    .home-page .topic-block-title h2,
+    .homepage-categories .topic-block-title h3,
+    .page.home-page .topic-block-body {
+        line-height: 22px!important;
+    }
+
+    .home-page .topic-block {
+        margin-bottom: 0px !important;
+    }
+
+    .homepage-categories .topic-block-title {
+        margin-left: 0px !important;
+    }
+}
