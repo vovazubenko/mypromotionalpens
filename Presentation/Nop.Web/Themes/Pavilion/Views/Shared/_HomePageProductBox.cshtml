@@ -148,9 +148,9 @@ background-repeat: no-repeat;
 
         @Html.Widget("productbox_addinfo_after", Model.Id)
     </div>
-    <h2 class="product-title" itemprop="name">
+    <h3 class="product-title" itemprop="name">
         <a itemprop="url" href="@Url.RouteUrl("Product", new { SeName = Model.SeName })">@Model.Name</a>
-    </h2>
+    </h3>
 
     @if (EngineContext.Current.Resolve<CatalogSettings>().ShowSkuOnCatalogPages && !string.IsNullOrEmpty(Model.Sku))
     {

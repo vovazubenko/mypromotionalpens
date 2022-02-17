@@ -711,3 +711,13 @@ insert into [dbo].[CustomRedirect]
 values ('Personalized_pens', 'pens', 1, 1);
 
 
+
+-- SAV-47
+update [dbo].[LocaleStringResource]
+set [ResourceValue] = 'Featured Custom Products'
+where ResourceName = 'HomePage.Products';
+
+update [dbo].[LocaleStringResource]
+set [ResourceValue] = 'Latest Promo Info'
+where ResourceName = 'SevenSpikes.RichBlog.Public.LatestFromBlog';
+

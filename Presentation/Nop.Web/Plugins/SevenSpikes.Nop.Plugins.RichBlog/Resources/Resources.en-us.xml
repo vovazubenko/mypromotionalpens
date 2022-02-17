@@ -379,7 +379,7 @@
     <Value>View All Blog Posts</Value>
   </LocaleResource>
   <LocaleResource Name="SevenSpikes.RichBlog.Public.LatestFromBlog">
-    <Value>Latest From Blog</Value>
+    <Value>Latest Promo Info</Value>
   </LocaleResource>
   <LocaleResource Name="SevenSpikes.RichBlog.Public.ReadMore">
     <Value>Read More</Value>

@@ -14620,7 +14620,7 @@
     <Value>Home page</Value>
   </LocaleResource>
   <LocaleResource Name="HomePage.Products">
-    <Value>Featured products</Value>
+    <Value>Featured Custom Products</Value>
   </LocaleResource>
   <LocaleResource Name="Languages">
     <Value>Languages</Value>
