@@ -19,6 +19,8 @@ using Nop.Web.Models.Catalog;
 using Nop.Core.Infrastructure;
 using Nop.Services.Filter;
 using Nop.Services.Seo;
+using Nop.SigmaSolve.Plugin.Redirects.Domain;
+using Nop.Core.Data;
 
 namespace Nop.Web.Controllers
 {
@@ -215,8 +217,27 @@ namespace Nop.Web.Controllers
             else
                 canonicalUrl = filterSeoUrl;
 
+            // TODO --> Update here canonical url
+            // https://www.nopcommerce.com/en/boards/topic/45125/errors-of-nop-templates-in-nopcommerce-38
+            //You have modified the signatures of the nopCommerce controllers and since our plugins, which inherits from those controllers, 
+            //are built to work with the default controller signatures they cannot work correctly anymore.
 
-            model.CanonicalUrl = canonicalUrl;
+            var _repositoryCustomRedirects = EngineContext.Current.Resolve<IRepository<CustomRedirection>>();
+            CustomRedirection link = _repositoryCustomRedirects.Table
+                .Where(x => x.Alias.ToLower().Contains(canonicalUrl))
+                .FirstOrDefault();
+
+            if (link != null)
+            {
+                string redirectUrl = link.RedirectTo;
+                char firstChar = redirectUrl[0];
+                if (firstChar == '\\' || firstChar == '/')
+                    canonicalUrl = redirectUrl.Substring(1, redirectUrl.Length - 1);
+                else
+                    canonicalUrl = redirectUrl;
+            }
+
+            model.CanonicalUrl = canonicalUrl.ToLower();
             //model
 
             var templateViewPath = "CategoryTemplate.ProductsInGridOrLines";// _catalogModelFactory.PrepareCategoryTemplateViewPath(category.CategoryTemplateId);
