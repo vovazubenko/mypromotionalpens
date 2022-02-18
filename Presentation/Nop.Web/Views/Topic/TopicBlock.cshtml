@@ -72,9 +72,18 @@ else
     <div class="topic-block">
         @if (!String.IsNullOrEmpty(Model.Title))
         {
-            <div class="topic-block-title">
-                <h2>@Model.Title</h2>
-            </div>
+            if (Model.Title == "Promotional Products for Businesses & Organizations")
+            {
+                <div class="topic-block-title">
+                    <h1>@Model.Title</h1>
+                </div>
+            }
+            else
+            { 
+                <div class="topic-block-title">
+                    <h2 class="fs-22">@Model.Title</h2>
+                </div>
+            }
         }
         <div class="topic-block-body">
             @Html.Raw(Model.Body)

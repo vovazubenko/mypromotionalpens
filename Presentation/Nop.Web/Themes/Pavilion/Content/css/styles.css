@@ -8775,13 +8775,18 @@ font-size: 16px;
     }
 
     .home-page .topic-block-title {
-        padding-top: 5px !important;
+        padding-top: 15px !important;
+    }
+
+    .home-page .topic-block-title h1 {
+        line-height: 27px !important;
     }
 
     .home-page .topic-block-title h2,
     .homepage-categories .topic-block-title h3,
-    .page.home-page .topic-block-body {
-        line-height: 22px!important;
+    .page.home-page .topic-block-body,
+    .home-page .product-grid .title {
+        line-height: 22px !important;
     }
 
     .home-page .topic-block {
@@ -8791,4 +8796,8 @@ font-size: 16px;
     .homepage-categories .topic-block-title {
         margin-left: 0px !important;
     }
+}
+
+.fs-22 {
+    font-size: 22px !important;
 }
