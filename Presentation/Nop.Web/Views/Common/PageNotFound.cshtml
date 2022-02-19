@@ -6,10 +6,13 @@
     //page class
     Html.AppendPageCssClassParts("html-not-found-page");
 }
+
+<link href="~/Styles/ErrorPageStyles.css" rel="stylesheet" />
+
 <div class="page not-found-page">
-    <div class="page-title">
+    @*<div class="page-title">
         <h1>@T("PageTitle.PageNotFound")</h1>
-    </div>
+    </div>*@
     <div class="page-body">
         @Html.Action("TopicBlock", "Topic", new { systemName = "PageNotFound" })
     </div>
