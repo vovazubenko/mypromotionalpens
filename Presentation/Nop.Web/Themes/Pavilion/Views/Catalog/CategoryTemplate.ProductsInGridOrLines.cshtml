@@ -26,6 +26,7 @@
 
     var pictureService = EngineContext.Current.Resolve<Nop.Services.Media.IPictureService>();
 
+    string subCategoryClassName = Model.SubCategories.Count > 0 ? "display-block-section" : "display-none-section";
 }
 @using Nop.Core.Domain.Common;
 @using Nop.Core.Domain.Seo;
@@ -80,6 +81,66 @@
 
     .sub-category-item {
         border: none !important
+    }
+
+    .block.filter-block.subcategory-filter-block {
+        overflow: hidden;
+        max-width: 100%;
+        padding: 0;
+        background: #fff url(/Plugins/FoxNetSoft.SpeedFilters/Styles/images/toggle-arrow.png) right center no-repeat;
+        position: relative;
+    }
+
+    .block.filter-block.subcategory-filter-block .speedfltrToggleControl {
+        color: #0072bc;
+        text-decoration: none !important;
+        display: block;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+        padding: 19px 26px;
+        font-size: 15px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .block.filter-block.subcategory-filter-block .filter-data-block {
+        font-size: 11px;
+        line-height: 18px;
+    }
+
+    .block.filter-block.subcategory-filter-block .filter-data-block li {
+        background: none repeat scroll 0 0 rgba(0,0,0,0);
+        padding: 10px;
+    }
+
+    .block.filter-block.subcategory-filter-block .filter-data-block {
+        padding: 0 26px;
+        position: relative;
+        display: block;
+        background: #fff;
+    }
+
+    .block.filter-block.subcategory-filter-block .filter-data-block #ShowMore,
+    .block.filter-block.subcategory-filter-block .filter-data-block #ShowLess {
+        padding: 0px;
+    }
+
+    .block.filter-block.subcategory-filter-block .filter-data-block #ShowLess {
+        display: none;
+    }
+
+    .block.filter-block.subcategory-filter-block .filter-data-block.all-subcategories-body {
+        transition: max-height 0.7s ease-out;
+        max-height: 0;
+    }
+
+    .display-block-section {
+        display: block;
+    }
+
+    .display-none-section {
+        display: none;
     }
 </style>
 <div class="page category-page">
@@ -226,6 +287,52 @@
     <div class="page-title">
         <h2>@Model.Name</h2>
     </div>
+
+    <div class="block filter-block subcategory-filter-block @subCategoryClassName">
+        <div class="title all-subcategories-title">
+            <div class="speedfltrToggleControl toggleControl">Sub Categories</div>
+            <a class="speedfltrclearfilter" style="display: none;"></a>
+        </div>
+        <div class="filter-data-block all-subcategories-body">
+            @if (Model.SubCategories.Any())
+            {
+                <div class="subcategory-info-block" id="AllSubCatList" style="display:none">
+                    <ul>
+                        @foreach (var subcategories in Model.SubCategories.OrderBy(x => x.Name))
+                        {
+                            <li>
+                                <a class="" style="color:#0072bc;padding-left: 15px;font-size: 15px;" href="@Url.RouteUrl("Category", new { SeName = subcategories.SeName })" filter-block="subcategory" filter-option-id="@subcategories.Id">@subcategories.Name</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="subcategory-info-block" id="SubCatList">
+                    <ul>
+                        @foreach (var subcategories in Model.SubCategories.OrderBy(x => x.Name).Take(6))
+                        {
+                            <li>
+                                <a class="" style="color:#0072bc;padding-left: 15px;font-size: 15px;" href="@Url.RouteUrl("Category", new { SeName = subcategories.SeName })" filter-block="subcategory" filter-option-id="@subcategories.Id">@subcategories.Name</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                if (Model.SubCategories.Count > 6)
+                {
+                    <div class="filter-data-block" id="ShowMore">
+                        <div class="subcategory-info-block">
+                            <span style="cursor:pointer" class="load-more" onclick="GetAllSubcatList();">Show more</span>
+                        </div>
+                    </div>
+                    <div class="filter-data-block" id="ShowLess">
+                        <div class="subcategory-info-block">
+                            <span style="cursor:pointer" class="load-more" onclick="GetLessSubcatList();">Show less</span>
+                        </div>
+                    </div>
+                    <br>
+                }
+            }
+        </div>
+    </div>
 }
 <div class="category-page-footer-content-main">
     @{
@@ -276,5 +383,40 @@
                 }
             }
         });
+
+
+        $(".all-subcategories-title").on("click", function () {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        });
+
+        $(".all-subcategories-title").click();
     });
+
+    function GetAllSubcatList() {
+        $("#AllSubCatList").show();
+        $("#SubCatList").hide();
+        $("#ShowMore").hide();
+        $("#ShowLess").show();
+
+        updateAllSubcategoriesBodyHeight();
+    }
+
+    function GetLessSubcatList() {
+        $("#AllSubCatList").hide();
+        $("#SubCatList").show();
+        $("#ShowMore").show();
+        $("#ShowLess").hide();
+    }
+
+    function updateAllSubcategoriesBodyHeight() {
+        var content = document.getElementsByClassName("all-subcategories-body")[0];
+        content.style.maxHeight = content.scrollHeight + "px"
+    }
 </script>
