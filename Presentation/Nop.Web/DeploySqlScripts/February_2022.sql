@@ -721,6 +721,10 @@ update [dbo].[LocaleStringResource]
 set [ResourceValue] = 'Latest Promo Info'
 where ResourceName = 'SevenSpikes.RichBlog.Public.LatestFromBlog';
 
+update [dbo].[Topic]
+set [Title] = 'Why SaveYourInk Promos?'
+where [SystemName] = 'HomePageWhyUs'
+
 
 -- SAV-48
 update [dbo].[Topic]
