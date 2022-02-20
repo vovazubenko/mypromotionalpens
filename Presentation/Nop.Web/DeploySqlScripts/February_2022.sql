@@ -721,3 +721,8 @@ update [dbo].[LocaleStringResource]
 set [ResourceValue] = 'Latest Promo Info'
 where ResourceName = 'SevenSpikes.RichBlog.Public.LatestFromBlog';
 
+
+-- SAV-48
+update [dbo].[Topic]
+set [Body] = '<div class="error-page-block"><h2>Uh Oh! The page you''re looking has been removed or does not exists. (404 Error)</h2><div class="error-page-block__button"><a href="/">Continue</a></div></div>'
+where [SystemName] = 'PageNotFound'
