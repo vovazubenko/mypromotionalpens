@@ -213,29 +213,9 @@ namespace Nop.Web.Controllers
                 model.CustomKeyword = model.CustomKeyword.Replace(" ", "-");
 
             if (string.IsNullOrEmpty(filterSeoUrl)) 
-                canonicalUrl = model.CustomKeyword + "_" + category.GetSeName();
+                canonicalUrl = category.GetSeName();
             else
                 canonicalUrl = filterSeoUrl;
-
-            // TODO --> Update here canonical url
-            // https://www.nopcommerce.com/en/boards/topic/45125/errors-of-nop-templates-in-nopcommerce-38
-            //You have modified the signatures of the nopCommerce controllers and since our plugins, which inherits from those controllers, 
-            //are built to work with the default controller signatures they cannot work correctly anymore.
-
-            var _repositoryCustomRedirects = EngineContext.Current.Resolve<IRepository<CustomRedirection>>();
-            CustomRedirection link = _repositoryCustomRedirects.Table
-                .Where(x => x.Alias.ToLower().Contains(canonicalUrl))
-                .FirstOrDefault();
-
-            if (link != null)
-            {
-                string redirectUrl = link.RedirectTo;
-                char firstChar = redirectUrl[0];
-                if (firstChar == '\\' || firstChar == '/')
-                    canonicalUrl = redirectUrl.Substring(1, redirectUrl.Length - 1);
-                else
-                    canonicalUrl = redirectUrl;
-            }
 
             model.CanonicalUrl = canonicalUrl.ToLower();
             //model
