@@ -33,7 +33,11 @@
                 }
 
                 shoppingCart.detach().appendTo('.responsive-nav-wrapper .shopping-cart-link');
-                adminHeaderLinks.detach().prependTo('.master-wrapper-page');
+                if (window.innerWidth <= 480) {
+                    adminHeaderLinks.detach().prependTo('#header-section');
+                } else {
+                    adminHeaderLinks.detach().prependTo('.master-wrapper-page');
+                }
                 pageTitle.detach();
                 $(".filtersPanel").prepend(pageTitle);
                 attributeDt.css('width', '');
