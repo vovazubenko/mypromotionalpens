@@ -8820,3 +8820,10 @@ font-size: 16px;
 .Featured-Product-Categories .topic-block-title {
     margin-left: 0px !important;
 }
+
+@media (min-width: 481px) {
+    .header-logo .header-logo-img-section a img {
+        width: 250px;
+        max-height: 90px;
+    }
+}
