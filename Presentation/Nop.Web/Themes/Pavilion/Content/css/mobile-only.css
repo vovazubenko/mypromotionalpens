@@ -59,15 +59,26 @@
 .two-columns-area {
 	margin: 160px 0 25px;
 }
-    .admin-header-links ~ .two-columns-area {
-        margin-top: 185px;
-    }
+.admin-header-links ~ .two-columns-area {
+    margin-top: 185px;
+}
 .master-wrapper-content {
 	margin-top: 180px;
 	padding: 25px 20px;
 }
 .admin-header-links ~ .master-wrapper-content {
 	margin-top: 205px;
+}
+.product-details-page-body .master-wrapper-content,
+.category-page-body .master-wrapper-content {
+	margin-top: 100px;
+	padding: 25px 20px;
+}
+
+.product-details-page-body .admin-header-links ~ .master-wrapper-content,
+.category-page-body .admin-header-links ~ .master-wrapper-content {
+	margin-top: 100px;
+	padding-top: 0px;
 }
 .two-columns-area ~ .master-wrapper-content {
 	margin-top: 0 !important; /*important because of demo-strip*/

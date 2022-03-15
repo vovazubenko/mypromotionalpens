@@ -7758,6 +7758,11 @@ a.fileuploadattribute {
         /*padding-bottom:10px;*/
     }
 
+    .product-details-page-body .homepage-text-global, .homepage-text-home,
+    .category-page-body .homepage-text-global, .homepage-text-home {
+        top: 100px !important;
+    }
+
     .homepage-text-home {
         padding-top: 5px;
         position: inherit;
@@ -7769,6 +7774,16 @@ a.fileuploadattribute {
         display:none;
     }*/
 }
+
+@media all and (max-width: 480px) {
+    .product-details-page-body .homepage-text-global, .homepage-text-home,
+    .category-page-body .homepage-text-global, .homepage-text-home {
+        top: 0px !important;
+        padding-top: 10px;
+        background: white;
+    }
+}
+
 /*@media all and (min-width: 1000px) {
    
     .fish-box {
@@ -8802,7 +8817,7 @@ font-size: 16px;
     }
 
     .home-page-body .two-columns-area {
-        margin-top: 0px !important;
+        margin-top: 40px !important;
     }
 }
 
