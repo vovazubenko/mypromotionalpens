@@ -164,7 +164,7 @@
 
         <div class="speed-filter-header-title" id="SpeedFilterHeadrTitle"><h2 class="font-size-20 text-align-left font-weight-700">@Model.HeaderTitle</h2></div>
         <div class="speed-filter-h2tag" id="SpeedFilterH2Tag"><h2 class="font-size-20 text-align-left font-weight-700">@Model.H2Tag</h2></div>
-        <div class="speed-filter-header-copy" id="SpeedFilterHeadrCopy">@Model.HeaderCopy</div>
+        <div class="speed-filter-header-copy" id="SpeedFilterHeadrCopy">@Html.Raw(Model.HeaderCopy)</div>
     </div>
     <div class="page-title">
         <h2>@Model.Name</h2>

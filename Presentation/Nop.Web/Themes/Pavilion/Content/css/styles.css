@@ -8821,7 +8821,7 @@ font-size: 16px;
     margin-left: 0px !important;
 }
 
-@media (min-width: 481px) {
+@media (min-width: 1001px) {
     .header-logo .header-logo-img-section a img {
         width: 250px;
         max-height: 90px;
