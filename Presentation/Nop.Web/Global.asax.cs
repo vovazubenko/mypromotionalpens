@@ -304,6 +304,10 @@ namespace Nop.Web
                 var logger = EngineContext.Current.Resolve<ILogger>();
                 var workContext = EngineContext.Current.Resolve<IWorkContext>();
                 logger.Error(exc.Message, exc, workContext.CurrentCustomer);
+
+                // TODO ---> FOR TESTING PURPOSE. DELETE LATER.
+                if (httpException != null)
+                    logger.Error("httpException with status " + httpException.GetHttpCode(), httpException, workContext.CurrentCustomer);
             }
             catch (Exception)
             {
