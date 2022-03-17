@@ -845,13 +845,24 @@ namespace Nop.Admin.Controllers
         #region Products
 
         [HttpPost]
-        public virtual ActionResult ProductList(DataSourceRequest command, int categoryId)
+        public virtual ActionResult ProductList(DataSourceRequest command, int categoryId, CategoryModel.AddCategoryProductModel categoryProductModel)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageCategories))
                 return AccessDeniedKendoGridJson();
 
             var productCategories = _categoryService.GetProductCategoriesByCategoryId(categoryId,
                 command.Page - 1, command.PageSize, true);
+
+            if(!string.IsNullOrWhiteSpace(categoryProductModel.SearchProductName))
+            {
+                var fullData = _categoryService.GetProductCategoriesByCategoryId(categoryId, showHidden: true);
+                var filteredData = fullData
+                                        .Where(x => x.Product.Name.ToLower().Contains(categoryProductModel.SearchProductName.ToLower()))
+                                        .ToList();
+
+                productCategories = new PagedList<ProductCategory>(filteredData, command.Page - 1, command.PageSize);
+            }
+
             var gridModel = new DataSourceResult
             {
                 Data = productCategories.Select(x => new CategoryModel.CategoryProductModel

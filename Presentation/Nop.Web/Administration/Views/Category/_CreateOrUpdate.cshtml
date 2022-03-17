@@ -54,7 +54,7 @@
 
 @helper TabInfo()
 {
-<script type="text/javascript">
+    <script type="text/javascript">
         $(document).ready(function () {
             $("#@Html.FieldIdFor(model => model.AllowCustomersToSelectPageSize)").click(togglePageSize);
             togglePageSize();
@@ -90,9 +90,9 @@
             }
         };
 
-</script>
+    </script>
 
-    <div class="panel-group">   
+    <div class="panel-group">
         <div class="panel panel-default">
             <div class="panel-body">
                 @(Html.LocalizedEditor<CategoryModel, CategoryLocalizedModel>("category-info-localized",
@@ -491,6 +491,33 @@
 
 @helper TabProducts()
 {
+
+    <div class="panel panel-default panel-search">
+        @{
+            var productCategoryModel = new CategoryModel.AddCategoryProductModel();
+        }
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.NopLabelFor(model => productCategoryModel.SearchProductName)
+                        </div>
+                        <div class="col-md-7">
+                            @Html.NopEditorFor(model => productCategoryModel.SearchProductName)
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" id="search-product-for-categories" class="btn btn-primary btn-search"
+                                    style="margin-top: 0px; padding: 3px 10px;">
+                                <i class="fa fa-search"></i>@T("Admin.Common.Search")
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="panel-group">
         @if (Model.Id > 0)
         {
@@ -513,7 +540,7 @@
                                             url: "@Html.Raw(Url.Action("ProductList", "Category", new {categoryId = Model.Id}))",
                                             type: "POST",
                                             dataType: "json",
-                                            data: addAntiForgeryToken
+                                            data: additionalData
                                         },
                                         update: {
                                             url: "@Html.Raw(Url.Action("ProductUpdate", "Category"))",
@@ -610,6 +637,33 @@
                                 ]
                             });
                         });
+                    </script>
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            //search button
+                            $('#search-product-for-categories').click(function() {
+                                //search
+                                var grid = $('#products-grid').data('kendoGrid');
+                                grid.dataSource.page(1); //new search. Set page size to 1
+                                //grid.dataSource.read(); we already loaded the grid above using "page" function
+                                return false;
+                            });
+
+                            $("#@Html.FieldIdFor(model => productCategoryModel.SearchProductName)").keydown(function(event) {
+                                if (event.keyCode == 13) {
+                                    $("#search-product-for-categories").click();
+                                    return false;
+                                }
+                            });
+                        });
+
+                        function additionalData() {
+                            var data = {
+                                SearchProductName: $('#@Html.FieldIdFor(model => productCategoryModel.SearchProductName)').val(),
+                            };
+                            addAntiForgeryToken(data);
+                            return data;
+                        }
                     </script>
                 </div>
 
@@ -718,68 +772,68 @@
     </div>
 }
 @*@helper TabFooterContent()
-{
-    <div class="panel-group">
-        <div class="panel panel-default">
-            <div class="panel-body">
+    {
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-body">
 
-                <div class="form-group">
-                    <div class="col-md-3">
-                        @Html.NopLabelFor(model => model.FooterTitle1)
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.NopLabelFor(model => model.FooterTitle1)
+                        </div>
+                        <div class="col-md-9">
+                            @Html.NopEditorFor(model => model.FooterTitle1)
+                            @Html.ValidationMessageFor(model => model.FooterTitle1)
+                        </div>
                     </div>
-                    <div class="col-md-9">
-                        @Html.NopEditorFor(model => model.FooterTitle1)
-                        @Html.ValidationMessageFor(model => model.FooterTitle1)
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.NopLabelFor(model => model.FooterContent1)
+                        </div>
+                        <div class="col-md-9">
+                            @Html.EditorFor(model => model.FooterContent1, "RichEditor")
+                            @Html.ValidationMessageFor(model => model.FooterContent1)
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-3">
-                        @Html.NopLabelFor(model => model.FooterContent1)
-                    </div>
-                    <div class="col-md-9">
-                        @Html.EditorFor(model => model.FooterContent1, "RichEditor")
-                        @Html.ValidationMessageFor(model => model.FooterContent1)
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    <div class="col-md-3">
-                        @Html.NopLabelFor(model => model.FooterTitle2)
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.NopLabelFor(model => model.FooterTitle2)
+                        </div>
+                        <div class="col-md-9">
+                            @Html.NopEditorFor(model => model.FooterTitle2)
+                            @Html.ValidationMessageFor(model => model.FooterTitle2)
+                        </div>
                     </div>
-                    <div class="col-md-9">
-                        @Html.NopEditorFor(model => model.FooterTitle2)
-                        @Html.ValidationMessageFor(model => model.FooterTitle2)
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.NopLabelFor(model => model.FooterContent2)
+                        </div>
+                        <div class="col-md-9">
+                            @Html.EditorFor(model => model.FooterContent2, "RichEditor")
+                            @Html.ValidationMessageFor(model => model.FooterContent2)
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-3">
-                        @Html.NopLabelFor(model => model.FooterContent2)
-                    </div>
-                    <div class="col-md-9">
-                        @Html.EditorFor(model => model.FooterContent2, "RichEditor")
-                        @Html.ValidationMessageFor(model => model.FooterContent2)
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    <div class="col-md-3">
-                        @Html.NopLabelFor(model => model.FooterTitle3)
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.NopLabelFor(model => model.FooterTitle3)
+                        </div>
+                        <div class="col-md-9">
+                            @Html.NopEditorFor(model => model.FooterTitle3)
+                            @Html.ValidationMessageFor(model => model.FooterTitle3)
+                        </div>
                     </div>
-                    <div class="col-md-9">
-                        @Html.NopEditorFor(model => model.FooterTitle3)
-                        @Html.ValidationMessageFor(model => model.FooterTitle3)
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-3">
-                        @Html.NopLabelFor(model => model.FooterContent3)
-                    </div>
-                    <div class="col-md-9">
-                        @Html.EditorFor(model => model.FooterContent3, "RichEditor")
-                        @Html.ValidationMessageFor(model => model.FooterContent3)
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.NopLabelFor(model => model.FooterContent3)
+                        </div>
+                        <div class="col-md-9">
+                            @Html.EditorFor(model => model.FooterContent3, "RichEditor")
+                            @Html.ValidationMessageFor(model => model.FooterContent3)
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-}*@
+    }*@
