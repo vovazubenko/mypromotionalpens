@@ -787,6 +787,12 @@ namespace Nop.Web.Infrastructure
                             "widgets-by-zone-for-logo/",
                             new { controller = "Widget", action = "WidgetsByZoneForLogo" },
                             new[] { "Nop.Web.Controllers" });
+
+            //custom 500 http code error template
+            routes.MapLocalizedRoute("InternalServerError",
+                            "internal-server-error",
+                            new { controller = "Common", action = "InternalServerError" },
+                            new[] { "Nop.Web.Controllers" });
         }
 
         public int Priority

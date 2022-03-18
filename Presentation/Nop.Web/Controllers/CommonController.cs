@@ -122,7 +122,15 @@ namespace Nop.Web.Controllers
             this.Response.StatusCode = 404;
             this.Response.TrySkipIisCustomErrors = true;
             this.Response.ContentType = "text/html";
-            //return RedirectToRoute("HomePage");
+            return View();
+        }
+
+        //internal server error
+        public virtual ActionResult InternalServerError()
+        {
+            this.Response.StatusCode = 500;
+            this.Response.TrySkipIisCustomErrors = true;
+            this.Response.ContentType = "text/html";
             return View();
         }
 

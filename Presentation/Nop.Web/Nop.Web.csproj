@@ -644,6 +644,7 @@
     <Content Include="Content\samples\p_attribute_print_1.jpg" />
     <Content Include="Content\samples\p_attribute_print_2.jpg" />
     <Content Include="Customers_ZXQ4XRZ7VV.xml" />
+    <Content Include="DeploySqlScripts\March_2022.sql" />
     <Content Include="DeploySqlScripts\February_2022.sql" />
     <Content Include="Plugins\DiscountRules.CustomerRoles\Description.txt" />
     <Content Include="Plugins\DiscountRules.CustomerRoles\logo.jpg" />
@@ -2214,6 +2215,7 @@
     <Content Include="Themes\Pavilion\Views\Product\_ProductQuoteRequestForm.cshtml" />
     <Content Include="Themes\Pavilion\Views\Shared\_HomePageProductBox.cshtml" />
     <Content Include="Themes\Pavilion\Views\Catalog\CategoryTemplate.ProductsInGridOrLinesNewest.cshtml" />
+    <Content Include="Views\Common\InternalServerError.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Plugins\bin\" />

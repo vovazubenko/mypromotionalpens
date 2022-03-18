@@ -225,7 +225,8 @@ namespace Nop.Web
 
             //process 404 HTTP errors
             var httpException = exception as HttpException;
-            if (httpException != null && httpException.GetHttpCode() == 404)
+            var httpCode = httpException.GetHttpCode();
+            if (httpException != null && new int[] { 404, 500 }.Contains(httpCode))
             {
                 var webHelper = EngineContext.Current.Resolve<IWebHelper>();
                 if (!webHelper.IsStaticResource(this.Request))
@@ -234,12 +235,14 @@ namespace Nop.Web
                     Server.ClearError();
                     Response.TrySkipIisCustomErrors = true;
 
+                    string redirectActionName = httpCode == 404 ? "PageNotFound" : "InternalServerError";
+
                     // Call target Controller and pass the routeData.
                     IController errorController = EngineContext.Current.Resolve<CommonController>();
 
                     var routeData = new RouteData();
                     routeData.Values.Add("controller", "Common");
-                    routeData.Values.Add("action", "PageNotFound");
+                    routeData.Values.Add("action", redirectActionName);
 
                     errorController.Execute(new RequestContext(new HttpContextWrapper(Context), routeData));
                 }

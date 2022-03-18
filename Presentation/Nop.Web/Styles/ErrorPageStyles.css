@@ -57,3 +57,15 @@
     transition: all .2s ease;
     text-decoration: none;
 }
+
+
+/*  Internal server error  */
+.not-found-page .error-main-section {
+    font-weight: 500;
+    color: black;
+    font-size: 18px;
+}
+
+.not-found-page .error-main-section p {
+    margin: 0px;
+}
