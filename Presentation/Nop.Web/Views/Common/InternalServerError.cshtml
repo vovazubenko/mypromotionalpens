@@ -14,3 +14,25 @@
         @Html.Action("TopicBlock", "Topic", new { systemName = "InternalServerError" })
     </div>
 </div>
+
+<script>
+    function deleteExtraBlocks()
+    {
+        var divAttr = $(".two-columns-area.slider-right-column");
+        if (divAttr.length > 0) {
+            $(divAttr).remove();
+        }
+    };
+
+    $(document).ready(function () {
+        deleteExtraBlocks();
+    });
+
+    document.onreadystatechange = function () {
+        deleteExtraBlocks();
+    };
+
+    window.onload = function () {
+        deleteExtraBlocks();
+    };
+</script>
