@@ -3507,31 +3507,31 @@ namespace Nop.Admin.Controllers
             _productAttributeService.InsertProductAttributeMapping(productAttributeMapping);
 
             //predefined values
-            var predefinedValues = _productAttributeService.GetPredefinedProductAttributeValues(model.ProductAttributeId);
-            foreach (var predefinedValue in predefinedValues)
-            {
-                var pav = new ProductAttributeValue
-                {
-                    ProductAttributeMappingId = productAttributeMapping.Id,
-                    AttributeValueType = AttributeValueType.Simple,
-                    Name = predefinedValue.Name,
-                    PriceAdjustment = predefinedValue.PriceAdjustment,
-                    WeightAdjustment = predefinedValue.WeightAdjustment,
-                    Cost = predefinedValue.Cost,
-                    IsPreSelected = predefinedValue.IsPreSelected,
-                    DisplayOrder = predefinedValue.DisplayOrder
-                };
-                _productAttributeService.InsertProductAttributeValue(pav);
-                //locales
-                var languages = _languageService.GetAllLanguages(true);
-                //localization
-                foreach (var lang in languages)
-                {
-                    var name = predefinedValue.GetLocalized(x => x.Name, lang.Id, false, false);
-                    if (!String.IsNullOrEmpty(name))
-                        _localizedEntityService.SaveLocalizedValue(pav, x => x.Name, name, lang.Id);
-                }
-            }
+            //var predefinedValues = _productAttributeService.GetPredefinedProductAttributeValues(model.ProductAttributeId);
+            //foreach (var predefinedValue in predefinedValues)
+            //{
+            //    var pav = new ProductAttributeValue
+            //    {
+            //        ProductAttributeMappingId = productAttributeMapping.Id,
+            //        AttributeValueType = AttributeValueType.Simple,
+            //        Name = predefinedValue.Name,
+            //        PriceAdjustment = predefinedValue.PriceAdjustment,
+            //        WeightAdjustment = predefinedValue.WeightAdjustment,
+            //        Cost = predefinedValue.Cost,
+            //        IsPreSelected = predefinedValue.IsPreSelected,
+            //        DisplayOrder = predefinedValue.DisplayOrder
+            //    };
+            //    _productAttributeService.InsertProductAttributeValue(pav);
+            //    //locales
+            //    var languages = _languageService.GetAllLanguages(true);
+            //    //localization
+            //    foreach (var lang in languages)
+            //    {
+            //        var name = predefinedValue.GetLocalized(x => x.Name, lang.Id, false, false);
+            //        if (!String.IsNullOrEmpty(name))
+            //            _localizedEntityService.SaveLocalizedValue(pav, x => x.Name, name, lang.Id);
+            //    }
+            //}
 
             return new NullJsonResult();
         }
