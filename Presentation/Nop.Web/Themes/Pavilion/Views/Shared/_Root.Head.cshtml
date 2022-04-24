@@ -81,11 +81,14 @@
     </head>
     <body class="@isAndroid23Class @currentPageClass @if (supportRtl){<text>rtl</text>}">
 
+        <span id="siteseal">
+        <script async type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=NIQyz2zUtqnUaPuI7i2wVaXU8qM7KW8KtvmplYO2j1WORz0THQcq0Ej5Fp2j"></script></span>
+
         @RenderBody()
         @Html.NopCssFiles(this.Url, ResourceLocation.Foot)
         @Html.NopScripts(this.Url, ResourceLocation.Foot)
         <div id="goToTop"></div>
-        
+
         <div class="popup-bg hide"></div>
     </body>
 </html>
