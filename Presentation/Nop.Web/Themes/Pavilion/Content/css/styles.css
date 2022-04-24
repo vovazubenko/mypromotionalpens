@@ -8235,6 +8235,9 @@ div#google-reviews {
     position: relative;
     margin: 5px 0 60px !important;
 }
+#google-reviews {
+    margin-bottom: 0px !important;
+}
 .rich-blog-homepage {
     position: relative;
     margin: 0 0 60px;
