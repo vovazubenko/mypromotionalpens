@@ -41,11 +41,11 @@
             @if (IsSectionDefined("HomePage"))
             {
                 @RenderSection("HomePage")
-                @Html.Action("MainBannerImage", "FacebookShop", new { isHomePage = true}) 
+                @Html.Action("MainBannerImage", "FacebookShop", new { isHomePage = true})
             }
             else
-            { 
-                @Html.Action("MainBannerImage", "FacebookShop", new { isHomePage = false}) 
+            {
+                @Html.Action("MainBannerImage", "FacebookShop", new { isHomePage = false})
             }
 
             <div class="header-menu">
@@ -60,9 +60,9 @@
         @Html.NopScripts(this.Url, ResourceLocation.Foot)
 
         <div id="fb-root"></div>
-        <script type="text/javascript" src="//connect.facebook.net/en_US/all.js"></script>
-        <script type="text/javascript" charset="utf-8">
-            
+        <script async defer type="text/javascript" src="//connect.facebook.net/en_US/all.js"></script>
+        <script async defer type="text/javascript" charset="utf-8">
+
             window.onload = function () {
                 FB.init();
                 var masterWrapperPageHeight = $('body').height() + 5;
