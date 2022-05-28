@@ -730,8 +730,10 @@ namespace Nop.Services.Catalog
                 ptoUtc.DbType = DbType.DateTime;
 
                 //invoke stored procedure
+                string instantSearchStoredProcedure = string.IsNullOrWhiteSpace(keywords) ? "ProductLoadAllPaged" : "ProductLoadAllPagedInstantSearch";
+
                 var products = _dbContext.ExecuteStoredProcedureList<Product>(
-                    "ProductLoadAllPaged",
+                    instantSearchStoredProcedure,
                     pCategoryIds,
                     pManufacturerId,
                     pStoreId,
