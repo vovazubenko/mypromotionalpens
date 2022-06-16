@@ -283,7 +283,7 @@ namespace Nop.Web.Framework.UI
                 //parts to do not bundle
                 foreach (var item in partsToDontBundle)
                 {
-                    result.AppendFormat("<script async defer {2}src=\"{0}\" type=\"{1}\"></script>", urlHelper.Content(item.Part), MimeTypes.TextJavascript, item.IsAsync ? "async " : "");
+                    result.AppendFormat("<script {2}src=\"{0}\" type=\"{1}\"></script>", urlHelper.Content(item.Part), MimeTypes.TextJavascript, item.IsAsync ? "async " : "");
                     result.Append(Environment.NewLine);
                 }
                 return result.ToString();
@@ -294,7 +294,7 @@ namespace Nop.Web.Framework.UI
                 var result = new StringBuilder();
                 foreach (var item in _scriptParts[location].Select(x => new { x.Part, x.IsAsync}).Distinct())
                 {
-                    result.AppendFormat("<script async defer {2}src=\"{0}\" type=\"{1}\"></script>", urlHelper.Content(item.Part), MimeTypes.TextJavascript, item.IsAsync ? "async ":"");
+                    result.AppendFormat("<script {2}src=\"{0}\" type=\"{1}\"></script>", urlHelper.Content(item.Part), MimeTypes.TextJavascript, item.IsAsync ? "async ":"");
                     result.Append(Environment.NewLine);
                 }
                 return result.ToString();
