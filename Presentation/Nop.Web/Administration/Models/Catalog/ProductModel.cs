@@ -1036,6 +1036,14 @@ namespace Nop.Admin.Models.Catalog
 
         [NopResourceDisplayName("Admin.Catalog.Products.Fields.IsEQP")]
         public bool IsEQP { get; set; }
+
+        [NopResourceDisplayName("Admin.Catalog.Products.Fields.TierPriceRange")]
+        [AllowHtml]
+        public string TierPriceRange { get; set; }
+
+        [NopResourceDisplayName("Admin.Catalog.Products.Fields.MinQTY")]
+        [AllowHtml]
+        public int MinQTY { get; set; }
     }
 
     public partial class ProductLocalizedModel : ILocalizedModelLocal

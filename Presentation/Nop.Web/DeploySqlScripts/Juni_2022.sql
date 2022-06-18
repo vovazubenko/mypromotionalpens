@@ -57,3 +57,9 @@ CLOSE CUR_TEST
 DEALLOCATE CUR_TEST
 GO
 
+
+
+-- ADMIN DATA
+insert into [dbo].[LocaleStringResource]
+values (1, 'Admin.Catalog.Products.Fields.TierPriceRange', 'Price range'),
+	   (1, 'Admin.Catalog.Products.Fields.MinQTY', 'Minimum quantity');

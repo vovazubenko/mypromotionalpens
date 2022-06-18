@@ -285,9 +285,18 @@
                                         }, {
                                             field: "Price",
                                             title: "@T("Admin.Catalog.Products.Fields.Price")",
-                                            width: 150,
+                                            width: 75,
                                             //if not a grouped product, then display
                                             template: "# if(ProductTypeId != @((int) ProductType.GroupedProduct)) {# #:Price# #}  #"
+                                        }, {
+                                            field: "MinQTY",
+                                            title: "@T("Admin.Catalog.Products.Fields.MinQTY")",
+                                            width: 75
+                                        }, {
+                                            field: "TierPriceRange",
+                                            title: "@T("Admin.Catalog.Products.Fields.TierPriceRange")",
+                                            width: 100,
+                                            template: "#=TierPriceRange#",
                                         }, {
                                             field: "StockQuantityStr",
                                             title: "@T("Admin.Catalog.Products.Fields.StockQuantity")",
