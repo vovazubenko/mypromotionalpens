@@ -33,3 +33,5 @@ msbuild.wrn
 Presentation/Nop.Web/Content/Images/
 *.dll
 *.pdb
+*.idea
+*.idea/

@@ -23,6 +23,7 @@ using Nop.Core.Domain.Vendors;
 using Nop.Services;
 using Nop.Services.Catalog;
 using Nop.Services.Common;
+using Nop.Services.Common.Models;
 using Nop.Services.Configuration;
 using Nop.Services.Customers;
 using Nop.Services.Directory;
@@ -95,10 +96,7 @@ namespace Nop.Admin.Controllers
         private readonly ISettingService _settingService;
         private readonly TaxSettings _taxSettings;
         private readonly VendorSettings _vendorSettings;
-        private readonly ITaxService _taxService;
-        private readonly IPriceCalculationService _priceCalculationService;
-        private readonly CatalogSettings _catalogSettings;
-        private readonly IPriceFormatter _priceFormatter;
+        private readonly ITierPriceAndDiscountService _tierPriceAndDiscountService;
 
         #endregion
 
@@ -148,10 +146,7 @@ namespace Nop.Admin.Controllers
             ISettingService settingService,
             TaxSettings taxSettings,
             VendorSettings vendorSettings,
-            ITaxService taxService,
-            IPriceCalculationService priceCalculationService,
-            CatalogSettings catalogSettings,
-            IPriceFormatter priceFormatter)
+            ITierPriceAndDiscountService tierPriceAndDiscountService)
         {
             this._productService = productService;
             this._productTemplateService = productTemplateService;
@@ -197,10 +192,7 @@ namespace Nop.Admin.Controllers
             this._settingService = settingService;
             this._taxSettings = taxSettings;
             this._vendorSettings = vendorSettings;
-            this._taxService = taxService;
-            this._priceCalculationService = priceCalculationService;
-            this._catalogSettings = catalogSettings;
-            this._priceFormatter = priceFormatter;
+            this._tierPriceAndDiscountService = tierPriceAndDiscountService;
         }
 
         #endregion 
@@ -1046,6 +1038,7 @@ namespace Nop.Admin.Controllers
                 if (x.ProductType == ProductType.SimpleProduct && x.ManageInventoryMethod == ManageInventoryMethod.ManageStock)
                     productModel.StockQuantityStr = x.GetTotalStockQuantity().ToString();
 
+                // add Two additional columns
                 productModel.MinQTY = x.TierPrices.Count() > 0
                     ? x.TierPrices.Min(t => t.Quantity)
                     : x.OrderMinimumQuantity;
@@ -4936,18 +4929,14 @@ namespace Nop.Admin.Controllers
 
             for (int i = 0; i < sortedList.Count; i++)
             {
-                decimal taxRate;
-                decimal priceBase = _taxService.GetProductPrice(product, _priceCalculationService.GetFinalPrice(product,
-                    _workContext.CurrentCustomer, decimal.Zero, _catalogSettings.DisplayTierPricesWithDiscounts, sortedList[i].Quantity),
-                    out taxRate);
-                decimal price = _currencyService.ConvertFromPrimaryStoreCurrency(priceBase, _workContext.WorkingCurrency);
-                string priceText = _priceFormatter.FormatPrice(price, false, false);
-
+                TierPriceEntity tierPriceEntity = 
+                    _tierPriceAndDiscountService.GetTierPriceEntity(product, sortedList[i].Quantity, sortedList[i].Id);
+                
                 string maxQty = sortedList.Count() == i + 1
-                    ? "+"
-                    : $"-{sortedList[i + 1].Quantity - 1}";
+                    ? "More"
+                    : $"{sortedList[i + 1].Quantity - 1}";
 
-                sb.AppendLine($"{sortedList[i].Quantity}{maxQty} - {priceText}");
+                sb.AppendLine($"{sortedList[i].Quantity}-{maxQty} - {tierPriceEntity.Price}");
             };
 
             return sb.ToString();

@@ -229,6 +229,10 @@
     <Compile Include="Catalog\IPriceFormatter.cs" />
     <Compile Include="Catalog\ProductAttributeFormatter.cs" />
     <Compile Include="Catalog\ProductAttributeParser.cs" />
+    <Compile Include="Common\ITierPriceAndDiscountService.cs" />
+    <Compile Include="Common\Models\DiscountRangeEntity.cs" />
+    <Compile Include="Common\Models\TierPriceEntity.cs" />
+    <Compile Include="Common\TierPriceAndDiscountService.cs" />
     <Compile Include="Configuration\IRestrictionDomainService.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>

@@ -17,6 +17,7 @@ using Nop.Core.Domain.Shipping;
 using Nop.Core.Domain.Tax;
 using Nop.Services.Catalog;
 using Nop.Services.Common;
+using Nop.Services.Common.Models;
 using Nop.Services.Customers;
 using Nop.Services.Directory;
 using Nop.Services.Discounts;
@@ -30,6 +31,7 @@ using Nop.Services.Shipping;
 using Nop.Services.Tax;
 using Nop.Web.Framework.Security.Captcha;
 using Nop.Web.Infrastructure.Cache;
+using Nop.Web.Mapping;
 using Nop.Web.Models.Catalog;
 using Nop.Web.Models.Common;
 using Nop.Web.Models.Media;
@@ -84,6 +86,7 @@ namespace Nop.Web.Factories
         private readonly AddressSettings _addressSettings;
         private readonly RewardPointsSettings _rewardPointsSettings;
         private readonly CustomerSettings _customerSettings;
+        private readonly ITierPriceAndDiscountService _tierPriceAndDiscountService;
 
         #endregion
 
@@ -126,7 +129,8 @@ namespace Nop.Web.Factories
             CaptchaSettings captchaSettings, 
             AddressSettings addressSettings,
             RewardPointsSettings rewardPointsSettings,
-            CustomerSettings customerSettings)
+            CustomerSettings customerSettings,
+            ITierPriceAndDiscountService tierPriceAndDiscountService)
         {
             this._addressModelFactory = addressModelFactory;
             this._productService = productService;
@@ -168,6 +172,7 @@ namespace Nop.Web.Factories
             this._addressSettings = addressSettings;
             this._rewardPointsSettings = rewardPointsSettings;
             this._customerSettings = customerSettings;
+            this._tierPriceAndDiscountService = tierPriceAndDiscountService;
         }
 
         #endregion
@@ -432,16 +437,25 @@ namespace Nop.Web.Factories
             //tier prices
             if (sci.Product.HasTierPrices)
             {
-                List<ProductDetailsModel.TierPriceModel> tierList = PrepareProductTierPriceModels(product);
-                List<ProductDetailsModel.DiscountRange> newDiscounts = UpdateDiscountModelFromTierList(tierList);
-                cartItemModel.DiscountRanges = newDiscounts;
+                List<TierPriceEntity> tierPriceEntities =
+                    _tierPriceAndDiscountService.PrepareProductTierPriceModels(product);
+
+                List<DiscountRangeEntity> discountRangeEntities =
+                    _tierPriceAndDiscountService.UpdateDiscountModelFromTierList(tierPriceEntities);
+                
+                cartItemModel.DiscountRanges = CommonMapper.MappingDiscountModels(discountRangeEntities);
             }
 
             // additional check if product don't have DiscountRanges and TierPrices
             if (cartItemModel.DiscountRanges.Count == 0)
             {
-                var newestTierList = GenerateTierPriceFromGeneralProductInfo(product);
-                cartItemModel.DiscountRanges = UpdateDiscountModelFromTierList(newestTierList.ToList());
+                List<TierPriceEntity> tierPriceEntities =
+                    _tierPriceAndDiscountService.GenerateTierPriceFromGeneralProductInfo(product);
+
+                List<DiscountRangeEntity> discountRangeEntities =
+                    _tierPriceAndDiscountService.UpdateDiscountModelFromTierList(tierPriceEntities);
+                
+                cartItemModel.DiscountRanges = CommonMapper.MappingDiscountModels(discountRangeEntities);
             }
 
             // for some product we don't have saved discount in variable. calculate new discount

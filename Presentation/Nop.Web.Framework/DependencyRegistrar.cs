@@ -379,6 +379,9 @@ namespace Nop.Web.Framework
           .InstancePerLifetimeScope();
 
             builder.RegisterType<FilterService>().As<IFilterService>().InstancePerLifetimeScope();
+            builder.RegisterType<TierPriceAndDiscountService>()
+                .As<ITierPriceAndDiscountService>()
+                .InstancePerLifetimeScope();
         }
 
 

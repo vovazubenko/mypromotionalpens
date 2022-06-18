@@ -14,6 +14,8 @@ using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Seo;
 using Nop.Core.Domain.Vendors;
 using Nop.Services.Catalog;
+using Nop.Services.Common;
+using Nop.Services.Common.Models;
 using Nop.Services.Customers;
 using Nop.Services.Directory;
 using Nop.Services.Helpers;
@@ -27,6 +29,7 @@ using Nop.Services.Tax;
 using Nop.Services.Vendors;
 using Nop.Web.Framework.Security.Captcha;
 using Nop.Web.Infrastructure.Cache;
+using Nop.Web.Mapping;
 using Nop.Web.Models.Catalog;
 using Nop.Web.Models.Common;
 using Nop.Web.Models.Media;
@@ -72,6 +75,7 @@ namespace Nop.Web.Factories
         private readonly CaptchaSettings _captchaSettings;
         private readonly SeoSettings _seoSettings;
         private readonly ICacheManager _cacheManager;
+        private readonly ITierPriceAndDiscountService _tierPriceAndDiscountService;
 
         #endregion
 
@@ -108,7 +112,8 @@ namespace Nop.Web.Factories
             CustomerSettings customerSettings,
             CaptchaSettings captchaSettings,
             SeoSettings seoSettings,
-            ICacheManager cacheManager)
+            ICacheManager cacheManager,
+            ITierPriceAndDiscountService tierPriceAndDiscountService)
         {
             this._specificationAttributeService = specificationAttributeService;
             this._categoryService = categoryService;
@@ -142,6 +147,7 @@ namespace Nop.Web.Factories
             this._captchaSettings = captchaSettings;
             this._seoSettings = seoSettings;
             this._cacheManager = cacheManager;
+            this._tierPriceAndDiscountService = tierPriceAndDiscountService;
         }
 
         #endregion
@@ -997,105 +1003,6 @@ namespace Nop.Web.Factories
         }
 
         /// <summary>
-        /// Prepare the product tier price models
-        /// </summary>
-        /// <param name="product">Product</param>
-        /// <returns>List of tier price model</returns>
-        protected virtual IList<ProductDetailsModel.TierPriceModel> PrepareProductTierPriceModels(Product product)
-        {
-            if (product == null)
-                throw new ArgumentNullException("product");
-
-            var model = product.TierPrices.OrderBy(x => x.Quantity)
-                   .FilterByStore(_storeContext.CurrentStore.Id)
-                   .FilterForCustomer(_workContext.CurrentCustomer)
-                   .FilterByDate()
-                   .RemoveDuplicatedQuantities()
-                   .Select(tierPrice =>
-                   {
-                       decimal taxRate;
-                       var priceBase = _taxService.GetProductPrice(product, _priceCalculationService.GetFinalPrice(product,
-                           _workContext.CurrentCustomer, decimal.Zero, _catalogSettings.DisplayTierPricesWithDiscounts, tierPrice.Quantity), out taxRate);
-                       var price = _currencyService.ConvertFromPrimaryStoreCurrency(priceBase, _workContext.WorkingCurrency);
-
-                       return new ProductDetailsModel.TierPriceModel
-                       {
-                           Id = tierPrice.Id,
-                           PriceBase = price,
-                           Quantity = tierPrice.Quantity,
-                           Price = _priceFormatter.FormatPrice(price, false, false)
-                       };
-                   }).ToList();
-
-            return model;
-        }
-
-        /// <summary>
-        /// Update discount model from tier list 
-        /// </summary>
-        /// <param name="tierList">Tier List Prices</param>
-        /// <returns>List of updated discount models</returns>
-        protected virtual List<ProductDetailsModel.DiscountRange> UpdateDiscountModelFromTierList(
-            List<ProductDetailsModel.TierPriceModel> tierList)
-        {
-            List<ProductDetailsModel.DiscountRange> newDiscountList = new List<ProductDetailsModel.DiscountRange>();
-
-            if (tierList.Count() > 0)
-            {
-                var sortedList = tierList.OrderBy(x => x.Quantity).ToList();
-
-                for (int i = 0; i < sortedList.Count; i++)
-                {
-                    ProductDetailsModel.DiscountRange discount = new ProductDetailsModel.DiscountRange()
-                    {
-                        DiscountID = sortedList[i].Id,
-                        Amount = sortedList[i].PriceBase < 0 ? 0 : sortedList[i].PriceBase,
-                        MinQty = sortedList[i].Quantity
-                    };
-
-                    if (sortedList.Count() == i + 1)
-                        discount.MaxMiniQty = null;
-                    else
-                        discount.MaxMiniQty = sortedList[i + 1].Quantity - 1;
-
-                    discount.Discount = "Discount_(" + discount.MinQty + "_" + discount.MaxMiniQty + ")";
-
-                    newDiscountList.Add(discount);
-                };
-            }
-
-            return newDiscountList;
-        }
-
-        /// <summary>
-        /// Prepare the product tier price from general product info
-        /// </summary>
-        /// <param name="product">Product</param>
-        /// <returns>List of tier price model</returns>
-        protected virtual IList<ProductDetailsModel.TierPriceModel> GenerateTierPriceFromGeneralProductInfo(Product product)
-        {
-            decimal taxRate;
-            var priceBase = _taxService.GetProductPrice(product, _priceCalculationService.GetFinalPrice(product,
-                _workContext.CurrentCustomer, decimal.Zero, _catalogSettings.DisplayTierPricesWithDiscounts, product.OrderMinimumQuantity), out taxRate);
-            var price = _currencyService.ConvertFromPrimaryStoreCurrency(priceBase, _workContext.WorkingCurrency);
-
-            ProductDetailsModel.TierPriceModel tierPrice = new ProductDetailsModel.TierPriceModel
-            {
-                Id = 0,
-                PriceBase = price,
-                Quantity = product.OrderMinimumQuantity,
-                Price = _priceFormatter.FormatPrice(price, false, false)
-            };
-
-            List<ProductDetailsModel.TierPriceModel> data = new List<ProductDetailsModel.TierPriceModel>()
-            {
-                tierPrice
-            };
-
-            return data;
-        }
-
-        /// <summary>
         /// Prepare the product manufacturer models
         /// </summary>
         /// <param name="product">Product</param>
@@ -1502,16 +1409,27 @@ namespace Nop.Web.Factories
             //tier prices
             if (product.HasTierPrices && _permissionService.Authorize(StandardPermissionProvider.DisplayPrices))
             {
-                model.TierPrices = PrepareProductTierPriceModels(product);
-                model.DiscountRanges = UpdateDiscountModelFromTierList(model.TierPrices.ToList());
+                List<TierPriceEntity> tierPriceEntities =
+                    _tierPriceAndDiscountService.PrepareProductTierPriceModels(product);
+
+                List<DiscountRangeEntity> discountRangeEntities =
+                    _tierPriceAndDiscountService.UpdateDiscountModelFromTierList(tierPriceEntities);
+
+                model.TierPrices = CommonMapper.MappingTierPriceModels(tierPriceEntities);
+                model.DiscountRanges = CommonMapper.MappingDiscountModels(discountRangeEntities);
             }
 
             // additional check if product don't have DiscountRanges and TierPrices
             if(model.DiscountRanges.Count == 0)
             {
-                var newestTierList = GenerateTierPriceFromGeneralProductInfo(product);
-                model.TierPrices = newestTierList;
-                model.DiscountRanges = UpdateDiscountModelFromTierList(newestTierList.ToList());
+                List<TierPriceEntity> tierPriceEntities = 
+                    _tierPriceAndDiscountService.GenerateTierPriceFromGeneralProductInfo(product);
+                
+                List<DiscountRangeEntity> discountRangeEntities =
+                    _tierPriceAndDiscountService.UpdateDiscountModelFromTierList(tierPriceEntities);
+                
+                model.TierPrices = CommonMapper.MappingTierPriceModels(tierPriceEntities);
+                model.DiscountRanges = CommonMapper.MappingDiscountModels(discountRangeEntities);
             }
 
             //manufacturers
@@ -1735,7 +1653,7 @@ namespace Nop.Web.Factories
                 }).ToList()
             );
         }
-
+        
         #endregion
     }
 }
