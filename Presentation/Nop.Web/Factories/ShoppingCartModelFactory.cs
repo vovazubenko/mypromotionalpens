@@ -437,6 +437,13 @@ namespace Nop.Web.Factories
                 cartItemModel.DiscountRanges = newDiscounts;
             }
 
+            // additional check if product don't have DiscountRanges and TierPrices
+            if (cartItemModel.DiscountRanges.Count == 0)
+            {
+                var newestTierList = GenerateTierPriceFromGeneralProductInfo(product);
+                cartItemModel.DiscountRanges = UpdateDiscountModelFromTierList(newestTierList.ToList());
+            }
+
             // for some product we don't have saved discount in variable. calculate new discount
             foreach (var discount in cartItemModel.DiscountRanges)
             {
@@ -1543,7 +1550,7 @@ namespace Nop.Web.Factories
         /// <summary>
         /// Update discount model from tier list 
         /// </summary>
-        /// <param name="product">Product</param>
+        /// <param name="tierList">Tier List Prices</param>
         /// <returns>List of updated discount models</returns>
         protected virtual List<ProductDetailsModel.DiscountRange> UpdateDiscountModelFromTierList(
             List<ProductDetailsModel.TierPriceModel> tierList)
@@ -1575,6 +1582,34 @@ namespace Nop.Web.Factories
             }
 
             return newDiscountList;
+        }
+
+        /// <summary>
+        /// Prepare the product tier price from general product info
+        /// </summary>
+        /// <param name="product">Product</param>
+        /// <returns>List of tier price model</returns>
+        protected virtual IList<ProductDetailsModel.TierPriceModel> GenerateTierPriceFromGeneralProductInfo(Product product)
+        {
+            decimal taxRate;
+            var priceBase = _taxService.GetProductPrice(product, _priceCalculationService.GetFinalPrice(product,
+                _workContext.CurrentCustomer, decimal.Zero, _catalogSettings.DisplayTierPricesWithDiscounts, product.OrderMinimumQuantity), out taxRate);
+            var price = _currencyService.ConvertFromPrimaryStoreCurrency(priceBase, _workContext.WorkingCurrency);
+
+            ProductDetailsModel.TierPriceModel tierPrice = new ProductDetailsModel.TierPriceModel
+            {
+                Id = 0,
+                PriceBase = price,
+                Quantity = product.OrderMinimumQuantity,
+                Price = _priceFormatter.FormatPrice(price, false, false)
+            };
+
+            List<ProductDetailsModel.TierPriceModel> data = new List<ProductDetailsModel.TierPriceModel>()
+            {
+                tierPrice
+            };
+
+            return data;
         }
 
         #endregion

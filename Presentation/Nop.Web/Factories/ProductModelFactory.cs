@@ -1033,15 +1033,16 @@ namespace Nop.Web.Factories
         /// <summary>
         /// Update discount model from tier list 
         /// </summary>
-        /// <param name="product">Product</param>
+        /// <param name="tierList">Tier List Prices</param>
         /// <returns>List of updated discount models</returns>
-        protected virtual List<ProductDetailsModel.DiscountRange> UpdateDiscountModelFromTierList(ProductDetailsModel product)
+        protected virtual List<ProductDetailsModel.DiscountRange> UpdateDiscountModelFromTierList(
+            List<ProductDetailsModel.TierPriceModel> tierList)
         {
             List<ProductDetailsModel.DiscountRange> newDiscountList = new List<ProductDetailsModel.DiscountRange>();
 
-            if (product.TierPrices.Count() > 0)
+            if (tierList.Count() > 0)
             {
-                var sortedList = product.TierPrices.OrderBy(x => x.Quantity).ToList();
+                var sortedList = tierList.OrderBy(x => x.Quantity).ToList();
 
                 for (int i = 0; i < sortedList.Count; i++)
                 {
@@ -1064,6 +1065,34 @@ namespace Nop.Web.Factories
             }
 
             return newDiscountList;
+        }
+
+        /// <summary>
+        /// Prepare the product tier price from general product info
+        /// </summary>
+        /// <param name="product">Product</param>
+        /// <returns>List of tier price model</returns>
+        protected virtual IList<ProductDetailsModel.TierPriceModel> GenerateTierPriceFromGeneralProductInfo(Product product)
+        {
+            decimal taxRate;
+            var priceBase = _taxService.GetProductPrice(product, _priceCalculationService.GetFinalPrice(product,
+                _workContext.CurrentCustomer, decimal.Zero, _catalogSettings.DisplayTierPricesWithDiscounts, product.OrderMinimumQuantity), out taxRate);
+            var price = _currencyService.ConvertFromPrimaryStoreCurrency(priceBase, _workContext.WorkingCurrency);
+
+            ProductDetailsModel.TierPriceModel tierPrice = new ProductDetailsModel.TierPriceModel
+            {
+                Id = 0,
+                PriceBase = price,
+                Quantity = product.OrderMinimumQuantity,
+                Price = _priceFormatter.FormatPrice(price, false, false)
+            };
+
+            List<ProductDetailsModel.TierPriceModel> data = new List<ProductDetailsModel.TierPriceModel>()
+            {
+                tierPrice
+            };
+
+            return data;
         }
 
         /// <summary>
@@ -1474,7 +1503,15 @@ namespace Nop.Web.Factories
             if (product.HasTierPrices && _permissionService.Authorize(StandardPermissionProvider.DisplayPrices))
             {
                 model.TierPrices = PrepareProductTierPriceModels(product);
-                model.DiscountRanges = UpdateDiscountModelFromTierList(model);
+                model.DiscountRanges = UpdateDiscountModelFromTierList(model.TierPrices.ToList());
+            }
+
+            // additional check if product don't have DiscountRanges and TierPrices
+            if(model.DiscountRanges.Count == 0)
+            {
+                var newestTierList = GenerateTierPriceFromGeneralProductInfo(product);
+                model.TierPrices = newestTierList;
+                model.DiscountRanges = UpdateDiscountModelFromTierList(newestTierList.ToList());
             }
 
             //manufacturers
