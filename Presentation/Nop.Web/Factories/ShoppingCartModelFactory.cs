@@ -429,6 +429,14 @@ namespace Nop.Web.Factories
                                     }).OrderByDescending(x => x.Amount).ToList();
             cartItemModel.DiscountRanges.ForEach(x => x.Amount = x.Amount < 0 ? 0 : x.Amount);
 
+            //tier prices
+            if (sci.Product.HasTierPrices)
+            {
+                List<ProductDetailsModel.TierPriceModel> tierList = PrepareProductTierPriceModels(product);
+                List<ProductDetailsModel.DiscountRange> newDiscounts = UpdateDiscountModelFromTierList(tierList);
+                cartItemModel.DiscountRanges = newDiscounts;
+            }
+
             // for some product we don't have saved discount in variable. calculate new discount
             foreach (var discount in cartItemModel.DiscountRanges)
             {
@@ -1496,6 +1504,77 @@ namespace Nop.Web.Factories
                 model.YourEmailAddress = _workContext.CurrentCustomer.Email;
             }
             return model;
+        }
+
+        /// <summary>
+        /// Prepare the product tier price models
+        /// </summary>
+        /// <param name="product">Product</param>
+        /// <returns>List of tier price model</returns>
+        protected virtual List<ProductDetailsModel.TierPriceModel> PrepareProductTierPriceModels(Product product)
+        {
+            if (product == null)
+                throw new ArgumentNullException("product");
+
+            var model = product.TierPrices.OrderBy(x => x.Quantity)
+                   .FilterByStore(_storeContext.CurrentStore.Id)
+                   .FilterForCustomer(_workContext.CurrentCustomer)
+                   .FilterByDate()
+                   .RemoveDuplicatedQuantities()
+                   .Select(tierPrice =>
+                   {
+                       decimal taxRate;
+                       var priceBase = _taxService.GetProductPrice(product, _priceCalculationService.GetFinalPrice(product,
+                           _workContext.CurrentCustomer, decimal.Zero, _catalogSettings.DisplayTierPricesWithDiscounts, tierPrice.Quantity), out taxRate);
+                       var price = _currencyService.ConvertFromPrimaryStoreCurrency(priceBase, _workContext.WorkingCurrency);
+
+                       return new ProductDetailsModel.TierPriceModel
+                       {
+                           Id = tierPrice.Id,
+                           PriceBase = price,
+                           Quantity = tierPrice.Quantity,
+                           Price = _priceFormatter.FormatPrice(price, false, false)
+                       };
+                   }).ToList();
+
+            return model;
+        }
+
+        /// <summary>
+        /// Update discount model from tier list 
+        /// </summary>
+        /// <param name="product">Product</param>
+        /// <returns>List of updated discount models</returns>
+        protected virtual List<ProductDetailsModel.DiscountRange> UpdateDiscountModelFromTierList(
+            List<ProductDetailsModel.TierPriceModel> tierList)
+        {
+            List<ProductDetailsModel.DiscountRange> newDiscountList = new List<ProductDetailsModel.DiscountRange>();
+
+            if (tierList.Count() > 0)
+            {
+                var sortedList = tierList.OrderBy(x => x.Quantity).ToList();
+
+                for (int i = 0; i < sortedList.Count; i++)
+                {
+                    ProductDetailsModel.DiscountRange discount = new ProductDetailsModel.DiscountRange()
+                    {
+                        DiscountID = sortedList[i].Id,
+                        Amount = sortedList[i].PriceBase < 0 ? 0 : sortedList[i].PriceBase,
+                        MinQty = sortedList[i].Quantity
+                    };
+
+                    if (sortedList.Count() == i + 1)
+                        discount.MaxMiniQty = null;
+                    else
+                        discount.MaxMiniQty = sortedList[i + 1].Quantity - 1;
+
+                    discount.Discount = "Discount_(" + discount.MinQty + "_" + discount.MaxMiniQty + ")";
+
+                    newDiscountList.Add(discount);
+                };
+            }
+
+            return newDiscountList;
         }
 
         #endregion

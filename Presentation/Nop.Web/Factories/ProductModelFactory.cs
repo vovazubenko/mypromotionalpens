@@ -1020,12 +1020,50 @@ namespace Nop.Web.Factories
 
                        return new ProductDetailsModel.TierPriceModel
                        {
+                           Id = tierPrice.Id,
+                           PriceBase = price,
                            Quantity = tierPrice.Quantity,
                            Price = _priceFormatter.FormatPrice(price, false, false)
                        };
                    }).ToList();
 
             return model;
+        }
+
+        /// <summary>
+        /// Update discount model from tier list 
+        /// </summary>
+        /// <param name="product">Product</param>
+        /// <returns>List of updated discount models</returns>
+        protected virtual List<ProductDetailsModel.DiscountRange> UpdateDiscountModelFromTierList(ProductDetailsModel product)
+        {
+            List<ProductDetailsModel.DiscountRange> newDiscountList = new List<ProductDetailsModel.DiscountRange>();
+
+            if (product.TierPrices.Count() > 0)
+            {
+                var sortedList = product.TierPrices.OrderBy(x => x.Quantity).ToList();
+
+                for (int i = 0; i < sortedList.Count; i++)
+                {
+                    ProductDetailsModel.DiscountRange discount = new ProductDetailsModel.DiscountRange()
+                    {
+                        DiscountID = sortedList[i].Id,
+                        Amount = sortedList[i].PriceBase < 0 ? 0 : sortedList[i].PriceBase,
+                        MinQty = sortedList[i].Quantity
+                    };
+
+                    if (sortedList.Count() == i + 1)
+                        discount.MaxMiniQty = null;
+                    else
+                        discount.MaxMiniQty = sortedList[i + 1].Quantity - 1;
+
+                    discount.Discount = "Discount_(" + discount.MinQty + "_" + discount.MaxMiniQty + ")";
+
+                    newDiscountList.Add(discount);
+                };
+            }
+
+            return newDiscountList;
         }
 
         /// <summary>
@@ -1436,6 +1474,7 @@ namespace Nop.Web.Factories
             if (product.HasTierPrices && _permissionService.Authorize(StandardPermissionProvider.DisplayPrices))
             {
                 model.TierPrices = PrepareProductTierPriceModels(product);
+                model.DiscountRanges = UpdateDiscountModelFromTierList(model);
             }
 
             //manufacturers
