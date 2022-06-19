@@ -95,7 +95,7 @@ namespace Nop.Services.Common
         {
             decimal taxRate;
             var priceBase = _taxService.GetProductPrice(product, _priceCalculationService.GetFinalPrice(product,
-                    _workContext.CurrentCustomer, decimal.Zero, _catalogSettings.DisplayTierPricesWithDiscounts, 
+                    _workContext.CurrentCustomer, decimal.Zero, _catalogSettings.IgnoreDiscounts, 
                     QTY), 
                 out taxRate);
             var price = _currencyService.ConvertFromPrimaryStoreCurrency(priceBase, _workContext.WorkingCurrency);

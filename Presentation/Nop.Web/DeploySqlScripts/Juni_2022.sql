@@ -41,7 +41,7 @@ BEGIN
 	begin
 		-- update Price
 		update TierPrice
-		set Price = @price
+		set Price = @priceWithDiscount
 		where ProductId = @productId and Quantity = @minQty; 
 	end
 	else
