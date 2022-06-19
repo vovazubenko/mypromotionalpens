@@ -94,12 +94,15 @@ namespace Nop.Services.Common
 
         public TierPriceEntity GetTierPriceEntity(Product product, int QTY, int tierId)
         {
-            decimal taxRate;
-            var priceBase = _taxService.GetProductPrice(
-                    product, 
-                    _priceCalculationService.GetFinalPrice(product,_workContext.CurrentCustomer, decimal.Zero, 
-                        false, QTY), 
-                    out taxRate);
+            var tierPriceEntity = product.TierPrices.FirstOrDefault(x => x.Quantity == QTY);
+            
+            var priceBase = tierPriceEntity != null
+                ? tierPriceEntity.Price
+                : _taxService.GetProductPrice(product, 
+                        _priceCalculationService.GetFinalPrice(product,_workContext.CurrentCustomer, decimal.Zero, 
+                            product.IsTaxExempt, QTY), 
+                        out decimal taxRate);
+            
             var price = _currencyService.ConvertFromPrimaryStoreCurrency(priceBase, _workContext.WorkingCurrency);
             var priceText = _priceFormatter.FormatPrice(price, false, false);
 
