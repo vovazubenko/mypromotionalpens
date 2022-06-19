@@ -835,11 +835,18 @@ namespace Nop.Web.Controllers
             if ((ShoppingCartType)shoppingCartTypeId != ShoppingCartType.SampleCart)
             {
                 foreach (string formKey in form.AllKeys)
-                    if (formKey.Equals(string.Format("addtocart_{0}.EnteredQuantity", productId), StringComparison.InvariantCultureIgnoreCase))
+                {
+                    if (formKey.Equals(string.Format("itemquantity{0}", productId), StringComparison.InvariantCultureIgnoreCase))
                     {
                         int.TryParse(form[formKey], out quantity);
                         break;
                     }
+                    // if (formKey.Equals(string.Format("addtocart_{0}.EnteredQuantity", productId), StringComparison.InvariantCultureIgnoreCase))
+                    // {
+                    //     int.TryParse(form[formKey], out quantity);
+                    //     break;
+                    // }
+                }
             }
             #endregion
 

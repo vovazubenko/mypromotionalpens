@@ -1280,6 +1280,32 @@ namespace Nop.Web.Factories
                                     }).OrderByDescending(x => x.Amount).ToList();
             model.DiscountRanges.ForEach(x => x.Amount = x.Amount < 0 ? 0 : x.Amount);
 
+            //tier prices
+            if (product.TierPrices.Count > 0)
+            {
+                List<TierPriceEntity> tierPriceEntities =
+                    _tierPriceAndDiscountService.PrepareProductTierPriceModels(product);
+
+                List<DiscountRangeEntity> discountRangeEntities =
+                    _tierPriceAndDiscountService.UpdateDiscountModelFromTierList(tierPriceEntities);
+
+                model.TierPrices = CommonMapper.MappingTierPriceModels(tierPriceEntities);
+                model.DiscountRanges = CommonMapper.MappingDiscountModels(discountRangeEntities);
+            }
+
+            // additional check if product don't have DiscountRanges and TierPrices
+            if (model.DiscountRanges.Count == 0)
+            {
+                List<TierPriceEntity> tierPriceEntities =
+                    _tierPriceAndDiscountService.GenerateTierPriceFromGeneralProductInfo(product);
+
+                List<DiscountRangeEntity> discountRangeEntities =
+                    _tierPriceAndDiscountService.UpdateDiscountModelFromTierList(tierPriceEntities);
+
+                model.TierPrices = CommonMapper.MappingTierPriceModels(tierPriceEntities);
+                model.DiscountRanges = CommonMapper.MappingDiscountModels(discountRangeEntities);
+            }
+
             //automatically generate product description?
             if (_seoSettings.GenerateProductMetaDescription && String.IsNullOrEmpty(model.MetaDescription))
             {

@@ -43,7 +43,8 @@ namespace Nop.Services.Common
             if (product == null)
                 throw new ArgumentNullException("product");
 
-            List<TierPriceEntity> model = product.TierPrices.OrderBy(x => x.Quantity)
+            List<TierPriceEntity> model = product.TierPrices
+                .OrderBy(x => x.Quantity)
                 .FilterByStore(_storeContext.CurrentStore.Id)
                 .FilterForCustomer(_workContext.CurrentCustomer)
                 .FilterByDate()
@@ -94,10 +95,11 @@ namespace Nop.Services.Common
         public TierPriceEntity GetTierPriceEntity(Product product, int QTY, int tierId)
         {
             decimal taxRate;
-            var priceBase = _taxService.GetProductPrice(product, _priceCalculationService.GetFinalPrice(product,
-                    _workContext.CurrentCustomer, decimal.Zero, _catalogSettings.IgnoreDiscounts, 
-                    QTY), 
-                out taxRate);
+            var priceBase = _taxService.GetProductPrice(
+                    product, 
+                    _priceCalculationService.GetFinalPrice(product,_workContext.CurrentCustomer, decimal.Zero, 
+                        false, QTY), 
+                    out taxRate);
             var price = _currencyService.ConvertFromPrimaryStoreCurrency(priceBase, _workContext.WorkingCurrency);
             var priceText = _priceFormatter.FormatPrice(price, false, false);
 

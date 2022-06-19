@@ -97,6 +97,7 @@ namespace Nop.Admin.Controllers
         private readonly TaxSettings _taxSettings;
         private readonly VendorSettings _vendorSettings;
         private readonly ITierPriceAndDiscountService _tierPriceAndDiscountService;
+        private readonly IStoreContext _storeContext;
 
         #endregion
 
@@ -146,7 +147,8 @@ namespace Nop.Admin.Controllers
             ISettingService settingService,
             TaxSettings taxSettings,
             VendorSettings vendorSettings,
-            ITierPriceAndDiscountService tierPriceAndDiscountService)
+            ITierPriceAndDiscountService tierPriceAndDiscountService,
+            IStoreContext storeContext)
         {
             this._productService = productService;
             this._productTemplateService = productTemplateService;
@@ -193,6 +195,7 @@ namespace Nop.Admin.Controllers
             this._taxSettings = taxSettings;
             this._vendorSettings = vendorSettings;
             this._tierPriceAndDiscountService = tierPriceAndDiscountService;
+            this._storeContext = storeContext;
         }
 
         #endregion 
@@ -4925,18 +4928,15 @@ namespace Nop.Admin.Controllers
             if (product.TierPrices.Count == 0)
                 return sb.ToString();
 
-            var sortedList = product.TierPrices.OrderBy(x => x.Quantity).ToList();
+            var sortedList = _tierPriceAndDiscountService.PrepareProductTierPriceModels(product);
 
             for (int i = 0; i < sortedList.Count; i++)
             {
-                TierPriceEntity tierPriceEntity = 
-                    _tierPriceAndDiscountService.GetTierPriceEntity(product, sortedList[i].Quantity, sortedList[i].Id);
-                
                 string maxQty = sortedList.Count() == i + 1
                     ? "More"
                     : $"{sortedList[i + 1].Quantity - 1}";
 
-                sb.AppendLine($"{sortedList[i].Quantity}-{maxQty} - {tierPriceEntity.Price}");
+                sb.AppendLine($"{sortedList[i].Quantity}-{maxQty} - {sortedList[i].Price}");
             };
 
             return sb.ToString();
