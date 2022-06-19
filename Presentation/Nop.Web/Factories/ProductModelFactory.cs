@@ -1185,7 +1185,12 @@ namespace Nop.Web.Factories
                     model.AmountMax = DiscountRanges.First().Amount;
                 }
                 
-
+                // UPDATE IF WE HAVE TIER PRICES
+                if (product.TierPrices.Count > 0)
+                {
+                    model.AmountMin = product.TierPrices.Min(x => x.Price);
+                    model.AmountMax = product.TierPrices.Max(x => x.Price);
+                }
 
 
                 //price
