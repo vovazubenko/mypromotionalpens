@@ -3822,6 +3822,12 @@
   <LocaleResource Name="Admin.Catalog.Products.TierPrices.Fields.Price.Hint">
     <Value>Specify the price.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Products.TierPrices.Fields.Cost">
+    <Value>Cost</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Products.TierPrices.Fields.Cost.Hint">
+    <Value>Specify the cost.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.TierPrices.Fields.Quantity">
     <Value>Quantity</Value>
   </LocaleResource>

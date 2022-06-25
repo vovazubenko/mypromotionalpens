@@ -48,6 +48,7 @@ namespace Nop.Core.Domain.Catalog
 
 
         public decimal SetupFee { get; set; }
+        public decimal SetupCost { get; set; }
 
 
         /// <summary>

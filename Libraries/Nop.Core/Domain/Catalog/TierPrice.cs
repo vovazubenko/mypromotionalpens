@@ -52,5 +52,10 @@ namespace Nop.Core.Domain.Catalog
         /// Gets or sets the customer role
         /// </summary>
         public virtual CustomerRole CustomerRole { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the cost
+        /// </summary>
+        public decimal Cost { get; set; }
     }
 }

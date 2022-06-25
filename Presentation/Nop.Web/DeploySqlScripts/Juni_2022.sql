@@ -63,3 +63,23 @@ GO
 insert into [dbo].[LocaleStringResource]
 values (1, 'Admin.Catalog.Products.Fields.TierPriceRange', 'Price range'),
 	   (1, 'Admin.Catalog.Products.Fields.MinQTY', 'Minimum quantity');
+
+
+-- SAV-65(a)
+alter table [dbo].[TierPrice]
+add Cost [decimal](18, 4) NOT NULL default(0);
+
+insert into [dbo].[LocaleStringResource]
+values 
+    (1, 'Admin.Catalog.Products.TierPrices.Fields.Cost', 'Cost'),
+    (1, 'Admin.Catalog.Products.TierPrices.Fields.Cost.Hint', 'Specify the cost.');
+
+
+-- SAV-65(b)
+alter table [dbo].[Product]
+add SetupCost [decimal](18, 4) NOT NULL default(0);
+
+insert into [dbo].[LocaleStringResource]
+values (1, 'Admin.Catalog.Products.Fields.SetUpCost', 'Setup Cost');
+
+

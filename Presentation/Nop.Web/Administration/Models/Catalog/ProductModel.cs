@@ -354,6 +354,9 @@ namespace Nop.Admin.Models.Catalog
 
         [NopResourceDisplayName("Admin.Catalog.Products.Fields.SetUpFee")]
         public decimal SetUpFee { get; set; }
+        
+        [NopResourceDisplayName("Admin.Catalog.Products.Fields.SetUpCost")]
+        public decimal SetUpCost { get; set; }
 
         [NopResourceDisplayName("Admin.Catalog.Products.Fields.OldPrice")]
         public decimal OldPrice { get; set; }
@@ -763,6 +766,9 @@ namespace Nop.Admin.Models.Catalog
             [NopResourceDisplayName("Admin.Catalog.Products.TierPrices.Fields.EndDateTimeUtc")]
             [UIHint("DateTimeNullable")]
             public DateTime? EndDateTimeUtc { get; set; }
+            
+            [NopResourceDisplayName("Admin.Catalog.Products.TierPrices.Fields.Cost")]
+            public decimal Cost { get; set; }
         }
 
         public partial class ProductWarehouseInventoryModel : BaseNopModel

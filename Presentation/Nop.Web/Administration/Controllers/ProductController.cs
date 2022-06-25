@@ -3302,7 +3302,8 @@ namespace Nop.Admin.Controllers
                 Quantity = tierPrice.Quantity,
                 Price = tierPrice.Price,
                 StartDateTimeUtc = tierPrice.StartDateTimeUtc,
-                EndDateTimeUtc = tierPrice.EndDateTimeUtc
+                EndDateTimeUtc = tierPrice.EndDateTimeUtc,
+                Cost = tierPrice.Cost
             };
 
             //stores
@@ -3344,6 +3345,7 @@ namespace Nop.Admin.Controllers
                 tierPrice.Price = model.Price;
                 tierPrice.StartDateTimeUtc = model.StartDateTimeUtc;
                 tierPrice.EndDateTimeUtc = model.EndDateTimeUtc;
+                tierPrice.Cost = model.Cost;
                 _productService.UpdateTierPrice(tierPrice);
 
                 ViewBag.RefreshPage = true;
