@@ -50,6 +50,10 @@ BEGIN
 		insert into TierPrice
 		values (@productId, 0, null, @minQty, @priceWithDiscount, null, null);
 	end
+
+    update [dbo].[Product]
+    set [HasTierPrices] = 1
+    where id = @productId;
 	
 	FETCH NEXT FROM CUR_TEST INTO @productId, @productName, @productNumber, @price, @discountAmount, @priceWithDiscount, @discountId, @minQty, @maxQty, @discountName;
 END
@@ -82,4 +86,8 @@ add SetupCost [decimal](18, 4) NOT NULL default(0);
 insert into [dbo].[LocaleStringResource]
 values (1, 'Admin.Catalog.Products.Fields.SetUpCost', 'Setup Cost');
 
+-- SAV-65(d)
+delete from [dbo].[Discount_AppliedToProducts];
+delete from [dbo].[Discount_AppliedToCategories];
+delete from [dbo].[Discount];
 
