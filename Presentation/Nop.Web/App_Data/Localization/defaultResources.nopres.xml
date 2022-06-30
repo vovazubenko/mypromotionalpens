@@ -1023,6 +1023,12 @@
   <LocaleResource Name="ActivityLog.ImportManufacturers">
     <Value>{0} manufacturers were imported</Value>
   </LocaleResource>
+  <LocaleResource Name="ActivityLog.ImportTierPrices">
+    <Value>{0} tier prices were imported</Value>
+  </LocaleResource>
+  <LocaleResource Name="ActivityLog.ImportTierPricesError">
+    <Value>Error by importing tier prices: could not find product with id {0} / SKU {1} / Name {2}.'</Value>
+  </LocaleResource>
   <LocaleResource Name="ActivityLog.ImportProducts">
     <Value>{0} products were imported</Value>
   </LocaleResource>
@@ -3231,6 +3237,9 @@
   <LocaleResource Name="Admin.Catalog.Products.Imported">
     <Value>Products have been imported successfully.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Pricing.Imported">
+    <Value>Tier prices have been imported successfully.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Info">
     <Value>Product info</Value>
   </LocaleResource>
@@ -3942,6 +3951,12 @@
   <LocaleResource Name="Admin.Common.ExportToExcel.Selected">
     <Value>Export to Excel (selected)</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Common.ExportToExcel.All.Pricing">
+    <Value>Export Pricing to Excel (all found)</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Common.ExportToExcel.Selected.Pricing">
+    <Value>Export Pricing to Excel (selected)</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Common.ExportToXml">
     <Value>Export to XML</Value>
   </LocaleResource>
@@ -3959,6 +3974,12 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Common.Import">
     <Value>Import</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Common.Import.Products">
+    <Value>Import Products</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Common.Import.Pricing">
+    <Value>Import Pricing</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.ImportFromCsv">
     <Value>Import from CSV</Value>

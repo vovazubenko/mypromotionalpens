@@ -39,5 +39,11 @@ namespace Nop.Services.ExportImport
         /// </summary>
         /// <param name="stream">Stream</param>
         void ImportCategoriesFromXlsx(Stream stream);
+        
+        /// <summary>
+        /// Import tier prices from XLSX file
+        /// </summary>
+        /// <param name="stream">Stream</param>
+        void ImportTierPricesFromXlsx(Stream stream);
     }
 }

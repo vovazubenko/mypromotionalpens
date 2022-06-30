@@ -91,3 +91,24 @@ delete from [dbo].[Discount_AppliedToProducts];
 delete from [dbo].[Discount_AppliedToCategories];
 delete from [dbo].[Discount];
 
+
+-- SAV-65(m)
+insert into [dbo].[LocaleStringResource]
+values
+    (1, 'Admin.Common.ExportToExcel.All.Pricing', 'Export Pricing to Excel (all found)'),
+    (1, 'Admin.Common.ExportToExcel.Selected.Pricing', 'Export Pricing to Excel (selected)'),
+    (1, 'Admin.Common.Import.Products', 'Import Products'),
+    (1, 'Admin.Common.Import.Pricing', 'Import Pricing'),
+    (1, 'Admin.Catalog.Pricing.Imported', 'Tier prices have been imported successfully.'),
+    (1, 'ActivityLog.ImportTierPrices', '{0} tier prices were imported'),
+    (1, 'ActivityLog.ImportTierPricesError', 'Error by importing tier prices: could not find product with id {0} / SKU {1} / Name {2}.');
+
+alter table [dbo].[TierPrice]
+add MSRP [decimal](18, 4) NOT NULL default(0);
+
+insert into [dbo].[ActivityLogType]
+values 
+    ('ImportTierPrices', 'Tier prices were imported', 1),
+    ('ImportTierPricesError', 'Error by importing tier prices', 1);
+
+

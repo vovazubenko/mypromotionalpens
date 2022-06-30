@@ -63,15 +63,50 @@
                             @T("Admin.Common.ExportToExcel.Selected")
                         </button>
                     </li>
+                    <li class="divider"></li>
+                    <li>
+                        <button type="submit" name="exportexcel-all-pricing">
+                            <i class="fa fa-file-excel-o"></i>
+                            @T("Admin.Common.ExportToExcel.All.Pricing")
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" id="exportexcel-selected-pricing">
+                            <i class="fa fa-file-excel-o"></i>
+                            @T("Admin.Common.ExportToExcel.Selected.Pricing")
+                        </button>
+                    </li>
                 </ul>
             </div>
             @if (!Model.IsLoggedInAsVendor || Model.AllowVendorsToImportProducts)
             {
                 //a vendor cannot import products
-                <button type="button" name="importexcel" class="btn bg-olive" data-toggle="modal" data-target="#importexcel-window">
-                    <i class="fa fa-upload"></i>
-                    @T("Admin.Common.Import")
-                </button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success">
+                        <i class="fa fa-upload"></i>
+                        @T("Admin.Common.Import")
+                    </button>
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <span class="caret"></span>
+                        <span class="sr-only">&nbsp;</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                            <button type="button" name="importexcel-product" data-toggle="modal" data-target="#importexcel-window">
+                                <i class="fa fa-file-excel-o"></i>
+                                @T("Admin.Common.Import.Products")
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" id="exportxml-selected" 
+                                     name="importexcel-pricing" data-toggle="modal" data-target="#importexcel-window-pricing">
+                                <i class="fa fa-file-excel-o"></i>
+                                @T("Admin.Common.Import.Pricing")
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                
             }
             <button type="button" id="delete-selected" class="btn bg-red">
                 <i class="fa fa-trash-o"></i>
@@ -494,6 +529,51 @@
     </div>
 </div>
 
+@*import products pricing form*@
+<div id="importexcel-window-pricing" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="importexcel-window-title">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="importexcel-window-title">@T("Admin.Common.ImportFromExcel")</h4>
+            </div>
+            @using (Html.BeginForm("ImportPricingExcel", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="form-horizontal">
+                    <div class="modal-body">
+                        @Html.AntiForgeryToken()
+                        <ul class="common-list">
+                            <li>
+                                <em>@T("Admin.Catalog.Products.List.ImportFromExcelTip")</em>
+                            </li>
+                            <li>
+                                <em>@T("Admin.Common.ImportFromExcel.ManyRecordsWarning")</em>
+                            </li>
+                        </ul>
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                <div class="label-wrapper">
+                                    <label class="control-label">
+                                        @T("Admin.Common.ExcelFile")
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <input type="file" id="importpricingexcelfile" name="importpricingexcelfile" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">
+                            @T("Admin.Common.ImportFromExcel")
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
 @*export selected (XML). We don't use GET approach because it's limited to 2K-4K chars and won't work for large number of entities*@
 @using (Html.BeginForm("ExportXmlSelected", "Product", FormMethod.Post, new { id = "export-xml-selected-form" }))
 {
@@ -520,6 +600,12 @@
     <input type="hidden" id="selectedIds" name="selectedIds" value="" />
 }
 
+@* @using (Html.BeginForm("ExportExcelSelectedPricing", "Product", FormMethod.Post, new { id = "export-excel-selected-pricing-form" })) *@
+@* { *@
+@*     @Html.AntiForgeryToken() *@
+@*     <input type="hidden" id="selectedIds" name="selectedIds" value="" /> *@
+@* } *@
+
 <script type="text/javascript">
     $(document).ready(function () {
         $('#exportexcel-selected').click(function (e) {
@@ -529,5 +615,13 @@
             $('#export-excel-selected-form').submit();
             return false;
         });
+        
+        // $('#exportexcel-selected-pricing').click(function (e) {
+        //     e.preventDefault();
+        //     var ids = selectedIds.join(",");
+        //     $('#export-excel-selected-pricing-form #selectedIds').val(ids);
+        //     $('#export-excel-selected-pricing-form').submit();
+        //     return false;
+        // });
     });
 </script>

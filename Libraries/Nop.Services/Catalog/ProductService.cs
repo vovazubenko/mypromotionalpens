@@ -263,6 +263,33 @@ namespace Nop.Services.Catalog
             }
             return sortedProducts;
         }
+        
+        /// <summary>
+        /// Gets products by names
+        /// </summary>
+        /// <param name="productNames">Product names</param>
+        /// <returns>Products</returns>
+        public virtual IList<Product> GetProductsByNames(string[] productNames)
+        {
+            if (productNames == null || productNames.Length == 0)
+                return new List<Product>();
+
+            var query = from p in _productRepository.Table
+                where productNames.Contains(p.Name) && !p.Deleted
+                select p;
+            var products = query.ToList();
+            
+            //sort by passed identifiers
+            var sortedProducts = new List<Product>();
+            
+            foreach (var name in productNames)
+            {
+                var product = products.Find(x => x.Name == name);
+                if (product != null)
+                    sortedProducts.Add(product);
+            }
+            return sortedProducts;
+        }
 
         /// <summary>
         /// Inserts a product

@@ -2899,7 +2899,7 @@ namespace Nop.Admin.Controllers
 
             return File(bytes, MimeTypes.TextXlsx, "products.xlsx");
         }
-
+        
         [HttpPost]
         public virtual ActionResult ImportExcel()
         {
@@ -2931,6 +2931,38 @@ namespace Nop.Admin.Controllers
                 return RedirectToAction("List");
             }
 
+        }
+        
+        [HttpPost]
+        public virtual ActionResult ImportPricingExcel()
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageProducts))
+                return AccessDeniedView();
+            
+            if (_workContext.CurrentVendor != null && !_vendorSettings.AllowVendorsToImportProducts)
+                //a vendor can not import products
+                return AccessDeniedView();
+
+            try
+            {
+                var file = Request.Files["importpricingexcelfile"];
+                if (file != null && file.ContentLength > 0)
+                {
+                    _importManager.ImportTierPricesFromXlsx(file.InputStream);
+                }
+                else
+                {
+                    ErrorNotification(_localizationService.GetResource("Admin.Common.UploadFile"));
+                    return RedirectToAction("List");
+                }
+                SuccessNotification(_localizationService.GetResource("Admin.Catalog.Pricing.Imported"));
+                return RedirectToAction("List");
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("List");
+            }
         }
 
         #endregion

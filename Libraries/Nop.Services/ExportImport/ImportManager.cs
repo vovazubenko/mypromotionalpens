@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.WebPages;
+using Ganss.Excel;
 using Nop.Core;
 using Nop.Core.Data;
 using Nop.Core.Domain.Catalog;
@@ -62,6 +63,7 @@ namespace Nop.Services.ExportImport
         private readonly ILocalizationService _localizationService;
         private readonly ICustomerActivityService _customerActivityService;
         private readonly VendorSettings _vendorSettings;
+        private readonly IRepository<TierPrice> _tierPriceRepository;
 
         #endregion
 
@@ -91,7 +93,8 @@ namespace Nop.Services.ExportImport
             IWorkContext workContext,
             ILocalizationService localizationService,
             ICustomerActivityService customerActivityService,
-            VendorSettings vendorSettings)
+            VendorSettings vendorSettings,
+            IRepository<TierPrice> tierPriceRepository)
         {
             this._productService = productService;
             this._categoryService = categoryService;
@@ -118,6 +121,7 @@ namespace Nop.Services.ExportImport
             this._localizationService = localizationService;
             this._customerActivityService = customerActivityService;
             this._vendorSettings = vendorSettings;
+            this._tierPriceRepository = tierPriceRepository;
         }
 
         #endregion
@@ -1089,7 +1093,7 @@ namespace Nop.Services.ExportImport
                 _customerActivityService.InsertActivity("ImportProducts", _localizationService.GetResource("ActivityLog.ImportProducts"), countProductsInFile);
             }
         }
-        
+
         /// <summary>
         /// Import newsletter subscribers from TXT file
         /// </summary>
@@ -1348,6 +1352,76 @@ namespace Nop.Services.ExportImport
                 //activity log
                 _customerActivityService.InsertActivity("ImportManufacturers", _localizationService.GetResource("ActivityLog.ImportManufacturers"), iRow - 2);
             }
+        }
+        
+        /// <summary>
+        /// Import tier prices from XLSX file
+        /// </summary>
+        /// <param name="stream">Stream</param>
+        public virtual void ImportTierPricesFromXlsx(Stream stream)
+        {
+            int successInsertedRows = 0;
+            var allData = new ExcelMapper(stream).Fetch<ProductTierPriceExcel>();
+            
+            if(!allData.Any())
+                throw new NopException("No data for importing have found.");
+
+            var vmList = allData.Select(x => new ProductTierPriceVM()
+            {
+                ProductId = x.ProductId,
+                Name = x.Name,
+                SKU = x.SKU,
+                Published = x.Published,
+                OrderMinimumQuantity = x.OrderMinimumQuantity,
+                Setup = x.Setup,
+                SetupCost = x.SetupCost,
+                TierPrices = new List<TierPrice>()
+                {
+                    new TierPrice() { ProductId = x.ProductId, StoreId = 0, Quantity = x.QTY1, Price = x.PRICE1 ?? 0, Cost = x.COST1 ?? 0, MSRP = x.MSRP1 ?? 0  },
+                    new TierPrice() { ProductId = x.ProductId, StoreId = 0, Quantity = x.QTY2, Price = x.PRICE2 ?? 0, Cost = x.COST2 ?? 0, MSRP = x.MSRP2 ?? 0  },
+                    new TierPrice() { ProductId = x.ProductId, StoreId = 0, Quantity = x.QTY3, Price = x.PRICE3 ?? 0, Cost = x.COST3 ?? 0, MSRP = x.MSRP3 ?? 0  },
+                    new TierPrice() { ProductId = x.ProductId, StoreId = 0, Quantity = x.QTY4, Price = x.PRICE4 ?? 0, Cost = x.COST4 ?? 0, MSRP = x.MSRP4 ?? 0  },
+                    new TierPrice() { ProductId = x.ProductId, StoreId = 0, Quantity = x.QTY5, Price = x.PRICE5 ?? 0, Cost = x.COST5 ?? 0, MSRP = x.MSRP5 ?? 0  },
+                    new TierPrice() { ProductId = x.ProductId, StoreId = 0, Quantity = x.QTY6, Price = x.PRICE6 ?? 0, Cost = x.COST6 ?? 0, MSRP = x.MSRP6 ?? 0  },
+                    new TierPrice() { ProductId = x.ProductId, StoreId = 0, Quantity = x.QTY7, Price = x.PRICE7 ?? 0, Cost = x.COST7 ?? 0, MSRP = x.MSRP7 ?? 0  },
+                    new TierPrice() { ProductId = x.ProductId, StoreId = 0, Quantity = x.QTY8, Price = x.PRICE8 ?? 0, Cost = x.COST8 ?? 0, MSRP = x.MSRP8 ?? 0  },
+                    new TierPrice() { ProductId = x.ProductId, StoreId = 0, Quantity = x.QTY9, Price = x.PRICE9 ?? 0, Cost = x.COST9 ?? 0, MSRP = x.MSRP9 ?? 0  },
+                    new TierPrice() { ProductId = x.ProductId, StoreId = 0, Quantity = x.QTY10, Price = x.PRICE10 ?? 0, Cost = x.COST10 ?? 0, MSRP = x.MSRP10 ?? 0  }
+                }
+            }).ToList();
+            
+            var productsByIds = _productService.GetProductsByIds(vmList.Select(x => x.ProductId).ToArray());
+            var productsBySKU = _productService.GetProductsBySku(vmList.Select(x => x.SKU).ToArray());
+            var productsByName = _productService.GetProductsByNames(vmList.Select(x => x.Name).ToArray());
+
+            foreach (var productTierPriceItem in vmList)
+            {
+                var product = productsByIds.FirstOrDefault(x => x.Id == productTierPriceItem.ProductId)
+                    ?? productsBySKU.FirstOrDefault(x => x.Sku == productTierPriceItem.SKU)
+                    ?? productsByName.FirstOrDefault(x => x.Name == productTierPriceItem.Name);
+
+                if (product == null)
+                {
+                    _customerActivityService.InsertActivity("ImportTierPricesError", 
+                        _localizationService.GetResource("ActivityLog.ImportTierPricesError"), 
+                        new[] { productTierPriceItem.ProductId.ToString(), productTierPriceItem.SKU, productTierPriceItem.Name });
+                    continue;
+                }
+
+                var tierListForDelete = _tierPriceRepository.Table
+                    .Where(x => x.ProductId == productTierPriceItem.ProductId).ToArray();
+                
+                var tierListForInsert = productTierPriceItem.TierPrices.Where(x => x.Quantity > 0).ToList();
+                
+                _tierPriceRepository.Delete(tierListForDelete);
+                _tierPriceRepository.Insert(tierListForInsert);
+                successInsertedRows += tierListForInsert.Count();
+            }
+            
+            if(successInsertedRows == 0)
+                throw new NopException("Error by importing tier prices. Check ActivityLog for more details.");
+            
+            _customerActivityService.InsertActivity("ImportTierPrices", _localizationService.GetResource("ActivityLog.ImportTierPrices"), successInsertedRows);
         }
 
         /// <summary>

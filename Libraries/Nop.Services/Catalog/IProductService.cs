@@ -272,6 +272,13 @@ namespace Nop.Services.Catalog
         /// <param name="vendorId">Vendor identifier</param>
         /// <returns>Number of products</returns>
         int GetNumberOfProductsByVendorId(int vendorId);
+        
+        /// <summary>
+        /// Gets products by names
+        /// </summary>
+        /// <param name="productNames">Product names</param>
+        /// <returns>Products</returns>
+        IList<Product> GetProductsByNames(string[] productNames);
 
         #endregion
 
