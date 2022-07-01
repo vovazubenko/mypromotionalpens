@@ -5081,86 +5081,11 @@ namespace Nop.Admin.Controllers
                     // WE have only 10 columns for decimal fields QTY1-QTY2.
                     if(i > 9) break;
                     
-                    if (i == 0)
-                    {
-                        tierPrice.QTY1 = orderedTierList[i].Quantity;
-                        tierPrice.MSRP1 = orderedTierList[i].MSRP;
-                        tierPrice.COST1 = orderedTierList[i].Cost;
-                        tierPrice.PRICE1 = orderedTierList[i].Price;
-                        tierPrice.DISCOUNT1 = product.Price - orderedTierList[i].Price;
-                    } 
-                    else if (i == 1)
-                    {
-                        tierPrice.QTY2 = orderedTierList[i].Quantity;
-                        tierPrice.MSRP2 = orderedTierList[i].MSRP;
-                        tierPrice.COST2 = orderedTierList[i].Cost;
-                        tierPrice.PRICE2 = orderedTierList[i].Price;
-                        tierPrice.DISCOUNT2 = product.Price - orderedTierList[i].Price;
-                    }
-                    else if (i == 2)
-                    {
-                        tierPrice.QTY3 = orderedTierList[i].Quantity;
-                        tierPrice.MSRP3 = orderedTierList[i].MSRP;
-                        tierPrice.COST3 = orderedTierList[i].Cost;
-                        tierPrice.PRICE3 = orderedTierList[i].Price;
-                        tierPrice.DISCOUNT3 = product.Price - orderedTierList[i].Price;
-                    }
-                    else if (i == 3)
-                    {
-                        tierPrice.QTY4 = orderedTierList[i].Quantity;
-                        tierPrice.MSRP4 = orderedTierList[i].MSRP;
-                        tierPrice.COST4 = orderedTierList[i].Cost;
-                        tierPrice.PRICE4 = orderedTierList[i].Price;
-                        tierPrice.DISCOUNT4 = product.Price - orderedTierList[i].Price;
-                    }
-                    else if (i == 4)
-                    {
-                        tierPrice.QTY5 = orderedTierList[i].Quantity;
-                        tierPrice.MSRP5 = orderedTierList[i].MSRP;
-                        tierPrice.COST5 = orderedTierList[i].Cost;
-                        tierPrice.PRICE5 = orderedTierList[i].Price;
-                        tierPrice.DISCOUNT5 = product.Price - orderedTierList[i].Price;
-                    }
-                    else if (i == 5)
-                    {
-                        tierPrice.QTY6 = orderedTierList[i].Quantity;
-                        tierPrice.MSRP6 = orderedTierList[i].MSRP;
-                        tierPrice.COST6 = orderedTierList[i].Cost;
-                        tierPrice.PRICE6 = orderedTierList[i].Price;
-                        tierPrice.DISCOUNT6 = product.Price - orderedTierList[i].Price;
-                    }
-                    else if (i == 6)
-                    {
-                        tierPrice.QTY7 = orderedTierList[i].Quantity;
-                        tierPrice.MSRP7 = orderedTierList[i].MSRP;
-                        tierPrice.COST7 = orderedTierList[i].Cost;
-                        tierPrice.PRICE7 = orderedTierList[i].Price;
-                        tierPrice.DISCOUNT7 = product.Price - orderedTierList[i].Price;
-                    }
-                    else if (i == 7)
-                    {
-                        tierPrice.QTY8 = orderedTierList[i].Quantity;
-                        tierPrice.MSRP8 = orderedTierList[i].MSRP;
-                        tierPrice.COST8 = orderedTierList[i].Cost;
-                        tierPrice.PRICE8 = orderedTierList[i].Price;
-                        tierPrice.DISCOUNT8 = product.Price - orderedTierList[i].Price;
-                    }
-                    else if (i == 8)
-                    {
-                        tierPrice.QTY9 = orderedTierList[i].Quantity;
-                        tierPrice.MSRP9 = orderedTierList[i].MSRP;
-                        tierPrice.COST9 = orderedTierList[i].Cost;
-                        tierPrice.PRICE9 = orderedTierList[i].Price;
-                        tierPrice.DISCOUNT9 = product.Price - orderedTierList[i].Price;
-                    }
-                    else if (i == 9)
-                    {
-                        tierPrice.QTY10 = orderedTierList[i].Quantity;
-                        tierPrice.MSRP10 = orderedTierList[i].MSRP;
-                        tierPrice.COST10 = orderedTierList[i].Cost;
-                        tierPrice.PRICE10 = orderedTierList[i].Price;
-                        tierPrice.DISCOUNT10 = product.Price - orderedTierList[i].Price;
-                    }
+                    tierPrice.GetType().GetProperty($"QTY{i+1}").SetValue(tierPrice, orderedTierList[i].Quantity, null);
+                    tierPrice.GetType().GetProperty($"MSRP{i+1}").SetValue(tierPrice, orderedTierList[i].MSRP, null);
+                    tierPrice.GetType().GetProperty($"COST{i+1}").SetValue(tierPrice, orderedTierList[i].Cost, null);
+                    tierPrice.GetType().GetProperty($"PRICE{i+1}").SetValue(tierPrice, orderedTierList[i].Price, null);
+                    tierPrice.GetType().GetProperty($"DISCOUNT{i+1}").SetValue(tierPrice, product.Price - orderedTierList[i].Price, null);
                 }
                 
                 data.Add(tierPrice);
