@@ -600,11 +600,11 @@
     <input type="hidden" id="selectedIds" name="selectedIds" value="" />
 }
 
-@* @using (Html.BeginForm("ExportExcelSelectedPricing", "Product", FormMethod.Post, new { id = "export-excel-selected-pricing-form" })) *@
-@* { *@
-@*     @Html.AntiForgeryToken() *@
-@*     <input type="hidden" id="selectedIds" name="selectedIds" value="" /> *@
-@* } *@
+@using (Html.BeginForm("ExportTierPricingExcelSelected", "Product", FormMethod.Post, new { id = "export-excel-selected-pricing-form" }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="selectedIds" name="selectedIds" value="" />
+}
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -616,12 +616,12 @@
             return false;
         });
         
-        // $('#exportexcel-selected-pricing').click(function (e) {
-        //     e.preventDefault();
-        //     var ids = selectedIds.join(",");
-        //     $('#export-excel-selected-pricing-form #selectedIds').val(ids);
-        //     $('#export-excel-selected-pricing-form').submit();
-        //     return false;
-        // });
+        $('#exportexcel-selected-pricing').click(function (e) {
+            e.preventDefault();
+            var ids = selectedIds.join(",");
+            $('#export-excel-selected-pricing-form #selectedIds').val(ids);
+            $('#export-excel-selected-pricing-form').submit();
+            return false;
+        });
     });
 </script>

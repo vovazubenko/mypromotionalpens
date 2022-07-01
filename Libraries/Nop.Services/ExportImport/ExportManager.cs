@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using Ganss.Excel;
 using Nop.Core;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Customers;
@@ -609,7 +610,7 @@ namespace Nop.Services.ExportImport
 
             return ExportToXlsx(properties, manufacturers);
         }
-
+        
         /// <summary>
         /// Export category list to xml
         /// </summary>
@@ -1337,6 +1338,85 @@ namespace Nop.Services.ExportImport
             };
 
             return _orderSettings.ExportWithProducts ? ExportOrderToXlsxWithProducts(properties, orders) : ExportToXlsx(properties, orders);
+        }
+        
+        /// <summary>
+        /// Export tier prices to XLSX
+        /// </summary>
+        /// <param name="products">Products</param>
+        public virtual byte[] ExportTierPricesToXlsx(List<ProductTierPriceExcel> tierPrices)
+        {
+            //a vendor should have access only to part of order information
+            var stringFormat = "F";
+
+            //property array
+            var properties = new[]
+            {
+                new PropertyByName<ProductTierPriceExcel>("Product_ID", p => p.ProductId),
+                new PropertyByName<ProductTierPriceExcel>("Name", p => p.Name),
+                new PropertyByName<ProductTierPriceExcel>("Published", p => p.Published),
+                new PropertyByName<ProductTierPriceExcel>("SKU", p => p.SKU),
+                new PropertyByName<ProductTierPriceExcel>("OrderMinimumQuantity", p => p.OrderMinimumQuantity),
+                new PropertyByName<ProductTierPriceExcel>("Setup", p => p.Setup),
+                new PropertyByName<ProductTierPriceExcel>("Setup_cost", p => p.SetupCost),
+                
+                new PropertyByName<ProductTierPriceExcel>("QTY1", p => p.QTY1 > 0 ? p.QTY1.ToString() : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("QTY2", p => p.QTY2 > 0 ? p.QTY2.ToString() : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("QTY3", p => p.QTY3 > 0 ? p.QTY3.ToString() : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("QTY4", p => p.QTY4 > 0 ? p.QTY4.ToString() : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("QTY5", p => p.QTY5 > 0 ? p.QTY5.ToString() : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("QTY6", p => p.QTY6 > 0 ? p.QTY6.ToString() : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("QTY7", p => p.QTY7 > 0 ? p.QTY7.ToString() : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("QTY8", p => p.QTY8 > 0 ? p.QTY8.ToString() : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("QTY9", p => p.QTY9 > 0 ? p.QTY9.ToString() : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("QTY10", p => p.QTY10 > 0 ? p.QTY10.ToString() : string.Empty),
+                
+                new PropertyByName<ProductTierPriceExcel>("MSRP1", p => p.MSRP1.HasValue && p.QTY1 > 0 ? p.MSRP1.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("MSRP2", p => p.MSRP2.HasValue && p.QTY2 > 0 ? p.MSRP2.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("MSRP3", p => p.MSRP3.HasValue && p.QTY3 > 0 ? p.MSRP3.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("MSRP4", p => p.MSRP4.HasValue && p.QTY4 > 0 ? p.MSRP4.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("MSRP5", p => p.MSRP5.HasValue && p.QTY5 > 0 ? p.MSRP5.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("MSRP6", p => p.MSRP6.HasValue && p.QTY6 > 0 ? p.MSRP6.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("MSRP7", p => p.MSRP7.HasValue && p.QTY7 > 0 ? p.MSRP7.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("MSRP8", p => p.MSRP8.HasValue && p.QTY8 > 0 ? p.MSRP8.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("MSRP9", p => p.MSRP9.HasValue && p.QTY9 > 0 ? p.MSRP9.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("MSRP10", p => p.MSRP10.HasValue && p.MSRP10 > 0 ? p.MSRP10.Value.ToString(stringFormat) : string.Empty),
+                
+                new PropertyByName<ProductTierPriceExcel>("COST1", p => p.COST1.HasValue && p.QTY1 > 0 ? p.COST1.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("COST2", p => p.COST2.HasValue && p.QTY2 > 0 ? p.COST2.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("COST3", p => p.COST3.HasValue && p.QTY3 > 0 ? p.COST3.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("COST4", p => p.COST4.HasValue && p.QTY4 > 0 ? p.COST4.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("COST5", p => p.COST5.HasValue && p.QTY5 > 0 ? p.COST5.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("COST6", p => p.COST6.HasValue && p.QTY6 > 0 ? p.COST6.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("COST7", p => p.COST7.HasValue && p.QTY7 > 0 ? p.COST7.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("COST8", p => p.COST8.HasValue && p.QTY8 > 0 ? p.COST8.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("COST9", p => p.COST9.HasValue && p.QTY9 > 0 ? p.COST9.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("COST10", p => p.COST10.HasValue && p.QTY10 > 0 ? p.COST10.Value.ToString(stringFormat) : string.Empty),
+                
+                new PropertyByName<ProductTierPriceExcel>("PRICE1", p => p.PRICE1.HasValue && p.QTY1 > 0 ? p.PRICE1.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("PRICE2", p => p.PRICE2.HasValue && p.QTY2 > 0 ? p.PRICE2.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("PRICE3", p => p.PRICE3.HasValue && p.QTY3 > 0 ? p.PRICE3.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("PRICE4", p => p.PRICE4.HasValue && p.QTY4 > 0 ? p.PRICE4.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("PRICE5", p => p.PRICE5.HasValue && p.QTY5 > 0 ? p.PRICE5.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("PRICE6", p => p.PRICE6.HasValue && p.QTY6 > 0 ? p.PRICE6.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("PRICE7", p => p.PRICE7.HasValue && p.QTY7 > 0 ? p.PRICE7.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("PRICE8", p => p.PRICE8.HasValue && p.QTY8 > 0 ? p.PRICE8.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("PRICE9", p => p.PRICE9.HasValue && p.QTY9 > 0 ? p.PRICE9.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("PRICE10", p => p.PRICE10.HasValue && p.QTY10 > 0 ? p.PRICE10.Value.ToString(stringFormat) : string.Empty),
+                
+                new PropertyByName<ProductTierPriceExcel>("DISCOUNT1", p => p.DISCOUNT1.HasValue && p.QTY1 > 0 ? p.DISCOUNT1.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("DISCOUNT2", p => p.DISCOUNT2.HasValue && p.QTY2 > 0 ? p.DISCOUNT2.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("DISCOUNT3", p => p.DISCOUNT3.HasValue && p.QTY3 > 0 ? p.DISCOUNT3.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("DISCOUNT4", p => p.DISCOUNT4.HasValue && p.QTY4 > 0 ? p.DISCOUNT4.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("DISCOUNT5", p => p.DISCOUNT5.HasValue && p.QTY5 > 0 ? p.DISCOUNT5.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("DISCOUNT6", p => p.DISCOUNT6.HasValue && p.QTY6 > 0 ? p.DISCOUNT6.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("DISCOUNT7", p => p.DISCOUNT7.HasValue && p.QTY7 > 0 ? p.DISCOUNT7.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("DISCOUNT8", p => p.DISCOUNT8.HasValue && p.QTY8 > 0 ? p.DISCOUNT8.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("DISCOUNT9", p => p.DISCOUNT9.HasValue && p.QTY9 > 0 ? p.DISCOUNT9.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("DISCOUNT10", p => p.DISCOUNT10.HasValue && p.QTY10 > 0 ? p.DISCOUNT10.Value.ToString(stringFormat) : string.Empty),
+            };
+
+            return ExportToXlsx(properties, tierPrices);
         }
 
         /// <summary>

@@ -89,5 +89,11 @@ namespace Nop.Services.ExportImport
         /// <param name="states">States</param>
         /// <returns>Result in TXT (string) format</returns>
         string ExportStatesToTxt(IList<StateProvince> states);
+        
+        /// <summary>
+        /// Export tier prices to XLSX
+        /// </summary>
+        /// <param name="products">Products</param>
+        byte[] ExportTierPricesToXlsx(List<ProductTierPriceExcel> products);
     }
 }

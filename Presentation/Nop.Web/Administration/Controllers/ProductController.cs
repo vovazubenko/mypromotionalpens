@@ -2900,6 +2900,85 @@ namespace Nop.Admin.Controllers
             return File(bytes, MimeTypes.TextXlsx, "products.xlsx");
         }
         
+        [HttpPost, ActionName("List")]
+        [FormValueRequired("exportexcel-all-pricing")]
+        public virtual ActionResult ExportTierPricingExcelAll(ProductListModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageProducts))
+                return AccessDeniedView();
+
+            //a vendor should have access only to his products
+            if (_workContext.CurrentVendor != null)
+            {
+                model.SearchVendorId = _workContext.CurrentVendor.Id;
+            }
+
+            var categoryIds = new List<int> { model.SearchCategoryId };
+            //include subcategories
+            if (model.SearchIncludeSubCategories && model.SearchCategoryId > 0)
+                categoryIds.AddRange(GetChildCategoryIds(model.SearchCategoryId));
+
+            //0 - all (according to "ShowHidden" parameter)
+            //1 - published only
+            //2 - unpublished only
+            bool? overridePublished = null;
+            if (model.SearchPublishedId == 1)
+                overridePublished = true;
+            else if (model.SearchPublishedId == 2)
+                overridePublished = false;
+
+            var products = _productService.SearchProducts(
+                categoryIds: categoryIds,
+                manufacturerId: model.SearchManufacturerId,
+                storeId: model.SearchStoreId,
+                vendorId: model.SearchVendorId,
+                warehouseId: model.SearchWarehouseId,
+                productType: model.SearchProductTypeId > 0 ? (ProductType?)model.SearchProductTypeId : null,
+                keywords: model.SearchProductName,
+                showHidden: true,
+                overridePublished: overridePublished
+            );
+            try
+            {
+                var tierPricesList = MappingProductToProductTierPriceExcel(products);
+                var bytes = _exportManager.ExportTierPricesToXlsx(tierPricesList);
+
+                return File(bytes, MimeTypes.TextXlsx, "tierprices.xlsx");
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("List");
+            }
+        }
+        
+        [HttpPost]
+        public virtual ActionResult ExportTierPricingExcelSelected(string selectedIds)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageProducts))
+                return AccessDeniedView();
+
+            var products = new List<Product>();
+            if (selectedIds != null)
+            {
+                var ids = selectedIds
+                    .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(x => Convert.ToInt32(x))
+                    .ToArray();
+                products.AddRange(_productService.GetProductsByIds(ids));
+            }
+            //a vendor should have access only to his products
+            if (_workContext.CurrentVendor != null)
+            {
+                products = products.Where(p => p.VendorId == _workContext.CurrentVendor.Id).ToList();
+            }
+
+            var tierPricesList = MappingProductToProductTierPriceExcel(products);
+            var bytes = _exportManager.ExportTierPricesToXlsx(tierPricesList);
+
+            return File(bytes, MimeTypes.TextXlsx, "tierprices.xlsx");
+        }
+        
         [HttpPost]
         public virtual ActionResult ImportExcel()
         {
@@ -4974,6 +5053,120 @@ namespace Nop.Admin.Controllers
             };
 
             return sb.ToString();
+        }
+
+        private List<ProductTierPriceExcel> MappingProductToProductTierPriceExcel(IEnumerable<Product> products)
+        {
+            var data = new List<ProductTierPriceExcel>();
+            
+            foreach (var product in products)
+            {
+                var tierPrice = new ProductTierPriceExcel()
+                {
+                    ProductId = product.Id,
+                    Name = product.Name,
+                    Published = product.Published,
+                    SKU = product.Sku,
+                    OrderMinimumQuantity = product.OrderMinimumQuantity,
+                    Setup = 0, // TODO ---> what is SETUP?
+                    SetupCost = product.SetupCost
+                };
+
+                var orderedTierList = product.TierPrices.Count() > 0
+                    ? product.TierPrices.OrderBy(x => x.Quantity).ToList()
+                    : product.TierPrices.ToList();
+
+                for (int i = 0; i < orderedTierList.Count(); i++)
+                {
+                    // WE have only 10 columns for decimal fields QTY1-QTY2.
+                    if(i > 9) break;
+                    
+                    if (i == 0)
+                    {
+                        tierPrice.QTY1 = orderedTierList[i].Quantity;
+                        tierPrice.MSRP1 = orderedTierList[i].MSRP;
+                        tierPrice.COST1 = orderedTierList[i].Cost;
+                        tierPrice.PRICE1 = orderedTierList[i].Price;
+                        tierPrice.DISCOUNT1 = product.Price - orderedTierList[i].Price;
+                    } 
+                    else if (i == 1)
+                    {
+                        tierPrice.QTY2 = orderedTierList[i].Quantity;
+                        tierPrice.MSRP2 = orderedTierList[i].MSRP;
+                        tierPrice.COST2 = orderedTierList[i].Cost;
+                        tierPrice.PRICE2 = orderedTierList[i].Price;
+                        tierPrice.DISCOUNT2 = product.Price - orderedTierList[i].Price;
+                    }
+                    else if (i == 2)
+                    {
+                        tierPrice.QTY3 = orderedTierList[i].Quantity;
+                        tierPrice.MSRP3 = orderedTierList[i].MSRP;
+                        tierPrice.COST3 = orderedTierList[i].Cost;
+                        tierPrice.PRICE3 = orderedTierList[i].Price;
+                        tierPrice.DISCOUNT3 = product.Price - orderedTierList[i].Price;
+                    }
+                    else if (i == 3)
+                    {
+                        tierPrice.QTY4 = orderedTierList[i].Quantity;
+                        tierPrice.MSRP4 = orderedTierList[i].MSRP;
+                        tierPrice.COST4 = orderedTierList[i].Cost;
+                        tierPrice.PRICE4 = orderedTierList[i].Price;
+                        tierPrice.DISCOUNT4 = product.Price - orderedTierList[i].Price;
+                    }
+                    else if (i == 4)
+                    {
+                        tierPrice.QTY5 = orderedTierList[i].Quantity;
+                        tierPrice.MSRP5 = orderedTierList[i].MSRP;
+                        tierPrice.COST5 = orderedTierList[i].Cost;
+                        tierPrice.PRICE5 = orderedTierList[i].Price;
+                        tierPrice.DISCOUNT5 = product.Price - orderedTierList[i].Price;
+                    }
+                    else if (i == 5)
+                    {
+                        tierPrice.QTY6 = orderedTierList[i].Quantity;
+                        tierPrice.MSRP6 = orderedTierList[i].MSRP;
+                        tierPrice.COST6 = orderedTierList[i].Cost;
+                        tierPrice.PRICE6 = orderedTierList[i].Price;
+                        tierPrice.DISCOUNT6 = product.Price - orderedTierList[i].Price;
+                    }
+                    else if (i == 6)
+                    {
+                        tierPrice.QTY7 = orderedTierList[i].Quantity;
+                        tierPrice.MSRP7 = orderedTierList[i].MSRP;
+                        tierPrice.COST7 = orderedTierList[i].Cost;
+                        tierPrice.PRICE7 = orderedTierList[i].Price;
+                        tierPrice.DISCOUNT7 = product.Price - orderedTierList[i].Price;
+                    }
+                    else if (i == 7)
+                    {
+                        tierPrice.QTY8 = orderedTierList[i].Quantity;
+                        tierPrice.MSRP8 = orderedTierList[i].MSRP;
+                        tierPrice.COST8 = orderedTierList[i].Cost;
+                        tierPrice.PRICE8 = orderedTierList[i].Price;
+                        tierPrice.DISCOUNT8 = product.Price - orderedTierList[i].Price;
+                    }
+                    else if (i == 8)
+                    {
+                        tierPrice.QTY9 = orderedTierList[i].Quantity;
+                        tierPrice.MSRP9 = orderedTierList[i].MSRP;
+                        tierPrice.COST9 = orderedTierList[i].Cost;
+                        tierPrice.PRICE9 = orderedTierList[i].Price;
+                        tierPrice.DISCOUNT9 = product.Price - orderedTierList[i].Price;
+                    }
+                    else if (i == 9)
+                    {
+                        tierPrice.QTY10 = orderedTierList[i].Quantity;
+                        tierPrice.MSRP10 = orderedTierList[i].MSRP;
+                        tierPrice.COST10 = orderedTierList[i].Cost;
+                        tierPrice.PRICE10 = orderedTierList[i].Price;
+                        tierPrice.DISCOUNT10 = product.Price - orderedTierList[i].Price;
+                    }
+                }
+                
+                data.Add(tierPrice);
+            }
+
+            return data;
         }
 
         #endregion
