@@ -62,6 +62,11 @@ DEALLOCATE CUR_TEST
 GO
 
 
+-- SAV-65(d)
+delete from [dbo].[Discount_AppliedToProducts];
+delete from [dbo].[Discount_AppliedToCategories];
+delete from [dbo].[Discount];
+    
 
 -- ADMIN DATA
 insert into [dbo].[LocaleStringResource]
@@ -85,11 +90,6 @@ add SetupCost [decimal](18, 4) NOT NULL default(0);
 
 insert into [dbo].[LocaleStringResource]
 values (1, 'Admin.Catalog.Products.Fields.SetUpCost', 'Setup Cost');
-
--- SAV-65(d)
-delete from [dbo].[Discount_AppliedToProducts];
-delete from [dbo].[Discount_AppliedToCategories];
-delete from [dbo].[Discount];
 
 
 -- SAV-65(m)

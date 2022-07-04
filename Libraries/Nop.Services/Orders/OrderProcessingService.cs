@@ -808,7 +808,7 @@ namespace Nop.Services.Orders
                     }
                     if (order.Customer != null)
                         if (!string.IsNullOrEmpty(order.Customer.Email) && !string.IsNullOrEmpty(body))
-                            zohoweburl = _zohoDeskApi.CreateTickets(order.Customer.GetFullName(), order.Customer.Email, subject, body.Replace("<p> </p>", ""), phone);
+                            zohoweburl = _zohoDeskApi.CreateTickets(order.Customer.GetFullName(), order.Customer.Email, subject, body.Replace("<p>Â </p>", ""), phone);
                     if (!string.IsNullOrEmpty(zohoweburl))
                     {
                         order.zohoweburl = zohoweburl;
@@ -1411,7 +1411,7 @@ namespace Nop.Services.Orders
                             OrderItemGuid = Guid.NewGuid(),
                             Order = order,
                             ProductId = sc.ProductId,
-                            UnitPriceInclTax = isSampleRequest?0:scUnitPriceInclTax,
+                            UnitPriceInclTax = isSampleRequest ? 0 : scUnitPriceInclTax,
                             UnitPriceExclTax = isSampleRequest ? 0 : scUnitPriceExclTax,
                             PriceInclTax = isSampleRequest ? 0 : scSubTotalInclTax,
                             PriceExclTax = isSampleRequest ? 0 : scSubTotalExclTax,
@@ -1419,8 +1419,8 @@ namespace Nop.Services.Orders
                             AttributeDescription = attributeDescription,
                             AttributesXml = sc.AttributesXml,
                             Quantity = sc.Quantity,
-                            DiscountAmountInclTax = isSampleRequest ? 0 : discountAmountInclTax,
-                            DiscountAmountExclTax = isSampleRequest ? 0 : discountAmountExclTax,
+                            DiscountAmountInclTax = isSampleRequest ? 0 : (sc.Product.Price - scUnitPriceInclTax) * sc.Quantity,
+                            DiscountAmountExclTax = isSampleRequest ? 0 : (sc.Product.Price - scUnitPriceExclTax) * sc.Quantity,
                             DownloadCount = 0,
                             IsDownloadActivated = false,
                             LicenseDownloadId = 0,
