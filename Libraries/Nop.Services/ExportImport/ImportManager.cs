@@ -1416,6 +1416,11 @@ namespace Nop.Services.ExportImport
                 _tierPriceRepository.Delete(tierListForDelete);
                 _tierPriceRepository.Insert(tierListForInsert);
                 successInsertedRows += tierListForInsert.Count();
+
+                product.Published = productTierPriceItem.Published;
+                product.OrderMinimumQuantity = productTierPriceItem.OrderMinimumQuantity;
+                product.SetupCost = productTierPriceItem.SetupCost;
+                _productService.UpdateProduct(product);
             }
             
             if(successInsertedRows == 0)

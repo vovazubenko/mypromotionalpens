@@ -1042,10 +1042,7 @@ namespace Nop.Admin.Controllers
                     productModel.StockQuantityStr = x.GetTotalStockQuantity().ToString();
 
                 // add Two additional columns
-                productModel.MinQTY = x.TierPrices.Count() > 0
-                    ? x.TierPrices.Min(t => t.Quantity)
-                    : x.OrderMinimumQuantity;
-
+                productModel.MinQTY = x.OrderMinimumQuantity;
                 productModel.TierPriceRange = GetPriceRange(x);
 
                 return productModel;
@@ -5049,7 +5046,7 @@ namespace Nop.Admin.Controllers
                     ? "More"
                     : $"{sortedList[i + 1].Quantity - 1}";
 
-                sb.AppendLine($"{sortedList[i].Quantity}-{maxQty} - {sortedList[i].Price}");
+                sb.AppendLine($"{sortedList[i].Quantity}-{maxQty} - {sortedList[i].Price}<br>");
             };
 
             return sb.ToString();
