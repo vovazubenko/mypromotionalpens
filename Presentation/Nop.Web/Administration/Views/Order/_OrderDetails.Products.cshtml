@@ -106,7 +106,7 @@
                         <tbody>
                             @foreach (var item in Model.Items)
                             {
-                                <tr>
+                                <tr class="product-id-@(item.Id)">
                                     <td>
                                         <img src="@item.PictureThumbnailUrl" alt="" title="" />
                                     </td>
@@ -185,6 +185,18 @@
                                                 }
                                             </p>
                                         }
+                                        <div class="discount-section-per-item" style="display: none;">
+                                            <div class="min-qty-item"></div>
+                                            @foreach (var disc in item.DiscountRangeEntities.OrderBy(x => x.MinQty))
+                                            {
+                                                <div class="discount-items-unique">
+                                                    <div class="minQuantity">@disc.MinQty</div>
+                                                    <div class="maxQuantity">@disc.MaxMiniQty</div>
+                                                    <div class="discPrice">@Math.Round(disc.Amount, 2)</div>
+                                                    <hr/>
+                                                </div>
+                                            }
+                                        </div>
                                     </td>
 
                                     @if (Model.HasDownloadableProducts)
@@ -239,8 +251,8 @@
                                             {
                                                 case TaxDisplayType.ExcludingTax:
                                                     {
-                                                        <p><b>With Discount Price:</b> @item.UnitPriceExclTax</p>
-                                                        <p><b>Without Discount Price:</b> @item.UnitPriceExclTaxWithoutdiscount</p>
+                                                        <p class="with-discount-price"><b>With Discount Price:</b> @item.UnitPriceExclTax</p>
+                                                        <p class="without-discount-price"><b>Without Discount Price:</b> @item.UnitPriceExclTaxWithoutdiscount</p>
                                                     }
                                                     break;
                                                 case TaxDisplayType.IncludingTax:
@@ -267,18 +279,18 @@
                                                 </div>
                                                 <div class="col-md-7">
                                                     @*<input name="pvUnitPriceExclTax@(item.Id)" type="text" value="@item.UnitPriceExclTaxValue" id="pvUnitPriceExclTax@(item.Id)" class="form-control input-sm" />*@
-                                                    <input name="pvUnitPriceExclTax@(item.Id)" type="text" value="@item.UnitPriceExclTaxValueWithoutdiscount" id="pvUnitPriceExclTax@(item.Id)" class="form-control input-sm" />
+                                                    <input name="pvUnitPriceExclTax@(item.Id)" type="text" value="@item.UnitPriceExclTax" id="pvUnitPriceExclTax@(item.Id)" class="form-control input-sm discount-price-per-item" />
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
-                                        <div>@item.SetupFee</div>
+                                        <div class="setup-fee">@item.SetupFee</div>
                                         <div id="pnlEditPvSetupFee@(item.Id)">
                                             <div class="form-group">
 
                                                 <div class="col-md-12">
-                                                    <input name="pvSetupFee@(item.Id)" type="text" value="@item.SetupFeeValue" id="pvSetupFee@(item.Id)" class="form-control input-sm" />
+                                                    <input name="pvSetupFee@(item.Id)" type="text" value="@item.SetupFeeValue" id="pvSetupFee@(item.Id)" class="form-control input-sm setup-fee-input" />
                                                 </div>
                                             </div>
 
@@ -289,7 +301,7 @@
                                         <div id="pnlEditPvQuantity@(item.Id)">
                                             <div class="form-group">
                                                 <div class="col-md-8 col-md-offset-2">
-                                                    <input name="pvQuantity@(item.Id)" type="text" value="@item.Quantity" id="pvQuantity@(item.Id)" class="form-control input-sm" />
+                                                    <input name="pvQuantity@(item.Id)" type="text" value="@item.Quantity" id="pvQuantity@(item.Id)" class="form-control input-sm quantity-value" />
                                                 </div>
                                             </div>
                                         </div>
@@ -306,8 +318,8 @@
                                             {
                                                 case TaxDisplayType.ExcludingTax:
                                                     {
-                                                        <p><b>Total Discount :</b> @item.DiscountExclTax</p>
-                                                        <p><b>Per Qty Discount :</b> @item.DiscountExclTaxPerQty</p>
+                                                        <p class="total-discount"><b>Total Discount :</b> @item.DiscountExclTax</p>
+                                                        <p class="per-qty-discount"><b>Per Qty Discount :</b> @item.DiscountExclTaxPerQty</p>
                                                     }
                                                     break;
                                                 case TaxDisplayType.IncludingTax:
@@ -334,7 +346,7 @@
                                                 </div>
                                                 <div class="col-md-7">
                                                     @*<input name="pvDiscountExclTax@(item.Id)" type="text" value="@item.DiscountExclTaxValue" id="pvDiscountExclTax@(item.Id)" class="form-control input-sm" />*@
-                                                    <input name="pvDiscountExclTax@(item.Id)" type="text" value="@item.DiscountExclTaxValuePerQty" id="pvDiscountExclTax@(item.Id)" class="form-control input-sm" />
+                                                    <input name="pvDiscountExclTax@(item.Id)" type="text" value="@item.DiscountExclTaxValuePerQty" id="pvDiscountExclTax@(item.Id)" class="form-control input-sm discount-value-per-item" />
                                                 </div>
                                             </div>
                                         </div>
@@ -347,7 +359,8 @@
                                         }
                                         else
                                         {
-                                            switch (Model.TaxDisplayType)
+                                            <div class="total-sub-price">
+                                            @switch (Model.TaxDisplayType)
                                             {
                                                 case TaxDisplayType.ExcludingTax:
                                                     {
@@ -362,6 +375,7 @@
                                                 default:
                                                     break;
                                             }
+                                            </div>
                                         }
                                         <div id="pnlEditPvPrice@(item.Id)">
                                             <div class="form-group">
@@ -463,4 +477,126 @@
         $(".pnleditcomment").hide();
         $(".bt-edit-comment").show();
     });
+    
+    $(".quantity-value").on('input change', function (e) {
+        quantity = e.target.value;
+        productId = getDecimalFromString(e.target.id);
+        $(".min-qty-item").html(quantity);
+
+        UpdatePriceInfo(quantity, productId);
+    });
+    
+    function UpdatePriceInfo(quantity, productId){
+        currentElement = $(".product-id-" + productId);
+                
+        priceWithDiscountElement= currentElement.find(".with-discount-price");
+        priceWithDiscountValue = getDecimalFromString(priceWithDiscountElement.html());
+        
+        priceWithoutDiscountElement = currentElement.find(".without-discount-price");
+        priceWithoutDiscountValue = getDecimalFromString(priceWithoutDiscountElement.html());
+        
+        inputPriceWithDiscountElement = currentElement.find(".discount-price-per-item");
+        inputPriceWithDiscountValue = getDecimalFromString(inputPriceWithDiscountElement.val());
+        
+        inputSetupFeeElement = currentElement.find(".setup-fee-input");
+        inputSetupFeeValue = getDecimalFromString(inputSetupFeeElement.val());
+        
+        totalDiscountElement = currentElement.find(".total-discount");
+        totalDiscountValue = getDecimalFromString(totalDiscountElement.html());
+        
+        qtyPerItemElement = currentElement.find(".per-qty-discount");
+        qtyPerItemValue = getDecimalFromString(qtyPerItemElement.html());
+        
+        inputDiscountPerItemElement = currentElement.find(".discount-value-per-item");
+        inputDiscountPerItemValue = getDecimalFromString(inputDiscountPerItemElement.val());        
+        
+        totalSubPriceElement = currentElement.find(".total-sub-price");
+        totalSubPriceValue = getDecimalFromString(totalSubPriceElement.html());
+        totalSubPriceValueString = getDecimalStringFromString(totalSubPriceElement.html());
+        
+        var items = currentElement.find(".discount-items-unique");
+        var priceInRange = false;
+        var largestQuantities = [];
+        var minimumQtyForProduct;
+
+        $(items).each(function (item, value) {
+
+            minQuantity = $(value).find(".minQuantity").html();
+            maxQuantity = $(value).find(".maxQuantity").html();
+            discPrice = $(value).find(".discPrice").html();
+
+            largestQuantities.push(parseInt(maxQuantity));
+            
+            if (!maxQuantity) {
+                maxQuantity = 2 ** 64
+            }
+            
+            if (minQuantity < minimumQtyForProduct || minimumQtyForProduct == undefined) {
+                minimumQtyForProduct = minQuantity;
+            }
+
+            if (parseInt(minQuantity) <= parseInt(quantity) && parseInt(quantity) <= parseInt(maxQuantity)) {
+
+                newPriceWithDiscount = inputPriceWithDiscountElement.val().replace(inputPriceWithDiscountValue, discPrice);
+                inputPriceWithDiscountElement.val(newPriceWithDiscount);
+                
+                newPriceWithDiscount = priceWithDiscountElement.html().replace(priceWithDiscountValue, discPrice);
+                priceWithDiscountElement.html(newPriceWithDiscount);
+
+                newPriceWithDiscount = priceWithoutDiscountValue - discPrice;
+                inputDiscountPerItemElement.val(newPriceWithDiscount.toFixed(4));
+                
+                newQtyPerItem = qtyPerItemElement.html().replace(qtyPerItemValue.toFixed(2), newPriceWithDiscount.toFixed(2));
+                qtyPerItemElement.html(newQtyPerItem);
+                
+                newTotalDiscountValue = newPriceWithDiscount.toFixed(2) * quantity;
+                newTotalDiscount = totalDiscountElement.html().replace(totalDiscountValue.toFixed(2), newTotalDiscountValue.toFixed(2));
+                totalDiscountElement.html(newTotalDiscount);
+                
+                newSubTotalItem = (discPrice * quantity) + inputSetupFeeValue;
+                newSubTotalItemCurrency = convertDecimalToCurrency(newSubTotalItem);
+                totalSubPriceElement.html("$"+newSubTotalItemCurrency+" excl tax");
+
+                priceInRange = true;
+                return false;
+            }
+        });
+
+        if (!priceInRange) {  
+            setTimeout(function () {
+                minQtyValue = $(".min-qty-item").html();
+                if (quantity == minQtyValue) {
+                    UpdatePriceInfo(minimumQtyForProduct);
+                }                
+            }, 1000 * 1);
+        };
+
+        return false;
+    };
+    
+    function getDecimalFromString(stringValue) {
+        if (stringValue == null || stringValue == "" || stringValue.trim() == "") return null;
+        
+        if (stringValue.includes(",")){
+            decimalValue = stringValue.match(/(\d*)[.,]{1}(\d*)/)[0];
+            return parseFloat(decimalValue.replace(",","").trim());
+        }
+        return Number(stringValue.replace(",","").trim().match(/[\d\.]+/));
+    };
+    
+    function getDecimalStringFromString(stringValue) {
+        if (stringValue == null || stringValue == "" || stringValue.trim() == "") return null;
+        
+        if (stringValue.includes(",")){
+            return stringValue.match(/(\d*)[.,]{1}(\d*)/)[0];
+        }
+        return stringValue.match(/[\d\.]+/);
+    };
+    
+    function convertDecimalToCurrency(stringValue) {
+        if (stringValue == null || stringValue == "") return null;
+        
+        return stringValue.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    };
+        
 </script>

@@ -44,6 +44,7 @@ using Nop.Core.Infrastructure;
 using Nop.Web.Framework.Security;
 using Newtonsoft.Json;
 using Nop.Core.Domain.Logging;
+using Nop.Services.Common.Models;
 using Nop.Services.ZohoDesk;
 using Nop.Services.Customers;
 
@@ -102,6 +103,7 @@ namespace Nop.Admin.Controllers
         private readonly MeasureSettings _measureSettings;
         private readonly AddressSettings _addressSettings;
         private readonly ShippingSettings _shippingSettings;
+        private readonly ITierPriceAndDiscountService _tierPriceAndDiscountService;
 
         private readonly ICreditCardInfoService _creditCardInfoService;
 
@@ -157,7 +159,8 @@ namespace Nop.Admin.Controllers
             TaxSettings taxSettings,
             MeasureSettings measureSettings,
             AddressSettings addressSettings,
-            ShippingSettings shippingSettings)
+            ShippingSettings shippingSettings,
+            ITierPriceAndDiscountService _tierPriceAndDiscountService)
         {
             this._orderService = orderService;
             this._orderReportService = orderReportService;
@@ -207,6 +210,7 @@ namespace Nop.Admin.Controllers
             this._measureSettings = measureSettings;
             this._addressSettings = addressSettings;
             this._shippingSettings = shippingSettings;
+            this._tierPriceAndDiscountService = _tierPriceAndDiscountService;
             _creditCardInfoService = EngineContext.Current.Resolve<ICreditCardInfoService>();
         }
 
@@ -857,6 +861,26 @@ namespace Nop.Admin.Controllers
                     SetupFee = _priceFormatter.FormatPrice(Convert.ToDecimal(orderItem.SetupFee), true, primaryStoreCurrency, _workContext.WorkingLanguage, true, false),
                     SetupFeeValue = Convert.ToDecimal(orderItem.SetupFee)
                 };
+                
+                // add discountRangeEntities
+                List<TierPriceEntity> tierPriceEntities =
+                    _tierPriceAndDiscountService.PrepareProductTierPriceModels(orderItem.Product);
+                List<DiscountRangeEntity> discountRangeEntities =
+                    _tierPriceAndDiscountService.UpdateDiscountModelFromTierList(tierPriceEntities);
+                orderItemModel.DiscountRangeEntities = discountRangeEntities;
+                
+                // additional check if product don't have DiscountRanges and TierPrices
+                if (orderItemModel.DiscountRangeEntities.Count == 0)
+                {
+                    List<TierPriceEntity> tierPriceEntities2 =
+                        _tierPriceAndDiscountService.GenerateTierPriceFromGeneralProductInfo(orderItem.Product);
+
+                    List<DiscountRangeEntity> discountRangeEntities2 =
+                        _tierPriceAndDiscountService.UpdateDiscountModelFromTierList(tierPriceEntities2);
+
+                    orderItemModel.DiscountRangeEntities = discountRangeEntities2;
+                }
+                    
                 //picture
                 var orderItemPicture = orderItem.Product.GetProductPicture(orderItem.AttributesXml, _pictureService, _productAttributeParser);
                 orderItemModel.PictureThumbnailUrl = _pictureService.GetPictureUrl(orderItemPicture, 75, true);

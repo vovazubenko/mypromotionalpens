@@ -5,6 +5,7 @@ using Nop.Core.Caching;
 using Nop.Core.Configuration;
 using Nop.Core.Infrastructure;
 using Nop.Core.Infrastructure.DependencyManagement;
+using Nop.Services.Common;
 
 namespace Nop.Admin.Infrastructure
 {
@@ -21,6 +22,11 @@ namespace Nop.Admin.Infrastructure
         /// <param name="config">Config</param>
         public virtual void Register(ContainerBuilder builder, ITypeFinder typeFinder, NopConfig config)
         {
+            
+            builder.RegisterType<TierPriceAndDiscountService>()
+                .As<ITierPriceAndDiscountService>()
+                .InstancePerLifetimeScope();
+            
             //we cache presentation models between requests
             builder.RegisterType<CategoryController>()
                 .WithParameter(ResolvedParameter.ForNamed<ICacheManager>("nop_cache_static"));

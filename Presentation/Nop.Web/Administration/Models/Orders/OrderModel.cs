@@ -8,6 +8,7 @@ using Nop.Core.Domain.Tax;
 using Nop.Web.Framework;
 using Nop.Web.Framework.Mvc;
 using System.ComponentModel;
+using Nop.Services.Common.Models;
 
 namespace Nop.Admin.Models.Orders
 {
@@ -324,6 +325,8 @@ namespace Nop.Admin.Models.Orders
 
             public string SetupFee { get; set; }
             public decimal SetupFeeValue { get; set; }
+
+            public List<DiscountRangeEntity> DiscountRangeEntities { get; set; }
         }
 
         public partial class OrderTransactionsModel : BaseNopEntityModel
