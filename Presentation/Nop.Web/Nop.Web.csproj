@@ -646,6 +646,7 @@
     <Content Include="Content\samples\p_attribute_print_2.jpg" />
     <Content Include="Customers_ZXQ4XRZ7VV.xml" />
     <Content Include="DeploySqlScripts\Juni_2022.sql" />
+    <Content Include="DeploySqlScripts\Juni_2022_prepareDB.sql" />
     <Content Include="DeploySqlScripts\May_2022.sql" />
     <Content Include="DeploySqlScripts\March_2022.sql" />
     <Content Include="DeploySqlScripts\February_2022.sql" />
