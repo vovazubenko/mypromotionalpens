@@ -1420,6 +1420,9 @@ namespace Nop.Services.ExportImport
                 product.Published = productTierPriceItem.Published;
                 product.OrderMinimumQuantity = productTierPriceItem.OrderMinimumQuantity;
                 product.SetupCost = productTierPriceItem.SetupCost;
+                product.Name = productTierPriceItem.Name;
+                product.Sku = productTierPriceItem.SKU;
+                product.SetupFee = productTierPriceItem.Setup;
                 _productService.UpdateProduct(product);
             }
             

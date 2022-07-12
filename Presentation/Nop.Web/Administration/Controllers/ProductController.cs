@@ -5065,7 +5065,7 @@ namespace Nop.Admin.Controllers
                     Published = product.Published,
                     SKU = product.Sku,
                     OrderMinimumQuantity = product.OrderMinimumQuantity,
-                    Setup = 0, // TODO ---> what is SETUP?
+                    Setup = product.SetupFee,
                     SetupCost = product.SetupCost
                 };
 
@@ -5082,7 +5082,7 @@ namespace Nop.Admin.Controllers
                     tierPrice.GetType().GetProperty($"MSRP{i+1}").SetValue(tierPrice, orderedTierList[i].MSRP, null);
                     tierPrice.GetType().GetProperty($"COST{i+1}").SetValue(tierPrice, orderedTierList[i].Cost, null);
                     tierPrice.GetType().GetProperty($"PRICE{i+1}").SetValue(tierPrice, orderedTierList[i].Price, null);
-                    tierPrice.GetType().GetProperty($"DISCOUNT{i+1}").SetValue(tierPrice, product.Price - orderedTierList[i].Price, null);
+                    //tierPrice.GetType().GetProperty($"DISCOUNT{i+1}").SetValue(tierPrice, product.Price - orderedTierList[i].Price, null);
                 }
                 
                 data.Add(tierPrice);

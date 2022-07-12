@@ -62,16 +62,5 @@ namespace Nop.Core.Domain.Catalog
         public decimal? PRICE8 { get; set; }
         public decimal? PRICE9 { get; set; }
         public decimal? PRICE10 { get; set; }
-        
-        public decimal? DISCOUNT1 { get; set; }
-        public decimal? DISCOUNT2 { get; set; }
-        public decimal? DISCOUNT3 { get; set; }
-        public decimal? DISCOUNT4 { get; set; }
-        public decimal? DISCOUNT5 { get; set; }
-        public decimal? DISCOUNT6 { get; set; }
-        public decimal? DISCOUNT7 { get; set; }
-        public decimal? DISCOUNT8 { get; set; }
-        public decimal? DISCOUNT9 { get; set; }
-        public decimal? DISCOUNT10 { get; set; }
     }
 }

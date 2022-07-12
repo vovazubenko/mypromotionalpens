@@ -1402,18 +1402,7 @@ namespace Nop.Services.ExportImport
                 new PropertyByName<ProductTierPriceExcel>("PRICE7", p => p.PRICE7.HasValue && p.QTY7 > 0 ? p.PRICE7.Value.ToString(stringFormat) : string.Empty),
                 new PropertyByName<ProductTierPriceExcel>("PRICE8", p => p.PRICE8.HasValue && p.QTY8 > 0 ? p.PRICE8.Value.ToString(stringFormat) : string.Empty),
                 new PropertyByName<ProductTierPriceExcel>("PRICE9", p => p.PRICE9.HasValue && p.QTY9 > 0 ? p.PRICE9.Value.ToString(stringFormat) : string.Empty),
-                new PropertyByName<ProductTierPriceExcel>("PRICE10", p => p.PRICE10.HasValue && p.QTY10 > 0 ? p.PRICE10.Value.ToString(stringFormat) : string.Empty),
-                
-                new PropertyByName<ProductTierPriceExcel>("DISCOUNT1", p => p.DISCOUNT1.HasValue && p.QTY1 > 0 ? p.DISCOUNT1.Value.ToString(stringFormat) : string.Empty),
-                new PropertyByName<ProductTierPriceExcel>("DISCOUNT2", p => p.DISCOUNT2.HasValue && p.QTY2 > 0 ? p.DISCOUNT2.Value.ToString(stringFormat) : string.Empty),
-                new PropertyByName<ProductTierPriceExcel>("DISCOUNT3", p => p.DISCOUNT3.HasValue && p.QTY3 > 0 ? p.DISCOUNT3.Value.ToString(stringFormat) : string.Empty),
-                new PropertyByName<ProductTierPriceExcel>("DISCOUNT4", p => p.DISCOUNT4.HasValue && p.QTY4 > 0 ? p.DISCOUNT4.Value.ToString(stringFormat) : string.Empty),
-                new PropertyByName<ProductTierPriceExcel>("DISCOUNT5", p => p.DISCOUNT5.HasValue && p.QTY5 > 0 ? p.DISCOUNT5.Value.ToString(stringFormat) : string.Empty),
-                new PropertyByName<ProductTierPriceExcel>("DISCOUNT6", p => p.DISCOUNT6.HasValue && p.QTY6 > 0 ? p.DISCOUNT6.Value.ToString(stringFormat) : string.Empty),
-                new PropertyByName<ProductTierPriceExcel>("DISCOUNT7", p => p.DISCOUNT7.HasValue && p.QTY7 > 0 ? p.DISCOUNT7.Value.ToString(stringFormat) : string.Empty),
-                new PropertyByName<ProductTierPriceExcel>("DISCOUNT8", p => p.DISCOUNT8.HasValue && p.QTY8 > 0 ? p.DISCOUNT8.Value.ToString(stringFormat) : string.Empty),
-                new PropertyByName<ProductTierPriceExcel>("DISCOUNT9", p => p.DISCOUNT9.HasValue && p.QTY9 > 0 ? p.DISCOUNT9.Value.ToString(stringFormat) : string.Empty),
-                new PropertyByName<ProductTierPriceExcel>("DISCOUNT10", p => p.DISCOUNT10.HasValue && p.QTY10 > 0 ? p.DISCOUNT10.Value.ToString(stringFormat) : string.Empty),
+                new PropertyByName<ProductTierPriceExcel>("PRICE10", p => p.PRICE10.HasValue && p.QTY10 > 0 ? p.PRICE10.Value.ToString(stringFormat) : string.Empty)
             };
 
             return ExportToXlsx(properties, tierPrices);
