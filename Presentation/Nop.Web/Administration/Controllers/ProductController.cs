@@ -3411,7 +3411,9 @@ namespace Nop.Admin.Controllers
                 Price = tierPrice.Price,
                 StartDateTimeUtc = tierPrice.StartDateTimeUtc,
                 EndDateTimeUtc = tierPrice.EndDateTimeUtc,
-                Cost = tierPrice.Cost
+                Cost = tierPrice.Cost,
+                MSRP = tierPrice.MSRP,
+                Discount = tierPrice.MSRP > 0 ? (tierPrice.MSRP - tierPrice.Price) / tierPrice.MSRP : 0
             };
 
             //stores
@@ -3454,6 +3456,7 @@ namespace Nop.Admin.Controllers
                 tierPrice.StartDateTimeUtc = model.StartDateTimeUtc;
                 tierPrice.EndDateTimeUtc = model.EndDateTimeUtc;
                 tierPrice.Cost = model.Cost;
+                tierPrice.MSRP = model.MSRP;
                 _productService.UpdateTierPrice(tierPrice);
 
                 ViewBag.RefreshPage = true;

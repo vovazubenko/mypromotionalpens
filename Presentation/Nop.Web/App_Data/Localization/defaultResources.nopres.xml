@@ -3837,6 +3837,15 @@
   <LocaleResource Name="Admin.Catalog.Products.TierPrices.Fields.Cost.Hint">
     <Value>Specify the cost.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Products.TierPrices.Fields.MSRP">
+    <Value>MSRP</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Products.TierPrices.Fields.MSRP.Hint">
+    <Value>Specify the MSRP.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Products.TierPrices.Fields.Discount">
+    <Value>Discount</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.TierPrices.Fields.Quantity">
     <Value>Quantity</Value>
   </LocaleResource>

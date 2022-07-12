@@ -769,6 +769,12 @@ namespace Nop.Admin.Models.Catalog
             
             [NopResourceDisplayName("Admin.Catalog.Products.TierPrices.Fields.Cost")]
             public decimal Cost { get; set; }
+            
+            [NopResourceDisplayName("Admin.Catalog.Products.TierPrices.Fields.MSRP")]
+            public decimal MSRP { get; set; }
+            
+            [NopResourceDisplayName("Admin.Catalog.Products.TierPrices.Fields.Discount")]
+            public decimal Discount { get; set; }
         }
 
         public partial class ProductWarehouseInventoryModel : BaseNopModel

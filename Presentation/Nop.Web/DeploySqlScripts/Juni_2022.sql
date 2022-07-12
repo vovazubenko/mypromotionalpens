@@ -112,3 +112,11 @@ values
     ('ImportTierPricesError', 'Error by importing tier prices', 1);
 
 
+-- JULY CHANGES HERE!!!
+-- SAV-65(3)
+insert into [dbo].[LocaleStringResource]
+values
+    (1, 'Admin.Catalog.Products.TierPrices.Fields.MSRP', 'MSRP'),
+    (1, 'Admin.Catalog.Products.TierPrices.Fields.Discount', 'Discount'),
+    (1, 'Admin.Catalog.Products.TierPrices.Fields.MSRP.Hint', 'Specify the MSRP.');
+
