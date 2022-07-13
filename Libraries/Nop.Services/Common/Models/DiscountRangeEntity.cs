@@ -11,5 +11,6 @@
         public int? MaxMiniQty { get; set; }
 
         public decimal Amount { get; set; }
+        public decimal MSRP { get; set; } = 0M;
     }
 }

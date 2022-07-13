@@ -234,6 +234,7 @@ namespace Nop.Web.Models.Catalog
             public string Price { get; set; }
 
             public int Quantity { get; set; }
+            public decimal MSRP { get; set; } = 0M;
         }
 
         public partial class ProductAttributeModel : BaseNopEntityModel
@@ -331,6 +332,7 @@ namespace Nop.Web.Models.Catalog
             public int? MaxMiniQty { get; set; }
 
             public decimal Amount { get; set; }
+            public decimal MSRP { get; set; } = 0M;
 
 
         }

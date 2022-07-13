@@ -156,6 +156,15 @@
     .albw {
         position: inherit !important;
     }
+    
+    .msrt-section {
+        background-color:#f4f4f4; 
+        font-size:12px;
+        font-weight: 600;
+    }
+    .strikethrough-style {
+        text-decoration: line-through;
+    }
 </style>
 @Html.Widget("productdetails_after_breadcrumb", Model.Id)
 <div class="page product-details-page order-details-page">
@@ -319,6 +328,23 @@
                                                         counter = counter + 1;
                                                     }
                                                 </tr>
+                                                
+                                                if(Model.DiscountRanges.Count(x => x.MSRP > 0) > 0)
+                                                {
+                                                    <tr class="msrt-section">
+
+                                                        <td align="center">
+                                                            MSRT
+                                                        </td>
+                                                        @foreach (var a in Model.DiscountRanges)
+                                                        {
+                                                            <td align="center" class="strikethrough-style">
+                                                                $@a.MSRP.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) ea.
+                                                            </td>
+                                                        }
+                                                    </tr>
+                                                }
+                                                
                                                 <tr style="background-color:#f4f4f4; font-size:13px">
 
                                                     <td align="center">

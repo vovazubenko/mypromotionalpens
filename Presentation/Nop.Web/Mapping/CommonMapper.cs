@@ -15,7 +15,8 @@ namespace Nop.Web.Mapping
                     Id = tierPrice.Id,
                     Quantity = tierPrice.Quantity,
                     Price = tierPrice.Price,
-                    PriceBase = tierPrice.PriceBase
+                    PriceBase = tierPrice.PriceBase,
+                    MSRP = tierPrice.MSRP
                 })
                 .ToList();
         }
@@ -29,7 +30,8 @@ namespace Nop.Web.Mapping
                     Discount = discount.Discount,
                     MinQty = discount.MinQty,
                     MaxMiniQty = discount.MaxMiniQty,
-                    Amount = discount.Amount
+                    Amount = discount.Amount,
+                    MSRP = discount.MSRP
                 })
                 .ToList();
         }

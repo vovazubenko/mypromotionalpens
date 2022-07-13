@@ -69,7 +69,8 @@ namespace Nop.Services.Common
                     {
                         DiscountID = sortedList[i].Id,
                         Amount = sortedList[i].PriceBase < 0 ? 0 : sortedList[i].PriceBase,
-                        MinQty = sortedList[i].Quantity
+                        MinQty = sortedList[i].Quantity,
+                        MSRP = sortedList[i].MSRP
                     };
 
                     if (sortedList.Count() == i + 1)
@@ -111,7 +112,8 @@ namespace Nop.Services.Common
                 Id = tierId,
                 PriceBase = price,
                 Quantity = QTY,
-                Price = priceText
+                Price = priceText,
+                MSRP = tierPriceEntity.MSRP
             };
         }
     }
