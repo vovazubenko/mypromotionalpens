@@ -40,6 +40,7 @@ namespace Nop.Web.Models.Catalog
 
         public decimal AmountMin { get; set; }
         public decimal AmountMax { get; set; }
+        public decimal MaxTierPriceDiscount { get; set; } = 0;
 
         #region Nested Classes
 

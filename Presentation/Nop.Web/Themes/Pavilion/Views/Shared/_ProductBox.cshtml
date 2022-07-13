@@ -32,8 +32,32 @@
         display: none;
         
     }
+    
+    .product-item {
+        position: relative;
+    }
+    .max-tier-price-discount {
+        background: #0072bc;
+        color: white;
+        font-family: 'Hind',sans-serif;
+        position: absolute;
+        font-size: 16px;
+        width: 40px;
+        border-radius: 50%;
+        z-index: 555;
+        top: 5px;
+        right: 5px;
+        line-height: 16px;
+        padding: 6px 3px;
+        font-weight: 600;
+        box-shadow: 2px 2px 4px gray;
+    }
 </style>
 <div class="product-item" data-productid="@Model.Id" itemscope itemtype="http://schema.org/Product">
+    @if (Model.MaxTierPriceDiscount >= 0.1M)
+    {
+        <div class="max-tier-price-discount">@String.Format("{0:0%}", Model.MaxTierPriceDiscount) off</div>
+    }
     <div class="picture">
         <a href="@Url.RouteUrl("Product", new { SeName = Model.SeName })" title="@Model.DefaultPictureModel.Title">
             <img itemprop="image" height="auto" width="auto" style="max-height: 227px;" alt="@Model.DefaultPictureModel.AlternateText" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" />

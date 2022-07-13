@@ -1190,6 +1190,12 @@ namespace Nop.Web.Factories
                 {
                     model.AmountMin = product.TierPrices.Min(x => x.Price);
                     model.AmountMax = product.TierPrices.Max(x => x.Price);
+                    
+                    // update MaxTierPriceDiscount
+                    model.MaxTierPriceDiscount = product.TierPrices
+                        .Where(x => x.MSRP > 0)
+                        .Select(x => (x.MSRP - x.Price) / x.MSRP)
+                        .Aggregate(0M, Math.Max);
                 }
 
 
