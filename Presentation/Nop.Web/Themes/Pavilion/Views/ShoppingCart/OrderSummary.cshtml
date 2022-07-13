@@ -220,19 +220,20 @@
                                 </td>
                                 <td class="subtotal">
                                     @*<label class="td-title">@T("ShoppingCart.ItemTotal"):</label>*@
-                                    <span class="product-subtotal">@item.SubTotal</span>
-                                    @if (!String.IsNullOrEmpty(item.Discount))
-                                    {
-                                        <div class="discount">
-                                            @T("ShoppingCart.ItemYouSave", item.Discount)
-                                        </div>
-                                        if (item.MaximumDiscountedQty.HasValue)
-                                        {
-                                            <div class="discount-additional-info">
-                                                @T("ShoppingCart.MaximumDiscountedQty", item.MaximumDiscountedQty.Value)
-                                            </div>
-                                        }
-                                    }
+                                    <span class="product-subtotal">@item.SubTotalWithoutSetupFee</span>
+                                    <br>
+                                    @* @if (!String.IsNullOrEmpty(item.Discount)) *@
+                                    @* { *@
+                                    @*     <div class="discount"> *@
+                                    @*         @T("ShoppingCart.ItemYouSave", item.Discount) *@
+                                    @*     </div> *@
+                                    @*     if (item.MaximumDiscountedQty.HasValue) *@
+                                    @*     { *@
+                                    @*         <div class="discount-additional-info"> *@
+                                    @*             @T("ShoppingCart.MaximumDiscountedQty", item.MaximumDiscountedQty.Value) *@
+                                    @*         </div> *@
+                                    @*     } *@
+                                    @* } *@
                                     <span class="product-subtotal-setupfee" data-id="@item.SetupFee">@T("ShoppingCart.SetupFee") @item.SetupFee</span>
                                 </td>
                                 @*<td class="product-picture">

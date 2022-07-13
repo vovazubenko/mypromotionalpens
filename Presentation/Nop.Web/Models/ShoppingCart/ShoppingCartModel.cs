@@ -100,6 +100,7 @@ namespace Nop.Web.Models.ShoppingCart
             public IList<string> Warnings { get; set; }
 
             public string SetupFee { get; set; }
+            public string SubTotalWithoutSetupFee { get; set; }
 
 
             public List<ProductDetailsModel.DiscountRange> DiscountRanges { get; set; }

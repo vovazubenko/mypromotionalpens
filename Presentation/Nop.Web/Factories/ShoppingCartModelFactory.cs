@@ -569,6 +569,10 @@ namespace Nop.Web.Factories
                 //decimal setupcost = _currencyService.ConvertFromPrimaryStoreCurrency(sci.Product.SetupFee, _workContext.WorkingCurrency);
                 //cartItemModel.SubTotal = _priceFormatter.FormatPrice(shoppingCartItemSubTotalWithDiscount + setupcost); //change to add setup cost
                 cartItemModel.MaximumDiscountedQty = maximumDiscountQty;
+                cartItemModel.SubTotalWithoutSetupFee = _priceFormatter.FormatPrice(
+                    _currencyService.ConvertFromPrimaryStoreCurrency(
+                        shoppingCartItemSubTotalWithDiscount - Convert.ToDecimal(sci.SetupFee),
+                        _workContext.WorkingCurrency));
 
                 //display an applied discount amount
                 if (shoppingCartItemDiscountBase > decimal.Zero)
