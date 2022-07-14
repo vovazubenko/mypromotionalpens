@@ -42,7 +42,7 @@ namespace Nop.Plugin.Shipping.Fedex
         {
             //What is a FedEx tracking page URL?
             string url = "https://www.fedex.com/fedextrack/?action=track&trackingnumber={0}&cntry_code=us&locale=en_us";
-            url = string.Format(url, trackingNumber);
+            url = string.Format(url.Trim(), trackingNumber);
             return url;
             //return "";
         }
