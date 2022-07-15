@@ -852,6 +852,7 @@ namespace Nop.Services.Messages
         protected virtual string PurchaseOrderProductListToHtmlTable(Order order, int languageId, int vendorId)
         {
             string result;
+            decimal costFullOrderTotal = 0;
 
             var language = _languageService.GetLanguageById(languageId);
 
@@ -933,45 +934,55 @@ namespace Nop.Services.Messages
                 //sku as new td
                 sb.AppendLine(string.Format("<td style=\"padding: 0.6em 0.4em;text-align: right;\">{0}</td>",product.FormatSku(orderItem.AttributesXml, _productAttributeParser)));
 
+                bool includeTax = order.CustomerTaxDisplayType == TaxDisplayType.IncludingTax ? true : false;
                 string unitPriceStr;
-                if (order.CustomerTaxDisplayType == TaxDisplayType.IncludingTax)
-                {
-                    //including tax
-                    var unitPriceInclTaxInCustomerCurrency = _currencyService.ConvertCurrency(orderItem.UnitPriceInclTax, order.CurrencyRate);
-                    unitPriceStr = _priceFormatter.FormatPrice(unitPriceInclTaxInCustomerCurrency, true, order.CustomerCurrencyCode, language, true);
-                }
-                else
-                {
-                    //excluding tax
-                    var unitPriceExclTaxInCustomerCurrency = _currencyService.ConvertCurrency(orderItem.UnitPriceExclTax, order.CurrencyRate);
-                    unitPriceStr = _priceFormatter.FormatPrice(unitPriceExclTaxInCustomerCurrency, true, order.CustomerCurrencyCode, language, false);
-                }
-                sb.AppendLine(string.Format("<td style=\"padding: 0.6em 0.4em;text-align: right;\">{0}</td>", unitPriceStr));
+                decimal unitPriceDecimal;
+                
+                // unitPriceDecimal = _currencyService.ConvertCurrency(orderItem.UnitPriceInclTax, order.CurrencyRate);
+                // unitPriceStr = _priceFormatter.FormatPrice(unitPriceDecimal, true, order.CustomerCurrencyCode, language, includeTax);
 
+                // HERE ARE COST PRICE
+                unitPriceDecimal = _currencyService.ConvertCurrency(orderItem.Product.ProductCost, order.CurrencyRate);
+                unitPriceStr = _priceFormatter.FormatPrice(unitPriceDecimal, true, order.CustomerCurrencyCode, language, includeTax);
+                
+                // TODO ---> productCost or Cost from TierPrice
+                if (orderItem.Product.TierPrices.Any())
+                {
+                    var tierPrice = orderItem.Product.TierPrices
+                        .OrderByDescending(x => x.Quantity)
+                        .FirstOrDefault(x => x.Quantity >= orderItem.Quantity);
+
+                    var costTierPrice = tierPrice != null ? tierPrice.Cost : orderItem.Product.ProductCost;
+                    
+                    // TODO ---> Uncomment if we need to use cost from TierPrice
+                    // unitPriceDecimal = _currencyService.ConvertCurrency(costTierPrice, order.CurrencyRate);
+                    // unitPriceStr = _priceFormatter.FormatPrice(unitPriceDecimal, true, order.CustomerCurrencyCode, language, true);
+                }
+                
+                sb.AppendLine(string.Format("<td class=\"unitPriceStr\"  style=\"padding: 0.6em 0.4em;text-align: right;\">{0}</td>", unitPriceStr));
                 sb.AppendLine(string.Format("<td style=\"padding: 0.6em 0.4em;text-align: center;\">{0}</td>", orderItem.Quantity));
 
-                //setup fee
+                //setup fee ---> WAS UPDATED TO SETUP COST
                 string SetupFee;
-                var setupFeeInCustomerCurrency = _currencyService.ConvertCurrency(Convert.ToDecimal(orderItem.SetupFee), order.CurrencyRate);
+                decimal setupFeeInCustomerCurrency = _currencyService.ConvertCurrency(Convert.ToDecimal(orderItem.Product.SetupCost), order.CurrencyRate);
                 SetupFee = _priceFormatter.FormatPrice(setupFeeInCustomerCurrency, true, order.CustomerCurrencyCode, language, true);
                 sb.AppendLine(string.Format("<td style=\"padding: 0.6em 0.4em;text-align: center;\">{0}</td>", SetupFee));
 
                 string priceStr;
-                if (order.CustomerTaxDisplayType == TaxDisplayType.IncludingTax)
-                {
-                    //including tax
-                    var priceInclTaxInCustomerCurrency = _currencyService.ConvertCurrency(orderItem.PriceInclTax, order.CurrencyRate);
-                    priceStr = _priceFormatter.FormatPrice(priceInclTaxInCustomerCurrency, true, order.CustomerCurrencyCode, language, true);
-                }
-                else
-                {
-                    //excluding tax
-                    var priceExclTaxInCustomerCurrency = _currencyService.ConvertCurrency(orderItem.PriceExclTax, order.CurrencyRate);
-                    priceStr = _priceFormatter.FormatPrice(priceExclTaxInCustomerCurrency, true, order.CustomerCurrencyCode, language, false);
-                }
-                sb.AppendLine(string.Format("<td style=\"padding: 0.6em 0.4em;text-align: right;\">{0}</td>", priceStr));
+                decimal orderItemSubTotal;
+                // orderItemSubTotal = _currencyService.ConvertCurrency(orderItem.PriceInclTax, order.CurrencyRate);
+                // priceStr = _priceFormatter.FormatPrice(orderItemSubTotal, true, order.CustomerCurrencyCode, language, includeTax);
+
+                // new subtotal for COST values
+                decimal subTotalCost = (unitPriceDecimal * orderItem.Quantity) + setupFeeInCustomerCurrency;
+                var priceExclTaxInCustomerCurrency = _currencyService.ConvertCurrency(subTotalCost, order.CurrencyRate);
+                priceStr = _priceFormatter.FormatPrice(priceExclTaxInCustomerCurrency, true, order.CustomerCurrencyCode, language, false);
+                
+                sb.AppendLine(string.Format("<td class=\"priceStr\" style=\"padding: 0.6em 0.4em;text-align: right;\">{0}</td>", priceStr));
 
                 sb.AppendLine("</tr>");
+
+                costFullOrderTotal += priceExclTaxInCustomerCurrency;
             }
             #endregion
 
@@ -1110,7 +1121,10 @@ namespace Nop.Services.Messages
 
 
                 //subtotal
-                sb.AppendLine(string.Format("<tr style=\"text-align:right;\"><td>&nbsp;</td><td colspan=\"4\" style=\"background-color: {0};padding:0.6em 0.4 em;\"><strong>{1}</strong></td> <td style=\"background-color: {0};padding:0.6em 0.4 em;\"><strong>{2}</strong></td></tr>", _templatesSettings.Color3, _localizationService.GetResource("Messages.Order.SubTotal", languageId), cusSubTotal));
+                //sb.AppendLine(string.Format("<tr style=\"text-align:right;\"><td>&nbsp;</td><td colspan=\"4\" style=\"background-color: {0};padding:0.6em 0.4 em;\"><strong>{1}</strong></td> <td style=\"background-color: {0};padding:0.6em 0.4 em;\"><strong>{2}</strong></td></tr>", _templatesSettings.Color3, _localizationService.GetResource("Messages.Order.SubTotal", languageId), cusSubTotal));
+                
+                string costFullOrderTotalStr = _priceFormatter.FormatPrice(costFullOrderTotal, true, order.CustomerCurrencyCode, false, language);
+                sb.AppendLine(string.Format("<tr style=\"text-align:right;\"><td>&nbsp;</td><td colspan=\"4\" style=\"background-color: {0};padding:0.6em 0.4 em;\"><strong>{1}</strong></td> <td style=\"background-color: {0};padding:0.6em 0.4 em;\"><strong>{2}</strong></td></tr>", _templatesSettings.Color3, _localizationService.GetResource("Messages.Order.SubTotal", languageId), costFullOrderTotalStr));
 
                 //discount (applied to order subtotal)
                 if (displaySubTotalDiscount)
