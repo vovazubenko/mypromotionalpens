@@ -120,3 +120,13 @@ values
     (1, 'Admin.Catalog.Products.TierPrices.Fields.Discount', 'Discount'),
     (1, 'Admin.Catalog.Products.TierPrices.Fields.MSRP.Hint', 'Specify the MSRP.');
 
+
+-- SAV-61. Logo on Forms & Email Correspondence
+declare @begin nvarchar(max) = '<img src="';
+declare @end nvarchar(max) = '>';
+declare @expected nvarchar(max) = '<img src="%Store.URL%Content/EmailLogos/1.png" alt="" width="200" >';
+
+update [dbo].[MessageTemplate]
+set Body = replace(Body, SUBSTRING(Body, CHARINDEX(@begin, Body), CHARINDEX(@end, SUBSTRING(Body, CHARINDEX(@begin, Body), LEN(Body)))), @expected);
+
+
