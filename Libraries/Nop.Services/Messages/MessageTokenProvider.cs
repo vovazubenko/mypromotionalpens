@@ -935,48 +935,36 @@ namespace Nop.Services.Messages
                 sb.AppendLine(string.Format("<td style=\"padding: 0.6em 0.4em;text-align: right;\">{0}</td>",product.FormatSku(orderItem.AttributesXml, _productAttributeParser)));
 
                 bool includeTax = order.CustomerTaxDisplayType == TaxDisplayType.IncludingTax ? true : false;
-                string unitPriceStr;
-                decimal unitPriceDecimal;
-                
-                // unitPriceDecimal = _currencyService.ConvertCurrency(orderItem.UnitPriceInclTax, order.CurrencyRate);
-                // unitPriceStr = _priceFormatter.FormatPrice(unitPriceDecimal, true, order.CustomerCurrencyCode, language, includeTax);
-
+                decimal unitPriceDecimal = 0.0M;
+                string unitPriceStr = _priceFormatter.FormatPrice(unitPriceDecimal, true, order.CustomerCurrencyCode, language, includeTax);
+                    
                 // HERE ARE COST PRICE
-                unitPriceDecimal = _currencyService.ConvertCurrency(orderItem.Product.ProductCost, order.CurrencyRate);
-                unitPriceStr = _priceFormatter.FormatPrice(unitPriceDecimal, true, order.CustomerCurrencyCode, language, includeTax);
-                
-                // TODO ---> productCost or Cost from TierPrice
                 if (orderItem.Product.TierPrices.Any())
                 {
                     var tierPrice = orderItem.Product.TierPrices
                         .OrderByDescending(x => x.Quantity)
-                        .FirstOrDefault(x => x.Quantity >= orderItem.Quantity);
+                        .FirstOrDefault(x => orderItem.Quantity >= x.Quantity);
 
-                    var costTierPrice = tierPrice != null ? tierPrice.Cost : orderItem.Product.ProductCost;
+                    var costTierPrice = tierPrice != null ? tierPrice.Cost : unitPriceDecimal;
                     
-                    // TODO ---> Uncomment if we need to use cost from TierPrice
-                    // unitPriceDecimal = _currencyService.ConvertCurrency(costTierPrice, order.CurrencyRate);
-                    // unitPriceStr = _priceFormatter.FormatPrice(unitPriceDecimal, true, order.CustomerCurrencyCode, language, true);
+                    unitPriceDecimal = _currencyService.ConvertCurrency(costTierPrice, order.CurrencyRate);
+                    unitPriceStr = _priceFormatter.FormatPrice(unitPriceDecimal, true, order.CustomerCurrencyCode, language, true);
                 }
                 
                 sb.AppendLine(string.Format("<td class=\"unitPriceStr\"  style=\"padding: 0.6em 0.4em;text-align: right;\">{0}</td>", unitPriceStr));
                 sb.AppendLine(string.Format("<td style=\"padding: 0.6em 0.4em;text-align: center;\">{0}</td>", orderItem.Quantity));
-
-                //setup fee ---> WAS UPDATED TO SETUP COST
-                string SetupFee;
+                
                 decimal setupFeeInCustomerCurrency = _currencyService.ConvertCurrency(Convert.ToDecimal(orderItem.Product.SetupCost), order.CurrencyRate);
-                SetupFee = _priceFormatter.FormatPrice(setupFeeInCustomerCurrency, true, order.CustomerCurrencyCode, language, true);
+                string SetupFee = _priceFormatter.FormatPrice(setupFeeInCustomerCurrency, true, order.CustomerCurrencyCode, language, true);
                 sb.AppendLine(string.Format("<td style=\"padding: 0.6em 0.4em;text-align: center;\">{0}</td>", SetupFee));
-
-                string priceStr;
-                decimal orderItemSubTotal;
+                
                 // orderItemSubTotal = _currencyService.ConvertCurrency(orderItem.PriceInclTax, order.CurrencyRate);
                 // priceStr = _priceFormatter.FormatPrice(orderItemSubTotal, true, order.CustomerCurrencyCode, language, includeTax);
 
                 // new subtotal for COST values
                 decimal subTotalCost = (unitPriceDecimal * orderItem.Quantity) + setupFeeInCustomerCurrency;
                 var priceExclTaxInCustomerCurrency = _currencyService.ConvertCurrency(subTotalCost, order.CurrencyRate);
-                priceStr = _priceFormatter.FormatPrice(priceExclTaxInCustomerCurrency, true, order.CustomerCurrencyCode, language, false);
+                string priceStr = _priceFormatter.FormatPrice(priceExclTaxInCustomerCurrency, true, order.CustomerCurrencyCode, language, false);
                 
                 sb.AppendLine(string.Format("<td class=\"priceStr\" style=\"padding: 0.6em 0.4em;text-align: right;\">{0}</td>", priceStr));
 
