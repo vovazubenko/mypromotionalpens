@@ -35,3 +35,6 @@ Presentation/Nop.Web/Content/Images/
 *.pdb
 *.idea
 *.idea/
+
+Presentation/Nop.Web/Content/EmailLogos/*
+Presentation/Nop.Web/Content/EmailLogos/

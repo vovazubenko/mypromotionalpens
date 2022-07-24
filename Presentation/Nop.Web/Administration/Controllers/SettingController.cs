@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using Nop.Admin.Extensions;
 using Nop.Admin.Models.Common;
@@ -47,6 +49,9 @@ using Nop.Web.Framework.Security.Captcha;
 using Nop.Web.Framework.Themes;
 using Nop.Admin.Models.Security;
 using Nop.Core.Domain.Configuration;
+using Nop.Data;
+using Svg;
+
 namespace Nop.Admin.Controllers
 {
     public partial class SettingController : BaseAdminController
@@ -78,6 +83,8 @@ namespace Nop.Admin.Controllers
         private readonly ILocalizedEntityService _localizedEntityService;
         private readonly IRestrictionDomainService _restrictionDomainService;
         private readonly NopConfig _config;
+        private readonly IDbContext _dbContext;
+        private readonly ILogger _logger;
         #endregion
 
         #region Ctor
@@ -106,7 +113,9 @@ namespace Nop.Admin.Controllers
             ILanguageService languageService,
             ILocalizedEntityService localizedEntityService,
             IRestrictionDomainService restrictionDomainService,
-            NopConfig config)
+            NopConfig config,
+            IDbContext dbContext,
+            ILogger logger)
         {
             this._settingService = settingService;
             this._countryService = countryService;
@@ -133,6 +142,8 @@ namespace Nop.Admin.Controllers
             this._localizedEntityService = localizedEntityService;
             this._config = config;
             this._restrictionDomainService = restrictionDomainService;
+            this._dbContext = dbContext;
+            this._logger = logger;
         }
 
         #endregion
@@ -1936,7 +1947,25 @@ namespace Nop.Admin.Controllers
             _settingService.SaveSettingOverridablePerStore(commonSettings, x => x.SitemapIncludeProducts, model.StoreInformationSettings.SitemapIncludeProducts_OverrideForStore, storeScope, false);
 
             _settingService.SaveSetting(commonSettings);
-            
+
+            try
+            {
+                // update theme logo from general setting
+                var logoImage = _settingService.GetSetting("pavilionthemesettings.logoimageid");
+                logoImage.Value = storeInformationSettings.LogoPictureId.ToString();
+                _dbContext.SaveChanges();
+                
+                // convert image from svg to png
+                var localPicturePath = UpdateLogoPictureForDifferentFormats(model.StoreInformationSettings.LogoPictureId);
+                
+                // update email templates
+                UpdateMessageTemplateWithPicturePath(localPicturePath);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error by updating logo. Message: {ex.Message}");
+            }
+
             //now clear settings cache
             _settingService.ClearCache();
 
@@ -2082,6 +2111,56 @@ namespace Nop.Admin.Controllers
 
             return RedirectToAction("GeneralCommon");
         }
+
+        private string UpdateLogoPictureForDifferentFormats(int logoPictureId)
+        {
+            var picture = _pictureService.GetPictureById(logoPictureId);
+            var localPath = _pictureService.GetThumbLocalPath(picture);
+            
+            // Check the type . if svg --> re-save into .png
+            if (picture.MimeType == MimeTypes.ImageSVG || picture.MimeType == Constant.ImageSVG)
+            {
+                var svgDocument = SvgDocument.Open(localPath);
+                var bitmap = svgDocument.Draw();
+                
+                var pathForSaving = GetLocalPathArray(localPath, 0);
+                localPath = $@"{pathForSaving}Content\EmailLogos\{logoPictureId}.png"; 
+                
+                if(!System.IO.File.Exists(localPath))
+                    bitmap.Save(localPath, ImageFormat.Png);
+            }
+            
+            var localPicturePath = GetLocalPathArray(localPath, 1);
+            
+            return localPicturePath;
+        }
+
+        private static string GetLocalPathArray(string localPath, int position)
+        {
+            var localPicturePath = localPath
+                .ToLower()
+                .Split(new string[] {"content"}, StringSplitOptions.RemoveEmptyEntries)[position];
+            
+            return localPicturePath;
+        }
+
+        private void UpdateMessageTemplateWithPicturePath(string localPicturePath)
+        {
+            if (string.IsNullOrEmpty(localPicturePath) || string.IsNullOrWhiteSpace(localPicturePath))
+                return;
+                
+            StringBuilder sb = new StringBuilder();
+            sb.Append("declare @begin nvarchar(max) = '<img src=\"';");
+            sb.Append("declare @end nvarchar(max) = '>';");
+            sb.Append("declare @expected nvarchar(max) = '<img src=\"%Store.URL%Content" + localPicturePath +
+                      "\" alt=\"\" width=\"200\" >';");
+            sb.Append("update [dbo].[MessageTemplate]");
+            sb.Append(
+                "set Body = replace(Body, SUBSTRING(Body, CHARINDEX(@begin, Body), CHARINDEX(@end, SUBSTRING(Body, CHARINDEX(@begin, Body), LEN(Body)))), @expected);");
+            sb.Append("select 1;");
+            var result = _dbContext.SqlQuery<int>(sb.ToString()).ToList().FirstOrDefault();
+        }
+
         [HttpPost, ActionName("GeneralCommon")]
         [FormValueRequired("changeencryptionkey")]
         public virtual ActionResult ChangeEncryptionKey(GeneralCommonSettingsModel model)

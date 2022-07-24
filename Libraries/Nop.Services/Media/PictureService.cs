@@ -489,7 +489,7 @@ namespace Nop.Services.Media
             
             string lastPart = GetFileExtensionFromMimeType(picture.MimeType);
             string thumbFileName;
-            if (targetSize == 0)
+            if (targetSize == 0 || (picture.MimeType == MimeTypes.ImageSVG || picture.MimeType == Constant.ImageSVG))
             {
                 thumbFileName = !String.IsNullOrEmpty(seoFileName)
                     ? string.Format("{0}_{1}.{2}", picture.Id.ToString("0000000"), seoFileName, lastPart)
